@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: ArrowProjectile
   m_EditorClassIdentifier: 
   travelSpeed: 20
-  damage: 2.5
+  damage: 5
   knockbackPower: 5

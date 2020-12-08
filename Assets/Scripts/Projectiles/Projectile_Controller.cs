@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class Projectile_Controller : MonoBehaviour
 {
-   [SerializeField] private LayerMask affectableLayers;
+    [SerializeField] private LayerMask affectableLayers;
     [SerializeField] private ProjectileStats stats;
     [SerializeField] private GameObject mainParticle;
     [SerializeField] private GameObject hitParticle;
+    [SerializeField] private GameObject arrowVisual;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private float hitParticleDuration = 0.65f;
     [SerializeField] private float projectileLifetime = 2f;
@@ -28,11 +29,13 @@ public class Projectile_Controller : MonoBehaviour
         thisTransform = GetComponent<Transform>();
         rb.AddForce(transform.forward * stats.travelSpeed, ForceMode.Impulse);
         StartCoroutine(DeactivateObjectAfter(projectileLifetime));
+
         if (muzzleParticle != null)
         {
             StartCoroutine(ActivateAndStopMuzzleParticle());
         }
         mainParticle.SetActive(true);
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -40,7 +43,7 @@ public class Projectile_Controller : MonoBehaviour
         if (affectableLayers == (affectableLayers | (1 << other.gameObject.layer)))
         {
             IDamageable tempInterface = other.gameObject.GetComponent<IDamageable>();
-            if (tempInterface != null)
+            if (tempInterface != null && !isTargetHit)
             {
                 tempInterface.TakeDamage(stats.damage, ownerOfProjectile);
                 tempInterface.TakeKnockback(stats.knockbackPower, thisTransform.forward);
@@ -50,7 +53,7 @@ public class Projectile_Controller : MonoBehaviour
     }
 
     private void Update()
-    { 
+    {
         //add ChooseTarget() -> raycast sphere and home in on a close enemy
         if (is_Homing && target != null)
         {
@@ -88,6 +91,7 @@ public class Projectile_Controller : MonoBehaviour
 
     private IEnumerator DeactivateObjectAfter(float duration)
     {
+        arrowVisual.SetActive(false);
         yield return new WaitForSeconds(duration);
         hitParticle.SetActive(false);
         gameObject.SetActive(false);

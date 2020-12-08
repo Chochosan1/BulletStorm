@@ -10,17 +10,19 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private Transform projectileSpawnPosition;
     [SerializeField] private GameObject projectile;
     [SerializeField] private StatsEntity playerStats;
+    [SerializeField] private UnityEngine.UI.Slider healthBar;
+    [SerializeField] private Transform individualUnitCanvas;
 
     [Header("Movement")]
     [Space]
-    [SerializeField] private float movementSpeed = 10f;
-    [SerializeField] private float jumpForce = 10f;
+    [SerializeField] private float movementSpeed = 15f;
+    [SerializeField] private float jumpForce = 5f;
     [SerializeField] private LayerMask groundMask;
-    [SerializeField] private float distanceToGround = 0.2f;
+    [SerializeField] private float distanceToGround = 0.1f;
 
     [Header("Shoot")]
     [Space]
-    [SerializeField] private float shootRate = 5f;
+    [SerializeField] private float shootRate = 2f;
     private float shootTimestamp;
     private float shootCooldown;
     private float currentHealth;
@@ -58,13 +60,17 @@ public class PlayerController : MonoBehaviour, IDamageable
         thisTransform = transform;
         mainCamera = Camera.main;
         anim = GetComponent<Animator>();
-        
 
-        Debug.Log("TEST");
+        CurrentHealth = playerStats.maxHealth;
+        healthBar.maxValue = playerStats.maxHealth;
+        healthBar.value = CurrentHealth;
     }
 
     void Update()
     {
+        if (individualUnitCanvas != null)
+            individualUnitCanvas.LookAt(mainCamera.transform.position);
+
         ShootRate = shootRate;
         CheckInput();
         RotateWithMouse();
@@ -158,10 +164,11 @@ public class PlayerController : MonoBehaviour, IDamageable
     public void TakeDamage(float damage, IDamageable owner)
     {
         CurrentHealth -= damage;
+        healthBar.value = CurrentHealth;
     }
 
     public void TakeKnockback(float knockbackPower, Vector3 knockbackDirection)
     {
-        
+        rb.AddForce(knockbackDirection * knockbackPower, ForceMode.Impulse);
     }
 }
