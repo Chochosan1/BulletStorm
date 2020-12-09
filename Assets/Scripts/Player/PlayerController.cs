@@ -56,6 +56,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void Start()
     {
+        ShootRate = shootRate;
         rb = GetComponent<Rigidbody>();
         thisTransform = transform;
         mainCamera = Camera.main;
@@ -71,7 +72,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (individualUnitCanvas != null)
             individualUnitCanvas.LookAt(mainCamera.transform.position);
 
-        ShootRate = shootRate;
+      
         CheckInput();
         RotateWithMouse();
 

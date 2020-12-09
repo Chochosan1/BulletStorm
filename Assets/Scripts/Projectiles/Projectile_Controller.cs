@@ -27,7 +27,7 @@ public class Projectile_Controller : MonoBehaviour
     private void Start()
     {
         thisTransform = GetComponent<Transform>();
-        rb.AddForce(transform.forward * stats.travelSpeed, ForceMode.Impulse);
+      //  rb.AddForce(transform.forward * stats.travelSpeed, ForceMode.Impulse);
         StartCoroutine(DeactivateObjectAfter(projectileLifetime));
 
         if (muzzleParticle != null)
@@ -54,6 +54,9 @@ public class Projectile_Controller : MonoBehaviour
 
     private void Update()
     {
+        if (isTargetHit)
+            return;
+        thisTransform.Translate(thisTransform.forward * stats.travelSpeed * Time.deltaTime, Space.World);
         //add ChooseTarget() -> raycast sphere and home in on a close enemy
         if (is_Homing && target != null)
         {
@@ -63,6 +66,11 @@ public class Projectile_Controller : MonoBehaviour
                 thisTransform.rotation = Quaternion.LookRotation(dir);
             thisTransform.Translate(dir.normalized * stats.travelSpeed * Time.deltaTime, Space.World);
         }
+    }
+
+    private void OnBecameInvisible()
+    {
+        this.gameObject.SetActive(false);
     }
 
     public void SetTarget(GameObject target, IDamageable owner)
@@ -85,7 +93,7 @@ public class Projectile_Controller : MonoBehaviour
             return;
         hitParticle.SetActive(true);
         mainParticle.SetActive(false);
-        rb.velocity = Vector3.zero;
+     //   rb.velocity = Vector3.zero;
         StartCoroutine(DeactivateObjectAfter(hitParticleDuration));
     }
 

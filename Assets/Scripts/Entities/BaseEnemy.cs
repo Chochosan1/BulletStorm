@@ -6,8 +6,6 @@ using UnityEngine.AI;
 [RequireComponent(typeof(Rigidbody))]
 public class BaseEnemy : MonoBehaviour, IDamageable
 {
-    protected GameObject currentTarget;
-
     [Header("Base AI")]
     [SerializeField] protected string unitName;
     [Tooltip("The layer which can be detected by the AI unit. All other layers will be ignored.")]
@@ -17,6 +15,7 @@ public class BaseEnemy : MonoBehaviour, IDamageable
     [Tooltip("How far away can the AI unit detect its target without taking into consideration walls and such. Will be used after first looking for targets within the smaller range. ")]
     [SerializeField] protected float secondPureEnemySenseRange = 30f;
     [SerializeField] protected StatsEntity stats;
+    protected GameObject currentTarget;
     protected Rigidbody rb;
     protected Transform thisTransform;
     private float currentHealth;
@@ -38,6 +37,7 @@ public class BaseEnemy : MonoBehaviour, IDamageable
 
     public virtual void TakeDamage(float damage, IDamageable owner)
     {
+        Debug.Log("BASE DAMAGE");
         CurrentHealth -= damage;
 
         if(CurrentHealth <= 0)
