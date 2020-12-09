@@ -5,11 +5,20 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public sealed class RangedEnemy : BaseEnemy
 {
+    enum RangedSpecialType { None, MultipleFireballAlways, MultipleFireballSometimes }
+
     enum StatesAI { Idle, MovingToTarget, Attack };
     private StatesAI currentStateAI;
 
     private NavMeshAgent agent;
     private IDamageable currentTargetDamageable;
+
+    [Header("Special")]
+    [SerializeField] private RangedSpecialType specialTypeUnit = RangedSpecialType.None;
+    [SerializeField] private Transform[] projectileSpawnPositions;
+
+    [Header("References")]
+    [SerializeField] private UnityEngine.UI.Slider healthBar;
 
     [Header("Shoot")]
     [Space]
@@ -24,6 +33,10 @@ public sealed class RangedEnemy : BaseEnemy
     [SerializeField] private float radius = 5f;
     private float power;
 
+    int shotsFired;
+
+    //once in the attack state finish the attack then be allowed to leave the state (to avoid endless kiting)
+    private bool canExitAttackState = true;
     private Animator anim;
 
     private float ShootRate
@@ -37,13 +50,15 @@ public sealed class RangedEnemy : BaseEnemy
     }
 
     void Start()
-    {   
+    {
+        base.Start();
         ShootRate = shootRate;
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
         agent.stoppingDistance = stoppingDistance;
-        base.Start();
-        Debug.Log(CurrentHealth);
+      
+        healthBar.maxValue = stats.maxHealth;
+        healthBar.value = CurrentHealth;
     }
 
     void Update()
@@ -54,8 +69,33 @@ public sealed class RangedEnemy : BaseEnemy
         }
         else if(currentStateAI == StatesAI.Attack)
         {
-            Shoot();
+            canExitAttackState = false;
             LookAtTarget();
+
+            if(specialTypeUnit == RangedSpecialType.None)
+            {
+                Shoot();         
+            }
+            else if(specialTypeUnit == RangedSpecialType.MultipleFireballAlways)
+            {
+                ShootMultipleFireball();
+            }    
+            else if(specialTypeUnit == RangedSpecialType.MultipleFireballSometimes)
+            {
+                if (Time.time >= shootTimestamp)
+                {
+                    if (shotsFired >= 2)
+                    {
+                        ShootMultipleFireball();
+                        shotsFired = 0;
+                    }
+                    else
+                    {
+                        Shoot();
+                        shotsFired++;
+                    }
+                }
+            }
         }
 
         ChooseNewTarget(true);
@@ -68,13 +108,25 @@ public sealed class RangedEnemy : BaseEnemy
             }
             else
             {
+                if (!canExitAttackState)
+                    return;
                 GoToMovingToTarget();
             }
         }
         else
         {
-            currentStateAI = StatesAI.Idle;
+            if (!canExitAttackState)
+                return;
+            GoToIdleState();
         }
+    }
+
+    private void GoToIdleState()
+    {
+        anim.SetBool("isRun", false);
+        anim.SetBool("isAttack", false);
+        anim.SetBool("isIdle", true);
+        currentStateAI = StatesAI.Idle;
     }
 
     private void GoToAttackState()
@@ -95,6 +147,7 @@ public sealed class RangedEnemy : BaseEnemy
     public override void TakeDamage(float damage, IDamageable owner)
     {
         CurrentHealth -= damage;
+        healthBar.value = CurrentHealth;
 
         if (CurrentHealth <= 0)
         {
@@ -105,12 +158,30 @@ public sealed class RangedEnemy : BaseEnemy
 
     private void Shoot()
     {
-        if (Time.time >= shootTimestamp)
-        {
+       // if (Time.time >= shootTimestamp)
+     //   {
             shootTimestamp = Time.time + shootCooldown;
             GameObject projectileCopy = Instantiate(projectile, projectileSpawnPosition.position, projectile.transform.rotation);
             projectileCopy.transform.forward = projectileSpawnPosition.transform.forward;
-        }
+            canExitAttackState = true;
+      //  }
+    }
+
+    private void ShootMultipleFireball()
+    {
+      //  if (Time.time >= shootTimestamp)
+     //   {
+            shootTimestamp = Time.time + shootCooldown;
+            foreach(Transform psp in projectileSpawnPositions)
+            {
+                GameObject projectileCopy = Instantiate(projectile, psp.position, projectile.transform.rotation);
+                projectileCopy.transform.forward = psp.transform.forward;
+            }
+            
+           
+            canExitAttackState = true;
+         //   GoToIdleState();
+     //   }
     }
 
     public void Explode()
