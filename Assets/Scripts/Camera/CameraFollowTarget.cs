@@ -12,7 +12,9 @@ public class CameraFollowTarget : MonoBehaviour
     [Space]
     [SerializeField] private float cameraFollowSpeed = 10f;
     [SerializeField] private Vector3 offset;
-
+    [SerializeField] private float minY, maxY;
+    [Tooltip("How fast should the camera zoom in/out?")]
+    [SerializeField] private float scrollSpeed = 10f;
     private Transform thisTransform;
     private Vector3 currentVelocity;
     public enum CameraUpdate { LateUpdate, Update, FixedUpdate };
@@ -42,6 +44,13 @@ public class CameraFollowTarget : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetAxis("Mouse ScrollWheel") != 0)
+        {
+            float scroll = Input.GetAxis("Mouse ScrollWheel");
+            offset.y -= scroll * scrollSpeed; //subtract from Y so that the scrolling is not reversed
+        }
+        offset.y = Mathf.Clamp(offset.y, minY, maxY);
+
 
         if (cameraUpdate == CameraUpdate.Update)
         {

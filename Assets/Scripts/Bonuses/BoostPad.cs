@@ -7,6 +7,7 @@ public class BoostPad : MonoBehaviour
     enum BoostType { BoostForward, ObjectForward }
 
     [Header("Properties")]
+    [SerializeField] private LayerMask acceptEntitiesFromLayers;
     [Tooltip("How hard to boost objects.")]
     [SerializeField] float boostForce = 20f;
     [SerializeField] float upBoostForce = 5f;
@@ -18,6 +19,9 @@ public class BoostPad : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (acceptEntitiesFromLayers != (acceptEntitiesFromLayers | (1 << other.gameObject.layer)))
+            return;
+
         currentRB = other.gameObject.GetComponent<Rigidbody>();
 
         if (currentRB != null)
