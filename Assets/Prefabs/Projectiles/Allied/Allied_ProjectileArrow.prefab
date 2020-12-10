@@ -9440,7 +9440,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   affectableLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 1280
   stats: {fileID: 11400000, guid: 622ab3377d5db994680d476f41f7ee88, type: 2}
   mainParticle: {fileID: 7264992411584663692}
   hitParticle: {fileID: 7024054303344963805}

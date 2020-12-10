@@ -9402,7 +9402,7 @@ GameObject:
   - component: {fileID: 3142173893139789904}
   - component: {fileID: 6465191670653763412}
   m_Layer: 0
-  m_Name: Enemy_ProjectileArrow 1
+  m_Name: Enemy_Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9440,7 +9440,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   affectableLayers:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 1536
   stats: {fileID: 11400000, guid: 622ab3377d5db994680d476f41f7ee88, type: 2}
   mainParticle: {fileID: 7264992411584663692}
   hitParticle: {fileID: 7024054303344963805}

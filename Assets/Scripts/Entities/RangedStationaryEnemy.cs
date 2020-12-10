@@ -27,6 +27,7 @@ public class RangedStationaryEnemy : BaseEnemy
     [SerializeField] private GameObject projectileMulticast;
     [SerializeField] private float shootRate = 2f;
     [SerializeField] private float shootRange = 12f;
+    [SerializeField] private bool isLookAtTargetWhileShooting = true;
     private float shootTimestamp;
     private float shootCooldown;
 
@@ -65,7 +66,11 @@ public class RangedStationaryEnemy : BaseEnemy
         if (currentStateAI == StatesAI.Attack)
         {
             canExitAttackState = false;
-            LookAtTarget();
+
+            if(isLookAtTargetWhileShooting)
+            {
+                LookAtTarget();
+            }      
 
             if (specialTypeUnit == RangedSpecialType.None)
             {

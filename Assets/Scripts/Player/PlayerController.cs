@@ -12,11 +12,16 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private StatsEntity playerStats;
     [SerializeField] private UnityEngine.UI.Slider healthBar;
     [SerializeField] private Transform individualUnitCanvas;
+    private Collider thisColl;
 
     [Header("Movement")]
     [Space]
     [SerializeField] private float movementSpeed = 15f;
     [SerializeField] private float jumpForce = 5f;
+    [SerializeField] private float dashDistance = 5f;
+    [SerializeField] private float dashCooldown = 3f;
+    [SerializeField] private GameObject dashEffect;
+    private float dashTimestamp;
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private float distanceToGround = 0.1f;
 
@@ -58,6 +63,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         ShootRate = shootRate;
         rb = GetComponent<Rigidbody>();
+        thisColl = GetComponent<Collider>();
         thisTransform = transform;
         mainCamera = Camera.main;
         anim = GetComponent<Animator>();
@@ -76,9 +82,19 @@ public class PlayerController : MonoBehaviour, IDamageable
         CheckInput();
         RotateWithMouse();
 
-        moveDir = Vector3.forward * moveAxis.y + Vector3.right * moveAxis.x;
-        rb.AddForce(moveDir.normalized * movementSpeed * Time.deltaTime, ForceMode.VelocityChange);   
+        if(moveAxis.x != 0 || moveAxis.y != 0)
+        {
+            moveDir = Vector3.forward * moveAxis.y + Vector3.right * moveAxis.x;
+            rb.AddForce(moveDir.normalized * movementSpeed * Time.deltaTime, ForceMode.VelocityChange);
+        }
+
+        //if (canDash)
+        //{
+        //    rb.velocity = thisTransform.forward * dashForce;
+        //}
     }
+
+
 
     private void RotateWithMouse()
     {
@@ -126,6 +142,11 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
 
 
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            Dash();
+        }
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
@@ -155,6 +176,40 @@ public class PlayerController : MonoBehaviour, IDamageable
             GameObject projectileCopy = Instantiate(projectile, projectileSpawnPosition.position, projectile.transform.rotation);
             projectileCopy.transform.forward = projectileSpawnPosition.transform.forward;
         }     
+    }
+
+    private bool IsObjectInDashDistance()
+    {
+        RaycastHit hit;
+        return Physics.Raycast(thisTransform.position, transform.TransformDirection(Vector3.forward), out hit, dashDistance);
+    }
+
+    private void Dash()
+    {
+        if (Time.time < dashTimestamp)
+            return;
+
+        dashEffect.SetActive(true);
+        StartCoroutine(DisableObjectAfter(dashEffect, 0.75f));
+        dashTimestamp = Time.time + dashCooldown;
+        if(IsObjectInDashDistance())
+        {
+            RaycastHit hit;
+            Physics.Raycast(thisTransform.position, transform.TransformDirection(Vector3.forward), out hit, dashDistance);
+
+            thisTransform.position += thisTransform.forward * (hit.distance - thisColl.bounds.extents.magnitude);
+         //   Debug.Log(hit.distance - gameObject.GetComponent<Collider>().bounds.extents.magnitude);
+        }
+        else
+        {
+            thisTransform.position += thisTransform.forward * dashDistance;
+        }
+    }
+
+    private IEnumerator DisableObjectAfter(GameObject objectToDisable, float disableAfter)
+    {
+        yield return new WaitForSeconds(disableAfter);
+        objectToDisable.SetActive(false);
     }
 
     private void OnDrawGizmos()
