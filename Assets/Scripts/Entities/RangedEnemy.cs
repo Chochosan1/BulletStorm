@@ -21,6 +21,8 @@ public sealed class RangedEnemy : BaseEnemy
 
     [Header("References")]
     [SerializeField] private UnityEngine.UI.Slider healthBar;
+    [SerializeField] private Transform individualUnitCanvas;
+    private Camera mainCamera;
 
     [Header("Shoot")]
     [Space]
@@ -59,6 +61,7 @@ public sealed class RangedEnemy : BaseEnemy
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
         agent.stoppingDistance = stoppingDistance;
+        mainCamera = Camera.main;
 
         healthBar.maxValue = stats.maxHealth;
         healthBar.value = CurrentHealth;
@@ -66,6 +69,9 @@ public sealed class RangedEnemy : BaseEnemy
 
     void Update()
     {
+        if (individualUnitCanvas != null)
+            individualUnitCanvas.LookAt(mainCamera.transform.position);
+
         if (currentStateAI == StatesAI.MovingToTarget)
         {
             SetAgentDestination(agent, currentTarget.transform.position);
@@ -128,14 +134,23 @@ public sealed class RangedEnemy : BaseEnemy
 
     private void GoToIdleState()
     {
+        if (currentStateAI == StatesAI.Idle)
+            return;
+
         anim.SetBool("isRun", false);
         anim.SetBool("isAttack", false);
         anim.SetBool("isIdle", true);
         currentStateAI = StatesAI.Idle;
+        currentTarget = null;
+        currentTargetDamageable = null;
     }
 
     private void GoToAttackState()
     {
+        if (currentStateAI == StatesAI.Attack)
+            return;
+
+        shootTimestamp = Time.time + shootCooldown;
         currentTargetDamageable = currentTarget.GetComponent<IDamageable>();
         currentStateAI = StatesAI.Attack;
         anim.SetBool("isRun", false);
@@ -144,6 +159,9 @@ public sealed class RangedEnemy : BaseEnemy
 
     private void GoToMovingToTarget()
     {
+        if (currentStateAI == StatesAI.MovingToTarget)
+            return;
+
         currentStateAI = StatesAI.MovingToTarget;
         anim.SetBool("isRun", true);
         anim.SetBool("isAttack", false);

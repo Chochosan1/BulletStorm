@@ -79,8 +79,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         if (individualUnitCanvas != null)
             individualUnitCanvas.LookAt(mainCamera.transform.position);
-
-      
+        
         CheckInput();
         RotateWithMouse();
 

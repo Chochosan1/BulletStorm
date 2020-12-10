@@ -1010,10 +1010,16 @@ MonoBehaviour:
   firstPureEnemySenseRange: 5
   secondPureEnemySenseRange: 30
   stats: {fileID: 11400000, guid: 0a168779a1a17e04f80bcd4edb5d7ec8, type: 2}
+  canBeKnockedBack: 1
+  specialTypeUnit: 0
+  projectileSpawnPositions: []
+  multipleCastEveryXshots: 2
   healthBar: {fileID: 4644750132544941129}
+  individualUnitCanvas: {fileID: 4644750131228949111}
   projectileSpawnPosition: {fileID: 4644750131005387425}
   projectile: {fileID: 3142173893139789911, guid: 5451d76010f3a07468520c3f1901e397,
     type: 3}
+  projectileMulticast: {fileID: 0}
   shootRate: 1.5
   stoppingDistance: 12
   radius: 5
