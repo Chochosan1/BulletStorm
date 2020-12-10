@@ -15,6 +15,8 @@ public class BaseEnemy : MonoBehaviour, IDamageable
     [Tooltip("How far away can the AI unit detect its target without taking into consideration walls and such. Will be used after first looking for targets within the smaller range. ")]
     [SerializeField] protected float secondPureEnemySenseRange = 30f;
     [SerializeField] protected StatsEntity stats;
+    [Tooltip("Set to true if the object should suffer knockback.")]
+    [SerializeField] protected bool canBeKnockedBack = true;
     protected GameObject currentTarget;
     protected Rigidbody rb;
     protected Transform thisTransform;

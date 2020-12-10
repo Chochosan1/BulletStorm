@@ -1,16 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
-[RequireComponent(typeof(NavMeshAgent))]
-public sealed class RangedEnemy : BaseEnemy
+
+public class RangedStationaryEnemy : BaseEnemy
 {
     enum RangedSpecialType { None, MultipleCastAlways, MultipleCastSometimes }
 
-    enum StatesAI { Idle, MovingToTarget, Attack };
+    enum StatesAI { Idle, Attack };
     private StatesAI currentStateAI;
 
-    private NavMeshAgent agent;
     private IDamageable currentTargetDamageable;
 
     [Header("Special")]
@@ -28,7 +26,7 @@ public sealed class RangedEnemy : BaseEnemy
     [SerializeField] private GameObject projectile;
     [SerializeField] private GameObject projectileMulticast;
     [SerializeField] private float shootRate = 2f;
-    [SerializeField] private float stoppingDistance = 12f;
+    [SerializeField] private float shootRange = 12f;
     private float shootTimestamp;
     private float shootCooldown;
 
@@ -56,9 +54,7 @@ public sealed class RangedEnemy : BaseEnemy
     {
         base.Start();
         ShootRate = shootRate;
-        agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
-        agent.stoppingDistance = stoppingDistance;
 
         healthBar.maxValue = stats.maxHealth;
         healthBar.value = CurrentHealth;
@@ -66,11 +62,7 @@ public sealed class RangedEnemy : BaseEnemy
 
     void Update()
     {
-        if (currentStateAI == StatesAI.MovingToTarget)
-        {
-            SetAgentDestination(agent, currentTarget.transform.position);
-        }
-        else if (currentStateAI == StatesAI.Attack)
+        if (currentStateAI == StatesAI.Attack)
         {
             canExitAttackState = false;
             LookAtTarget();
@@ -107,7 +99,7 @@ public sealed class RangedEnemy : BaseEnemy
 
         if (currentTarget != null)
         {
-            if ((currentTarget.transform.position - thisTransform.position).magnitude <= agent.stoppingDistance + 0.01f)
+            if ((currentTarget.transform.position - thisTransform.position).magnitude <= shootRange + 0.01f)
             {
                 GoToAttackState();
             }
@@ -115,7 +107,7 @@ public sealed class RangedEnemy : BaseEnemy
             {
                 if (!canExitAttackState)
                     return;
-                GoToMovingToTarget();
+                GoToIdleState();
             }
         }
         else
@@ -128,25 +120,15 @@ public sealed class RangedEnemy : BaseEnemy
 
     private void GoToIdleState()
     {
-        anim.SetBool("isRun", false);
-        anim.SetBool("isAttack", false);
-        anim.SetBool("isIdle", true);
         currentStateAI = StatesAI.Idle;
+        currentTarget = null;
+        currentTargetDamageable = null;
     }
 
     private void GoToAttackState()
     {
         currentTargetDamageable = currentTarget.GetComponent<IDamageable>();
         currentStateAI = StatesAI.Attack;
-        anim.SetBool("isRun", false);
-        anim.SetBool("isAttack", true);
-    }
-
-    private void GoToMovingToTarget()
-    {
-        currentStateAI = StatesAI.MovingToTarget;
-        anim.SetBool("isRun", true);
-        anim.SetBool("isAttack", false);
     }
 
     public override void TakeDamage(float damage, IDamageable owner)
