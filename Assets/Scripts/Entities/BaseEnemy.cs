@@ -39,7 +39,6 @@ public class BaseEnemy : MonoBehaviour, IDamageable
 
     public virtual void TakeDamage(float damage, IDamageable owner)
     {
-        Debug.Log("BASE DAMAGE");
         CurrentHealth -= damage;
 
         if(CurrentHealth <= 0)

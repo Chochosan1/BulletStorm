@@ -8,4 +8,5 @@ public class StatsUpgrade : ScriptableObject
     public float attackDamageFlatBonus, attackDamagePercentBonus;
     public float healthFlatBonus, healthPercentBonus;
     public float attackSpeedFlatBonus, attackSpeedPercentBonus;
+    public float knockbackPowerFlat;
 }

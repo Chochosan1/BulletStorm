@@ -4,17 +4,24 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour, IDamageable
 {
+    public static PlayerController Instance;
+
     [Header("References")]
     [Space]
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Transform projectileSpawnPosition;
     [SerializeField] private GameObject projectile;
-    [SerializeField] private StatsEntity playerStats;
     [SerializeField] private UnityEngine.UI.Slider healthBar;
     [SerializeField] private Transform individualUnitCanvas;
     [SerializeField] private GameObject healEffect;
     [SerializeField] private GameObject dashEffect;
     private Collider thisColl;
+
+    [Header("General stats")]
+    [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private float attackDamage = 10f;
+    [SerializeField] private float knockbackPower = 0f;
+    [SerializeField] private float maxKnockbackPower = 8f;
 
     [Header("Movement")]
     [Space]
@@ -35,6 +42,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     private float shootTimestamp;
     private float shootCooldown;
     private float currentHealth;
+   
 
     private Animator anim;
     private Camera mainCamera;
@@ -59,16 +67,64 @@ public class PlayerController : MonoBehaviour, IDamageable
             shootCooldown = 1 / shootRate;
 
             CalculateShootAnimSpeed();
+
+            Debug.Log("SR" + shootRate);
         }
     }
+
+    public float MaxHealth
+    {
+        get => maxHealth;
+
+        set
+        {
+            maxHealth = value;
+            healthBar.maxValue = maxHealth;
+            Debug.Log("HP" + maxHealth);
+        }
+    }
+
+    public float KnockbackPower
+    {
+        get => knockbackPower;
+
+        set
+        {
+            knockbackPower = value;
+            if (knockbackPower >= maxKnockbackPower)
+                knockbackPower = maxKnockbackPower;
+            Debug.Log("Knockback" + knockbackPower);
+        }
+    }
+
+    public float AttackDamage
+    {
+        get => attackDamage;
+
+        set
+        {
+            attackDamage = value;
+            Debug.Log("AD" + attackDamage);
+        }
+    }
+
 
     private float CurrentHealth
     {
         get => currentHealth;
         set
         {
-            currentHealth = value >= playerStats.maxHealth ? playerStats.maxHealth : value;
+            currentHealth = value >= maxHealth ? maxHealth : value;
+            healthBar.value = currentHealth;
             Debug.Log(currentHealth);
+        }
+    }
+
+    private void Awake()
+    {
+        if(Instance == null)
+        {
+            Instance = this;
         }
     }
 
@@ -82,10 +138,10 @@ public class PlayerController : MonoBehaviour, IDamageable
         mainCamera = Camera.main;
         anim = GetComponent<Animator>();
 
-        ShootRate = shootRate;
-        CurrentHealth = playerStats.maxHealth;
-        healthBar.maxValue = playerStats.maxHealth;
-        healthBar.value = CurrentHealth;
+        ShootRate = shootRate; //calculate initial stuff in the setter
+        CurrentHealth = maxHealth;
+        MaxHealth = maxHealth;
+        CurrentHealth = currentHealth;
     }
 
     void Update()
@@ -244,7 +300,6 @@ public class PlayerController : MonoBehaviour, IDamageable
     public void TakeDamage(float damage, IDamageable owner)
     {
         CurrentHealth -= damage;
-        healthBar.value = CurrentHealth;
     }
 
     public void TakeKnockback(float knockbackPower, Vector3 knockbackDirection)
@@ -255,7 +310,6 @@ public class PlayerController : MonoBehaviour, IDamageable
     public void HealSelf(float healValue)
     {
         CurrentHealth += healValue;
-        healthBar.value = CurrentHealth;
 
         if(!healEffect.activeSelf)
         {

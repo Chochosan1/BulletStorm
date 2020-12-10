@@ -9438,6 +9438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d950899abd7c6fd46a4e60a85faf2fcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isScaleWithPlayerStats: 1
   affectableLayers:
     serializedVersion: 2
     m_Bits: 1280
@@ -9445,7 +9446,6 @@ MonoBehaviour:
   mainParticle: {fileID: 7264992411584663692}
   hitParticle: {fileID: 7024054303344963805}
   arrowVisual: {fileID: 4891964527566575986}
-  rb: {fileID: 0}
   hitParticleDuration: 0.65
   projectileLifetime: 2
   muzzleParticle: {fileID: 5445852917728392570}

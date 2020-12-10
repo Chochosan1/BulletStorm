@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class Projectile_Controller : MonoBehaviour
 {
+    [Tooltip("Set to true if the damage and knockback should come from the player instead of from the projectile stats asset. Usually true for the player projectiles only.")]
+    [SerializeField] private bool isScaleWithPlayerStats = false;
+
     [SerializeField] private LayerMask affectableLayers;
     [SerializeField] private ProjectileStats stats;
     [SerializeField] private GameObject mainParticle;
     [SerializeField] private GameObject hitParticle;
     [SerializeField] private GameObject arrowVisual;
-    [SerializeField] private Rigidbody rb;
     [SerializeField] private float hitParticleDuration = 0.65f;
     [SerializeField] private float projectileLifetime = 2f;
     [SerializeField] private GameObject muzzleParticle;
@@ -45,8 +47,16 @@ public class Projectile_Controller : MonoBehaviour
             IDamageable tempInterface = other.gameObject.GetComponent<IDamageable>();
             if (tempInterface != null && !isTargetHit)
             {
-                tempInterface.TakeDamage(stats.damage, ownerOfProjectile);
-                tempInterface.TakeKnockback(stats.knockbackPower, thisTransform.forward);
+                if(!isScaleWithPlayerStats)
+                {
+                    tempInterface.TakeDamage(stats.damage, ownerOfProjectile);
+                    tempInterface.TakeKnockback(stats.knockbackPower, thisTransform.forward);
+                }
+                else
+                {
+                    tempInterface.TakeDamage(PlayerController.Instance.AttackDamage, ownerOfProjectile);
+                    tempInterface.TakeKnockback(PlayerController.Instance.KnockbackPower, thisTransform.forward);
+                }
             }
             TriggerOnHitFeedback();
         }
