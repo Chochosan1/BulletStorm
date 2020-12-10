@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private StatsEntity playerStats;
     [SerializeField] private UnityEngine.UI.Slider healthBar;
     [SerializeField] private Transform individualUnitCanvas;
+    [SerializeField] private GameObject healEffect;
+    [SerializeField] private GameObject dashEffect;
     private Collider thisColl;
 
     [Header("Movement")]
@@ -20,7 +22,6 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private float jumpForce = 5f;
     [SerializeField] private float dashDistance = 5f;
     [SerializeField] private float dashCooldown = 3f;
-    [SerializeField] private GameObject dashEffect;
     private float dashTimestamp;
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private float distanceToGround = 0.1f;
@@ -56,6 +57,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         set
         {
             currentHealth = value >= playerStats.maxHealth ? playerStats.maxHealth : value;
+            Debug.Log(currentHealth);
         }
     }
 
@@ -206,12 +208,6 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
     }
 
-    private IEnumerator DisableObjectAfter(GameObject objectToDisable, float disableAfter)
-    {
-        yield return new WaitForSeconds(disableAfter);
-        objectToDisable.SetActive(false);
-    }
-
     private void OnDrawGizmos()
     {
         Gizmos.DrawSphere(groundCheck.position, distanceToGround);
@@ -226,5 +222,23 @@ public class PlayerController : MonoBehaviour, IDamageable
     public void TakeKnockback(float knockbackPower, Vector3 knockbackDirection)
     {
         rb.AddForce(knockbackDirection * knockbackPower, ForceMode.Impulse);
+    }
+
+    public void HealSelf(float healValue)
+    {
+        CurrentHealth += healValue;
+        healthBar.value = CurrentHealth;
+
+        if(!healEffect.activeSelf)
+        {
+            healEffect.SetActive(true);
+            StartCoroutine(DisableObjectAfter(healEffect, 1f));
+        }       
+    }
+
+    private IEnumerator DisableObjectAfter(GameObject objectToDisable, float disableAfter)
+    {
+        yield return new WaitForSeconds(disableAfter);
+        objectToDisable.SetActive(false);
     }
 }

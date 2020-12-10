@@ -53,6 +53,11 @@ public class BaseEnemy : MonoBehaviour, IDamageable
         rb.AddForce(knockbackDirection * knockbackPower, ForceMode.Impulse);
     }
 
+    public virtual void HealSelf(float healValue)
+    {
+        CurrentHealth += healValue;
+    }
+
     //Look towards the target
     protected virtual void LookAtTarget()
     {
