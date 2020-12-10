@@ -29,6 +29,9 @@ public class PlayerController : MonoBehaviour, IDamageable
     [Header("Shoot")]
     [Space]
     [SerializeField] private float shootRate = 2f;
+    [SerializeField] private float maxShootRate = 10f;
+    [SerializeField] private float minShootRate = 1f;
+    private float attackAnimSpeed;
     private float shootTimestamp;
     private float shootCooldown;
     private float currentHealth;
@@ -41,13 +44,21 @@ public class PlayerController : MonoBehaviour, IDamageable
     private Vector2 moveAxis;
     private bool isGrounded = false;
 
-    private float ShootRate
+    public float ShootRate
     {
         get => shootRate;
         set
         {
             shootRate = value;
+
+            if (shootRate >= maxShootRate)
+                shootRate = maxShootRate;
+            else if (shootRate <= minShootRate)
+                shootRate = minShootRate;
+
             shootCooldown = 1 / shootRate;
+
+            CalculateShootAnimSpeed();
         }
     }
 
@@ -63,13 +74,15 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void Start()
     {
-        ShootRate = shootRate;
+        this.tag = "Player";
+
         rb = GetComponent<Rigidbody>();
         thisColl = GetComponent<Collider>();
         thisTransform = transform;
         mainCamera = Camera.main;
         anim = GetComponent<Animator>();
 
+        ShootRate = shootRate;
         CurrentHealth = playerStats.maxHealth;
         healthBar.maxValue = playerStats.maxHealth;
         healthBar.value = CurrentHealth;
@@ -83,18 +96,20 @@ public class PlayerController : MonoBehaviour, IDamageable
         CheckInput();
         RotateWithMouse();
 
-        if(moveAxis.x != 0 || moveAxis.y != 0)
+        if (moveAxis.x != 0 || moveAxis.y != 0)
         {
             moveDir = Vector3.forward * moveAxis.y + Vector3.right * moveAxis.x;
+       //     thisTransform.Translate(moveDir.normalized * movementSpeed * Time.deltaTime, Space.World);
             rb.AddForce(moveDir.normalized * movementSpeed * Time.deltaTime, ForceMode.VelocityChange);
         }
-
-        //if (canDash)
-        //{
-        //    rb.velocity = thisTransform.forward * dashForce;
-        //}
+     //   else
+         //   moveDir = Vector3.zero;
     }
 
+    private void FixedUpdate()
+    {
+      //   rb.AddForce(moveDir.normalized * movementSpeed * Time.deltaTime, ForceMode.VelocityChange); 
+    }
 
 
     private void RotateWithMouse()
@@ -205,6 +220,20 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             thisTransform.position += thisTransform.forward * dashDistance;
         }
+    }
+
+    private void CalculateShootAnimSpeed()
+    {
+        //testing shows that the attack anim speed should be half of the attack speed of the player
+        attackAnimSpeed = shootRate * 0.5f;
+
+        //max attack animation speed should be capped at 2.5 as it seems weird to more than that
+        if (attackAnimSpeed >= 3f)
+            attackAnimSpeed = 3f;
+        else if (attackAnimSpeed <= 0.5f)
+            attackAnimSpeed = 0.5f;
+
+        anim.SetFloat("attackSpeed", attackAnimSpeed);
     }
 
     private void OnDrawGizmos()

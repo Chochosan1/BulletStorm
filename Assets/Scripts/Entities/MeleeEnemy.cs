@@ -124,7 +124,12 @@ public sealed class MeleeEnemy : BaseEnemy
         if (currentStateAI == StatesAI.Attack)
             return;
 
-        attackTimestamp = Time.time + attackCooldown;
+        //kamikadze type should detonate instantly on contact
+        if(specialTypeUnit != MeleeSpecialType.Kamikadze)
+        {
+            attackTimestamp = Time.time + attackCooldown;
+        }
+      
         currentTargetDamageable = currentTarget.GetComponent<IDamageable>();
         currentStateAI = StatesAI.Attack;
         anim.SetBool("isRun", false);

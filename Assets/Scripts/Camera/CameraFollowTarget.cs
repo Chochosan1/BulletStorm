@@ -10,15 +10,15 @@ public class CameraFollowTarget : MonoBehaviour
 
     [Header("Properties")]
     [Space]
-    [SerializeField] private float cameraFollowSpeed = 10f;
-    [SerializeField] private Vector3 offset;
-    [SerializeField] private float minY, maxY;
+    [SerializeField] private float cameraFollowSpeed = 5f;
+    [SerializeField] private Vector3 offset = new Vector3(0, 14, -6);
+    [SerializeField] private float minY = 7f, maxY = 14f;
     [Tooltip("How fast should the camera zoom in/out?")]
     [SerializeField] private float scrollSpeed = 10f;
     private Transform thisTransform;
     private Vector3 currentVelocity;
     public enum CameraUpdate { LateUpdate, Update, FixedUpdate };
-    public CameraUpdate cameraUpdate;
+    public CameraUpdate cameraUpdate = CameraUpdate.FixedUpdate;
     public bool isLerp = false;
 
     void Start()
