@@ -9438,19 +9438,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d950899abd7c6fd46a4e60a85faf2fcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isScaleWithPlayerStats: 0
   affectableLayers:
     serializedVersion: 2
     m_Bits: 1536
   stats: {fileID: 11400000, guid: 622ab3377d5db994680d476f41f7ee88, type: 2}
-  mainParticle: {fileID: 7264992411584663692}
-  hitParticle: {fileID: 7024054303344963805}
+  mainParticleDefault: {fileID: 7264992411584663692}
+  hitParticleDefault: {fileID: 7024054303344963805}
   arrowVisual: {fileID: 4891964527566575986}
-  rb: {fileID: 0}
   hitParticleDuration: 0.65
   projectileLifetime: 2
-  muzzleParticle: {fileID: 5445852917728392570}
-  is_Homing: 0
-  is_AoE_Projectile: 0
+  muzzleParticleDefault: {fileID: 5445852917728392570}
+  homingRangeDetection: 2
+  homingDetectionMask:
+    serializedVersion: 2
+    m_Bits: 0
+  radius_AoE: 2
+  mainParticleHoming: {fileID: 0}
+  hitParticleHoming: {fileID: 0}
+  muzzleParticleHoming: {fileID: 0}
+  mainParticleAoE: {fileID: 0}
+  hitParticleAoE: {fileID: 0}
+  muzzleParticleAoE: {fileID: 0}
 --- !u!65 &6465191670653763412
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -4,21 +4,37 @@ using UnityEngine;
 
 public class Projectile_Controller : MonoBehaviour
 {
-    [Tooltip("Set to true if the damage and knockback should come from the player instead of from the projectile stats asset. Usually true for the player projectiles only.")]
+    [Header("Projectile scaling")]
+    [Tooltip("Set to true if the damage, knockback and upgrades should come from the player instead of from the projectile stats asset. Usually true for the player projectiles only.")]
     [SerializeField] private bool isScaleWithPlayerStats = false;
 
+    [Header("General")]
     [SerializeField] private LayerMask affectableLayers;
     [SerializeField] private ProjectileStats stats;
-    [SerializeField] private GameObject mainParticle;
-    [SerializeField] private GameObject hitParticle;
+    [SerializeField] private GameObject mainParticleDefault;
+    [SerializeField] private GameObject hitParticleDefault;
     [SerializeField] private GameObject arrowVisual;
     [SerializeField] private float hitParticleDuration = 0.65f;
     [SerializeField] private float projectileLifetime = 2f;
-    [SerializeField] private GameObject muzzleParticle;
-    [SerializeField] private bool is_HomingOnCloseEnemy;
+    [SerializeField] private GameObject muzzleParticleDefault;
+  
+
+    [Header("Upgrades")]
     [SerializeField] private float homingRangeDetection = 2f;
+    [Tooltip("The layers which will be used by the projectile to home onto. Different from the affectable layers as the projectile should not always home onto things it will deal damage to (e.g breakable objects)")]
     [SerializeField] private LayerMask homingDetectionMask;
-    [SerializeField] private bool is_AoE_Projectile;
+    [SerializeField] private float radius_AoE = 2f;
+    [SerializeField] private GameObject mainParticleHoming;
+    [SerializeField] private GameObject hitParticleHoming;
+    [SerializeField] private GameObject muzzleParticleHoming;
+    [SerializeField] private GameObject mainParticleAoE;
+    [SerializeField] private GameObject hitParticleAoE;
+    [SerializeField] private GameObject muzzleParticleAoE;
+    private bool is_AoE_Projectile;
+    private bool is_HomingOnCloseEnemy;
+
+    private GameObject mainParticleToUse, hitParticleToUse, muzzleParticleToUse;
+
     private GameObject target;
     private IDamageable ownerOfProjectile;
     private Transform thisTransform, targetTransform;
@@ -31,15 +47,38 @@ public class Projectile_Controller : MonoBehaviour
     private void Start()
     {
         thisTransform = GetComponent<Transform>();
-      //  rb.AddForce(transform.forward * stats.travelSpeed, ForceMode.Impulse);
+        //  rb.AddForce(transform.forward * stats.travelSpeed, ForceMode.Impulse);
         StartCoroutine(DeactivateObjectAfter(projectileLifetime));
 
-        if (muzzleParticle != null)
+        mainParticleToUse = mainParticleDefault;
+        hitParticleToUse = hitParticleDefault;
+        muzzleParticleToUse = muzzleParticleDefault;
+
+        if (isScaleWithPlayerStats)
+        {
+            if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileHomingOnCloseEnemies))
+            {
+                is_HomingOnCloseEnemy = true;
+                mainParticleToUse = mainParticleHoming;
+                hitParticleToUse = hitParticleHoming;
+                muzzleParticleToUse = muzzleParticleHoming;
+            }
+                
+
+            if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileAOE))
+            {
+                is_AoE_Projectile = true;
+                mainParticleToUse = mainParticleAoE;
+                hitParticleToUse = hitParticleAoE;
+                muzzleParticleToUse = muzzleParticleAoE;
+            }             
+        }
+
+        if (muzzleParticleDefault != null)
         {
             StartCoroutine(ActivateAndStopMuzzleParticle());
         }
-        mainParticle.SetActive(true);
-
+        mainParticleToUse.SetActive(true);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -49,15 +88,26 @@ public class Projectile_Controller : MonoBehaviour
             IDamageable tempInterface = other.gameObject.GetComponent<IDamageable>();
             if (tempInterface != null && !isTargetHit)
             {
-                if(!isScaleWithPlayerStats)
+                if (!isScaleWithPlayerStats)
                 {
                     tempInterface.TakeDamage(stats.damage, ownerOfProjectile);
                     tempInterface.TakeKnockback(stats.knockbackPower, thisTransform.forward);
                 }
                 else
                 {
-                    tempInterface.TakeDamage(PlayerController.Instance.AttackDamage, ownerOfProjectile);
-                    tempInterface.TakeKnockback(PlayerController.Instance.KnockbackPower, thisTransform.forward);
+                    if (!is_AoE_Projectile)
+                    {
+                        tempInterface.TakeDamage(PlayerController.Instance.AttackDamage, ownerOfProjectile);
+                        tempInterface.TakeKnockback(PlayerController.Instance.KnockbackPower, thisTransform.forward);
+                    }
+                    else
+                    {
+                        Collider[] firstHitColliders = Physics.OverlapSphere(transform.position, homingRangeDetection, affectableLayers);
+                        foreach(Collider coll in firstHitColliders)
+                        {
+                            coll.gameObject.GetComponent<IDamageable>().TakeDamage(PlayerController.Instance.AttackDamage, ownerOfProjectile);
+                        }
+                    }
                 }
             }
             TriggerOnHitFeedback();
@@ -68,13 +118,15 @@ public class Projectile_Controller : MonoBehaviour
     {
         if (isTargetHit)
             return;
-  
+
         if (is_HomingOnCloseEnemy && target != null)
         {
             //  thisTransform.position = Vector3.Lerp(thisTransform.position, target.transform.position + new Vector3(0f, 1f, 0f), stats.travelSpeed * Time.deltaTime);
             dir = (targetTransform.position - thisTransform.position) + new Vector3(0f, 1f, 0f);
             if (!isTargetHit)
-                thisTransform.rotation = Quaternion.LookRotation(dir);
+                thisTransform.rotation = Quaternion.Slerp(thisTransform.rotation, Quaternion.LookRotation(dir), 10f * Time.deltaTime);
+            // thisTransform.rotation = Quaternion.LookRotation(dir);
+
             thisTransform.Translate(dir.normalized * stats.travelSpeed * Time.deltaTime, Space.World);
         }
         else
@@ -82,13 +134,13 @@ public class Projectile_Controller : MonoBehaviour
             thisTransform.Translate(thisTransform.forward * stats.travelSpeed * Time.deltaTime, Space.World);
             ChooseNewTarget();
         }
-           
+
     }
 
     private void OnBecameInvisible()
     {
-          this.gameObject.SetActive(false);
-       // Destroy(this.gameObject);
+        this.gameObject.SetActive(false);
+        // Destroy(this.gameObject);
     }
 
     //choose a random target out of all detected targets in a layer OR if the parameter is false choose the first target always
@@ -98,10 +150,10 @@ public class Projectile_Controller : MonoBehaviour
         {
             Collider[] firstHitColliders = Physics.OverlapSphere(transform.position, homingRangeDetection, homingDetectionMask);
             if (firstHitColliders.Length > 0)
-            {             
-                    target = firstHitColliders[0].gameObject;
+            {
+                target = firstHitColliders[0].gameObject;
                 targetTransform = target.transform;
-                                //  Chochosan.ChochosanHelper.ChochosanDebug("TARGET ACQUIRED", "red");
+                //  Chochosan.ChochosanHelper.ChochosanDebug("TARGET ACQUIRED", "red");
             }
         }
     }
@@ -110,11 +162,11 @@ public class Projectile_Controller : MonoBehaviour
     {
         ownerOfProjectile = owner;
         isTargetHit = false;
-        if (muzzleParticle != null)
+        if (muzzleParticleDefault != null)
         {
             StartCoroutine(ActivateAndStopMuzzleParticle());
         }
-        mainParticle.SetActive(true);
+        mainParticleToUse.SetActive(true);
         this.target = target;
         targetTransform = target.transform;
     }
@@ -122,11 +174,11 @@ public class Projectile_Controller : MonoBehaviour
     private void TriggerOnHitFeedback()
     {
         isTargetHit = true;
-        if (hitParticle == null || mainParticle == null)
+        if (hitParticleToUse == null || muzzleParticleToUse == null)
             return;
-        hitParticle.SetActive(true);
-        mainParticle.SetActive(false);
-     //   rb.velocity = Vector3.zero;
+        hitParticleToUse.SetActive(true);
+        mainParticleToUse.SetActive(false);
+        //   rb.velocity = Vector3.zero;
         StartCoroutine(DeactivateObjectAfter(hitParticleDuration));
     }
 
@@ -134,15 +186,15 @@ public class Projectile_Controller : MonoBehaviour
     {
         arrowVisual.SetActive(false);
         yield return new WaitForSeconds(duration);
-        hitParticle.SetActive(false);
+        hitParticleToUse.SetActive(false);
         gameObject.SetActive(false);
-    //    Destroy(this.gameObject);
+        //    Destroy(this.gameObject);
     }
 
     private IEnumerator ActivateAndStopMuzzleParticle()
     {
-        muzzleParticle.SetActive(true);
+        muzzleParticleToUse.SetActive(true);
         yield return new WaitForSeconds(0.25f);
-        muzzleParticle.SetActive(false);
+        muzzleParticleToUse.SetActive(false);
     }
 }
