@@ -175,7 +175,8 @@ public sealed class RangedEnemy : BaseEnemy
         if (CurrentHealth <= 0)
         {
             Explode();
-            this.gameObject.SetActive(false);
+            //    this.gameObject.SetActive(false);
+            Destroy(this.gameObject);
         }
     }
 

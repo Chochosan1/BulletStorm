@@ -9449,7 +9449,11 @@ MonoBehaviour:
   hitParticleDuration: 0.65
   projectileLifetime: 2
   muzzleParticle: {fileID: 5445852917728392570}
-  is_Homing: 0
+  is_HomingOnCloseEnemy: 1
+  homingRangeDetection: 2
+  homingDetectionMask:
+    serializedVersion: 2
+    m_Bits: 256
   is_AoE_Projectile: 0
 --- !u!65 &6465191670653763412
 BoxCollider:

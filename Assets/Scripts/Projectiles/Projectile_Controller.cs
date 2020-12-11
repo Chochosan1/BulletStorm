@@ -15,7 +15,9 @@ public class Projectile_Controller : MonoBehaviour
     [SerializeField] private float hitParticleDuration = 0.65f;
     [SerializeField] private float projectileLifetime = 2f;
     [SerializeField] private GameObject muzzleParticle;
-    [SerializeField] private bool is_Homing;
+    [SerializeField] private bool is_HomingOnCloseEnemy;
+    [SerializeField] private float homingRangeDetection = 2f;
+    [SerializeField] private LayerMask homingDetectionMask;
     [SerializeField] private bool is_AoE_Projectile;
     private GameObject target;
     private IDamageable ownerOfProjectile;
@@ -66,9 +68,8 @@ public class Projectile_Controller : MonoBehaviour
     {
         if (isTargetHit)
             return;
-        thisTransform.Translate(thisTransform.forward * stats.travelSpeed * Time.deltaTime, Space.World);
-        //add ChooseTarget() -> raycast sphere and home in on a close enemy
-        if (is_Homing && target != null)
+  
+        if (is_HomingOnCloseEnemy && target != null)
         {
             //  thisTransform.position = Vector3.Lerp(thisTransform.position, target.transform.position + new Vector3(0f, 1f, 0f), stats.travelSpeed * Time.deltaTime);
             dir = (targetTransform.position - thisTransform.position) + new Vector3(0f, 1f, 0f);
@@ -76,11 +77,33 @@ public class Projectile_Controller : MonoBehaviour
                 thisTransform.rotation = Quaternion.LookRotation(dir);
             thisTransform.Translate(dir.normalized * stats.travelSpeed * Time.deltaTime, Space.World);
         }
+        else
+        {
+            thisTransform.Translate(thisTransform.forward * stats.travelSpeed * Time.deltaTime, Space.World);
+            ChooseNewTarget();
+        }
+           
     }
 
     private void OnBecameInvisible()
     {
-        this.gameObject.SetActive(false);
+          this.gameObject.SetActive(false);
+       // Destroy(this.gameObject);
+    }
+
+    //choose a random target out of all detected targets in a layer OR if the parameter is false choose the first target always
+    protected virtual void ChooseNewTarget()
+    {
+        if (target == null)
+        {
+            Collider[] firstHitColliders = Physics.OverlapSphere(transform.position, homingRangeDetection, homingDetectionMask);
+            if (firstHitColliders.Length > 0)
+            {             
+                    target = firstHitColliders[0].gameObject;
+                targetTransform = target.transform;
+                                //  Chochosan.ChochosanHelper.ChochosanDebug("TARGET ACQUIRED", "red");
+            }
+        }
     }
 
     public void SetTarget(GameObject target, IDamageable owner)
@@ -113,6 +136,7 @@ public class Projectile_Controller : MonoBehaviour
         yield return new WaitForSeconds(duration);
         hitParticle.SetActive(false);
         gameObject.SetActive(false);
+    //    Destroy(this.gameObject);
     }
 
     private IEnumerator ActivateAndStopMuzzleParticle()

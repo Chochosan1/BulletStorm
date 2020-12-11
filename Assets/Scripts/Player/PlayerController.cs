@@ -42,7 +42,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     private float shootTimestamp;
     private float shootCooldown;
     private float currentHealth;
-   
+
+    private UpgradeController uc;
 
     private Animator anim;
     private Camera mainCamera;
@@ -131,6 +132,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     void Start()
     {
         this.tag = "Player";
+        uc = GetComponent<UpgradeController>();
 
         rb = GetComponent<Rigidbody>();
         thisColl = GetComponent<Collider>();
@@ -158,13 +160,6 @@ public class PlayerController : MonoBehaviour, IDamageable
        //     thisTransform.Translate(moveDir.normalized * movementSpeed * Time.deltaTime, Space.World);
             rb.AddForce(moveDir.normalized * movementSpeed * Time.deltaTime, ForceMode.VelocityChange);
         }
-     //   else
-         //   moveDir = Vector3.zero;
-    }
-
-    private void FixedUpdate()
-    {
-      //   rb.AddForce(moveDir.normalized * movementSpeed * Time.deltaTime, ForceMode.VelocityChange); 
     }
 
 
@@ -247,6 +242,30 @@ public class PlayerController : MonoBehaviour, IDamageable
             shootTimestamp = Time.time + shootCooldown;
             GameObject projectileCopy = Instantiate(projectile, projectileSpawnPosition.position, projectile.transform.rotation);
             projectileCopy.transform.forward = projectileSpawnPosition.transform.forward;
+
+            if(uc.IsUpgradeUnlocked(UpgradeController.UpgradeType.TripleProjectile))
+            {
+                projectileCopy = Instantiate(projectile, uc.tripleProjectileSpawnLeft.position, uc.tripleProjectileSpawnLeft.rotation);
+                projectileCopy.transform.forward = uc.tripleProjectileSpawnLeft.forward;
+
+                projectileCopy = Instantiate(projectile, uc.tripleProjectileSpawnRight.position, uc.tripleProjectileSpawnRight.rotation);
+                projectileCopy.transform.forward = uc.tripleProjectileSpawnRight.forward;
+            }
+
+            if(uc.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileBackwards))
+            {
+                projectileCopy = Instantiate(projectile, uc.projectileBackwardsSpawn.position, uc.projectileBackwardsSpawn.rotation);
+                projectileCopy.transform.forward = uc.projectileBackwardsSpawn.forward;
+            }
+
+            if(uc.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectilesSideways))
+            {
+                projectileCopy = Instantiate(projectile, uc.sidewaysProjectileLeft.position, uc.sidewaysProjectileLeft.rotation);
+                projectileCopy.transform.forward = uc.sidewaysProjectileLeft.forward;
+
+                projectileCopy = Instantiate(projectile, uc.sidewaysProjectileRight.position, uc.sidewaysProjectileRight.rotation);
+                projectileCopy.transform.forward = uc.sidewaysProjectileRight.forward;
+            }
         }     
     }
 
