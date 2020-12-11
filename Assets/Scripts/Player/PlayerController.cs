@@ -44,6 +44,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     private float currentHealth;
 
     private UpgradeController uc;
+    private List<Projectile_Controller> projectilePool;
+    private int currentPoolItem = 0;
 
     private Animator anim;
     private Camera mainCamera;
@@ -133,6 +135,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         this.tag = "Player";
         uc = GetComponent<UpgradeController>();
+        projectilePool = new List<Projectile_Controller>();
 
         rb = GetComponent<Rigidbody>();
         thisColl = GetComponent<Collider>();
@@ -144,6 +147,13 @@ public class PlayerController : MonoBehaviour, IDamageable
         CurrentHealth = maxHealth;
         MaxHealth = maxHealth;
         CurrentHealth = currentHealth;
+
+        for(int i = 0; i < 150; i++)
+        {
+            GameObject projectileCopy = Instantiate(projectile, projectileSpawnPosition.position, projectile.transform.rotation);
+            projectileCopy.SetActive(false);
+            projectilePool.Add(projectileCopy.GetComponent<Projectile_Controller>());
+        }
     }
 
     void Update()
@@ -239,33 +249,61 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         if(Time.time >= shootTimestamp)
         {
+            if (currentPoolItem >= projectilePool.Count)
+                currentPoolItem = 0;
+
             shootTimestamp = Time.time + shootCooldown;
-            GameObject projectileCopy = Instantiate(projectile, projectileSpawnPosition.position, projectile.transform.rotation);
-            projectileCopy.transform.forward = projectileSpawnPosition.transform.forward;
+
+            projectilePool[currentPoolItem].gameObject.SetActive(true);
+            projectilePool[currentPoolItem].ResetProjectileFromPool(projectileSpawnPosition);
+
+         //   GameObject projectileCopy = Instantiate(projectile, projectileSpawnPosition.position, projectile.transform.rotation);
+         //   projectileCopy.transform.forward = projectileSpawnPosition.transform.forward;
 
             if(uc.IsUpgradeUnlocked(UpgradeController.UpgradeType.TripleProjectile))
             {
-                projectileCopy = Instantiate(projectile, uc.tripleProjectileSpawnLeft.position, uc.tripleProjectileSpawnLeft.rotation);
-                projectileCopy.transform.forward = uc.tripleProjectileSpawnLeft.forward;
+                currentPoolItem++;
+                projectilePool[currentPoolItem].gameObject.SetActive(true);
+                projectilePool[currentPoolItem].ResetProjectileFromPool(uc.tripleProjectileSpawnLeft);
 
-                projectileCopy = Instantiate(projectile, uc.tripleProjectileSpawnRight.position, uc.tripleProjectileSpawnRight.rotation);
-                projectileCopy.transform.forward = uc.tripleProjectileSpawnRight.forward;
+                currentPoolItem++;
+                projectilePool[currentPoolItem].gameObject.SetActive(true);
+                projectilePool[currentPoolItem].ResetProjectileFromPool(uc.tripleProjectileSpawnRight);
+
+                //projectileCopy = Instantiate(projectile, uc.tripleProjectileSpawnLeft.position, uc.tripleProjectileSpawnLeft.rotation);
+                //projectileCopy.transform.forward = uc.tripleProjectileSpawnLeft.forward;
+
+                //projectileCopy = Instantiate(projectile, uc.tripleProjectileSpawnRight.position, uc.tripleProjectileSpawnRight.rotation);
+                //projectileCopy.transform.forward = uc.tripleProjectileSpawnRight.forward;
             }
 
             if(uc.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileBackwards))
             {
-                projectileCopy = Instantiate(projectile, uc.projectileBackwardsSpawn.position, uc.projectileBackwardsSpawn.rotation);
-                projectileCopy.transform.forward = uc.projectileBackwardsSpawn.forward;
+                currentPoolItem++;
+                projectilePool[currentPoolItem].gameObject.SetActive(true);
+                projectilePool[currentPoolItem].ResetProjectileFromPool(uc.projectileBackwardsSpawn);
+                //projectileCopy = Instantiate(projectile, uc.projectileBackwardsSpawn.position, uc.projectileBackwardsSpawn.rotation);
+                //projectileCopy.transform.forward = uc.projectileBackwardsSpawn.forward;
             }
 
             if(uc.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectilesSideways))
             {
-                projectileCopy = Instantiate(projectile, uc.sidewaysProjectileLeft.position, uc.sidewaysProjectileLeft.rotation);
-                projectileCopy.transform.forward = uc.sidewaysProjectileLeft.forward;
+                currentPoolItem++;
+                projectilePool[currentPoolItem].gameObject.SetActive(true);
+                projectilePool[currentPoolItem].ResetProjectileFromPool(uc.sidewaysProjectileLeft);
 
-                projectileCopy = Instantiate(projectile, uc.sidewaysProjectileRight.position, uc.sidewaysProjectileRight.rotation);
-                projectileCopy.transform.forward = uc.sidewaysProjectileRight.forward;
+                currentPoolItem++;
+                projectilePool[currentPoolItem].gameObject.SetActive(true);
+                projectilePool[currentPoolItem].ResetProjectileFromPool(uc.sidewaysProjectileRight);
+
+                //projectileCopy = Instantiate(projectile, uc.sidewaysProjectileLeft.position, uc.sidewaysProjectileLeft.rotation);
+                //projectileCopy.transform.forward = uc.sidewaysProjectileLeft.forward;
+
+                //projectileCopy = Instantiate(projectile, uc.sidewaysProjectileRight.position, uc.sidewaysProjectileRight.rotation);
+                //projectileCopy.transform.forward = uc.sidewaysProjectileRight.forward;
             }
+
+            currentPoolItem++;
         }     
     }
 

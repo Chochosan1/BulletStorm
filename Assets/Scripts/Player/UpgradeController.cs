@@ -35,11 +35,11 @@ public class UpgradeController : MonoBehaviour
     {
         upgradeStatusMap = new Dictionary<UpgradeType, bool>();
 
-    //   UnlockUpgrade(UpgradeType.TripleProjectile);
-        //   UnlockUpgrade(UpgradeType.ProjectilesSideways);
-        //   UnlockUpgrade(UpgradeType.ProjectileBackwards);
+        UnlockUpgrade(UpgradeType.TripleProjectile);
+        UnlockUpgrade(UpgradeType.ProjectilesSideways);
+        UnlockUpgrade(UpgradeType.ProjectileBackwards);
         UnlockUpgrade(UpgradeType.ProjectileHomingOnCloseEnemies);
-     //   UnlockUpgrade(UpgradeType.ProjectileAOE);
+        UnlockUpgrade(UpgradeType.ProjectileAOE);
     }
 
 

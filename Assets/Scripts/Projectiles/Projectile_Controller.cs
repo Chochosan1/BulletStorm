@@ -17,7 +17,7 @@ public class Projectile_Controller : MonoBehaviour
     [SerializeField] private float hitParticleDuration = 0.65f;
     [SerializeField] private float projectileLifetime = 2f;
     [SerializeField] private GameObject muzzleParticleDefault;
-  
+
 
     [Header("Upgrades")]
     [SerializeField] private float homingRangeDetection = 2f;
@@ -32,6 +32,8 @@ public class Projectile_Controller : MonoBehaviour
     [SerializeField] private GameObject muzzleParticleAoE;
     private bool is_AoE_Projectile;
     private bool is_HomingOnCloseEnemy;
+    private float chooseNewTargetEveryXSeconds = 0.1f;
+    private float chooseNewTargetTimestamp;
 
     private GameObject mainParticleToUse, hitParticleToUse, muzzleParticleToUse;
 
@@ -46,7 +48,7 @@ public class Projectile_Controller : MonoBehaviour
 
     private void Start()
     {
-        thisTransform = GetComponent<Transform>();
+        thisTransform = transform;
         //  rb.AddForce(transform.forward * stats.travelSpeed, ForceMode.Impulse);
         StartCoroutine(DeactivateObjectAfter(projectileLifetime));
 
@@ -63,7 +65,7 @@ public class Projectile_Controller : MonoBehaviour
                 hitParticleToUse = hitParticleHoming;
                 muzzleParticleToUse = muzzleParticleHoming;
             }
-                
+
 
             if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileAOE))
             {
@@ -71,7 +73,7 @@ public class Projectile_Controller : MonoBehaviour
                 mainParticleToUse = mainParticleAoE;
                 hitParticleToUse = hitParticleAoE;
                 muzzleParticleToUse = muzzleParticleAoE;
-            }             
+            }
         }
 
         if (muzzleParticleDefault != null)
@@ -79,6 +81,48 @@ public class Projectile_Controller : MonoBehaviour
             StartCoroutine(ActivateAndStopMuzzleParticle());
         }
         mainParticleToUse.SetActive(true);
+    }
+
+    public void ResetProjectileFromPool(Transform posToResetAt)
+    {
+        if (thisTransform == null)
+            thisTransform = transform;
+
+        thisTransform.position = posToResetAt.position;
+        thisTransform.forward = posToResetAt.forward;
+
+        StartCoroutine(DeactivateObjectAfter(projectileLifetime));
+
+        mainParticleToUse = mainParticleDefault;
+        hitParticleToUse = hitParticleDefault;
+        muzzleParticleToUse = muzzleParticleDefault;
+
+        if (isScaleWithPlayerStats)
+        {
+            if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileHomingOnCloseEnemies))
+            {
+                is_HomingOnCloseEnemy = true;
+                mainParticleToUse = mainParticleHoming;
+                hitParticleToUse = hitParticleHoming;
+                muzzleParticleToUse = muzzleParticleHoming;
+            }
+
+
+            if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileAOE))
+            {
+                is_AoE_Projectile = true;
+                mainParticleToUse = mainParticleAoE;
+                hitParticleToUse = hitParticleAoE;
+                muzzleParticleToUse = muzzleParticleAoE;
+            }
+        }
+
+        if (muzzleParticleDefault != null)
+        {
+            StartCoroutine(ActivateAndStopMuzzleParticle());
+        }
+        mainParticleToUse.SetActive(true);
+        isTargetHit = false;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -103,7 +147,7 @@ public class Projectile_Controller : MonoBehaviour
                     else
                     {
                         Collider[] firstHitColliders = Physics.OverlapSphere(transform.position, homingRangeDetection, affectableLayers);
-                        foreach(Collider coll in firstHitColliders)
+                        foreach (Collider coll in firstHitColliders)
                         {
                             coll.gameObject.GetComponent<IDamageable>().TakeDamage(PlayerController.Instance.AttackDamage, ownerOfProjectile);
                         }
@@ -132,9 +176,14 @@ public class Projectile_Controller : MonoBehaviour
         else
         {
             thisTransform.Translate(thisTransform.forward * stats.travelSpeed * Time.deltaTime, Space.World);
-            ChooseNewTarget();
-        }
 
+            if (is_HomingOnCloseEnemy && Time.time >= chooseNewTargetTimestamp)
+            {
+                ChooseNewTarget();
+                chooseNewTargetTimestamp = Time.time + chooseNewTargetEveryXSeconds;
+            }
+               
+        }
     }
 
     private void OnBecameInvisible()
