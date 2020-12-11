@@ -1004,7 +1004,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &9080581363447193066
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8599,7 +8599,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0.57, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -8949,8 +8949,6 @@ MonoBehaviour:
   specialTypeUnit: 0
   projectileSpawnPositions: []
   multipleCastEveryXshots: 2
-  healthBar: {fileID: 9080581363399892836}
-  individualUnitCanvas: {fileID: 9080581363447193066}
   projectileSpawnPosition: {fileID: 9080581363677079044}
   projectile: {fileID: 3142173893139789911, guid: 6e3dd14ceb01dcd43936d1049e7ceac9,
     type: 3}

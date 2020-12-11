@@ -61,18 +61,18 @@ public class Projectile_Controller : MonoBehaviour
             if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileHomingOnCloseEnemies))
             {
                 is_HomingOnCloseEnemy = true;
-                mainParticleToUse = mainParticleHoming;
-                hitParticleToUse = hitParticleHoming;
-                muzzleParticleToUse = muzzleParticleHoming;
+                //mainParticleToUse = mainParticleHoming;
+                //hitParticleToUse = hitParticleHoming;
+                //muzzleParticleToUse = muzzleParticleHoming;
             }
 
 
             if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileAOE))
             {
                 is_AoE_Projectile = true;
-                mainParticleToUse = mainParticleAoE;
-                hitParticleToUse = hitParticleAoE;
-                muzzleParticleToUse = muzzleParticleAoE;
+                //mainParticleToUse = mainParticleAoE;
+                //hitParticleToUse = hitParticleAoE;
+                //muzzleParticleToUse = muzzleParticleAoE;
             }
         }
 
@@ -102,18 +102,18 @@ public class Projectile_Controller : MonoBehaviour
             if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileHomingOnCloseEnemies))
             {
                 is_HomingOnCloseEnemy = true;
-                mainParticleToUse = mainParticleHoming;
-                hitParticleToUse = hitParticleHoming;
-                muzzleParticleToUse = muzzleParticleHoming;
+                //mainParticleToUse = mainParticleHoming;
+                //hitParticleToUse = hitParticleHoming;
+                //muzzleParticleToUse = muzzleParticleHoming;
             }
 
 
             if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileAOE))
             {
                 is_AoE_Projectile = true;
-                mainParticleToUse = mainParticleAoE;
-                hitParticleToUse = hitParticleAoE;
-                muzzleParticleToUse = muzzleParticleAoE;
+                //mainParticleToUse = mainParticleAoE;
+                //hitParticleToUse = hitParticleAoE;
+                //muzzleParticleToUse = muzzleParticleAoE;
             }
         }
 

@@ -20,8 +20,8 @@ public sealed class RangedEnemy : BaseEnemy
     [SerializeField] private int multipleCastEveryXshots = 2;
 
     [Header("References")]
-    [SerializeField] private UnityEngine.UI.Slider healthBar;
-    [SerializeField] private Transform individualUnitCanvas;
+  //  [SerializeField] private UnityEngine.UI.Slider healthBar;
+ //   [SerializeField] private Transform individualUnitCanvas;
     private Camera mainCamera;
 
     [Header("Shoot")]
@@ -33,6 +33,7 @@ public sealed class RangedEnemy : BaseEnemy
     [SerializeField] private float stoppingDistance = 12f;
     private float shootTimestamp;
     private float shootCooldown;
+    private MeshRenderer meshRend;
 
     [Header("Explode")]
     [SerializeField] private float radius = 5f;
@@ -57,20 +58,24 @@ public sealed class RangedEnemy : BaseEnemy
     void Start()
     {
         base.Start();
+        meshRend = GetComponentInChildren<MeshRenderer>();
         ShootRate = shootRate;
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
         agent.stoppingDistance = stoppingDistance;
         mainCamera = Camera.main;
 
-        healthBar.maxValue = stats.maxHealth;
-        healthBar.value = CurrentHealth;
+    //    healthBar.maxValue = stats.maxHealth;
+    //    healthBar.value = CurrentHealth;
     }
 
     void Update()
     {
-        if (individualUnitCanvas != null)
-            individualUnitCanvas.LookAt(mainCamera.transform.position);
+        if (!meshRend.isVisible && currentTarget == null)
+            return;
+
+        //if (individualUnitCanvas != null)
+        //    individualUnitCanvas.LookAt(mainCamera.transform.position);
 
         if (currentStateAI == StatesAI.MovingToTarget)
         {
@@ -170,7 +175,7 @@ public sealed class RangedEnemy : BaseEnemy
     public override void TakeDamage(float damage, IDamageable owner)
     {
         CurrentHealth -= damage;
-        healthBar.value = CurrentHealth;
+     //   healthBar.value = CurrentHealth;
 
         if (CurrentHealth <= 0)
         {

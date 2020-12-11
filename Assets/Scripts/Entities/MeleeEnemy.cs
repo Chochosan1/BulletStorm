@@ -17,8 +17,8 @@ public sealed class MeleeEnemy : BaseEnemy
     [SerializeField] private MeleeSpecialType specialTypeUnit = MeleeSpecialType.None;
 
     [Header("References")]
-    [SerializeField] private UnityEngine.UI.Slider healthBar;
-    [SerializeField] private Transform individualUnitCanvas;
+ //   [SerializeField] private UnityEngine.UI.Slider healthBar;
+ //   [SerializeField] private Transform individualUnitCanvas;
     private Camera mainCamera;
 
     [Header("Properties")]
@@ -33,6 +33,8 @@ public sealed class MeleeEnemy : BaseEnemy
     private Animator anim;
     private bool canExitAttackState = true;
 
+    private MeshRenderer meshRend;
+
     private float AttackRate
     {
         get => attackRate;
@@ -46,20 +48,26 @@ public sealed class MeleeEnemy : BaseEnemy
     void Start()
     {
         base.Start();
+        meshRend = GetComponentInChildren<MeshRenderer>();
         AttackRate = attackRate;
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
         mainCamera = Camera.main;
         agent.stoppingDistance = stoppingDistance;
 
-        healthBar.maxValue = stats.maxHealth;
-        healthBar.value = CurrentHealth;
+    //    healthBar.maxValue = stats.maxHealth;
+   //     healthBar.value = CurrentHealth;
     }
 
     void Update()
     {
-        if (individualUnitCanvas != null)
-            individualUnitCanvas.LookAt(mainCamera.transform.position);
+        if (!meshRend.isVisible && currentTarget == null)
+            return;
+      
+           
+
+        //if (individualUnitCanvas != null)
+        //    individualUnitCanvas.LookAt(mainCamera.transform.position);
 
         if (currentStateAI == StatesAI.MovingToTarget)
         {
@@ -164,7 +172,7 @@ public sealed class MeleeEnemy : BaseEnemy
     public override void TakeDamage(float damage, IDamageable owner)
     {
         CurrentHealth -= damage;
-        healthBar.value = CurrentHealth;
+     //   healthBar.value = CurrentHealth;
 
         if (CurrentHealth <= 0)
         {
