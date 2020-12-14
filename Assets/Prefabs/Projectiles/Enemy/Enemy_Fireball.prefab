@@ -23935,7 +23935,7 @@ MonoBehaviour:
   affectableLayers:
     serializedVersion: 2
     m_Bits: 1536
-  stats: {fileID: 11400000, guid: 622ab3377d5db994680d476f41f7ee88, type: 2}
+  stats: {fileID: 11400000, guid: 2d91891181692c44a85db26d4de11898, type: 2}
   mainParticleDefault: {fileID: 7264992411584663692}
   hitParticleDefault: {fileID: 3914934173570898060}
   arrowVisual: {fileID: 4891964527566575986}
@@ -23953,6 +23953,8 @@ MonoBehaviour:
   mainParticleAoE: {fileID: 0}
   hitParticleAoE: {fileID: 0}
   muzzleParticleAoE: {fileID: 0}
+  is_FreezingProjectile: 0
+  is_SlowingProjectile: 1
 --- !u!65 &6465191670653763412
 BoxCollider:
   m_ObjectHideFlags: 0

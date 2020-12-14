@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     private float dashTimestamp;
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private float distanceToGround = 0.1f;
+    private bool isCurrentlySlowed = false;
 
     [Header("Shoot")]
     [Space]
@@ -125,7 +126,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
         }
@@ -148,7 +149,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         MaxHealth = maxHealth;
         CurrentHealth = currentHealth;
 
-        for(int i = 0; i < 150; i++)
+        for (int i = 0; i < 150; i++)
         {
             GameObject projectileCopy = Instantiate(projectile, projectileSpawnPosition.position, projectile.transform.rotation);
             projectileCopy.SetActive(false);
@@ -160,14 +161,14 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         if (individualUnitCanvas != null)
             individualUnitCanvas.LookAt(mainCamera.transform.position);
-        
+
         CheckInput();
         RotateWithMouse();
 
         if (moveAxis.x != 0 || moveAxis.y != 0)
         {
             moveDir = Vector3.forward * moveAxis.y + Vector3.right * moveAxis.x;
-       //     thisTransform.Translate(moveDir.normalized * movementSpeed * Time.deltaTime, Space.World);
+       //          thisTransform.Translate(moveDir.normalized * movementSpeed * Time.deltaTime, Space.World);
             rb.AddForce(moveDir.normalized * movementSpeed * Time.deltaTime, ForceMode.VelocityChange);
         }
     }
@@ -219,9 +220,9 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
 
 
-        if(Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
-            Dash();
+            Dash(false, thisTransform.forward);
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -229,7 +230,7 @@ public class PlayerController : MonoBehaviour, IDamageable
             Jump();
         }
 
-        if(Input.GetKey(KeyCode.Mouse0))
+        if (Input.GetKey(KeyCode.Mouse0))
         {
             anim.SetBool("isAttack", true);
             Shoot();
@@ -247,7 +248,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void Shoot()
     {
-        if(Time.time >= shootTimestamp)
+        if (Time.time >= shootTimestamp)
         {
             if (currentPoolItem >= projectilePool.Count)
                 currentPoolItem = 0;
@@ -257,10 +258,7 @@ public class PlayerController : MonoBehaviour, IDamageable
             projectilePool[currentPoolItem].gameObject.SetActive(true);
             projectilePool[currentPoolItem].ResetProjectileFromPool(projectileSpawnPosition);
 
-         //   GameObject projectileCopy = Instantiate(projectile, projectileSpawnPosition.position, projectile.transform.rotation);
-         //   projectileCopy.transform.forward = projectileSpawnPosition.transform.forward;
-
-            if(uc.IsUpgradeUnlocked(UpgradeController.UpgradeType.TripleProjectile))
+            if (uc.IsUpgradeUnlocked(UpgradeController.UpgradeType.TripleProjectile))
             {
                 currentPoolItem++;
                 projectilePool[currentPoolItem].gameObject.SetActive(true);
@@ -269,24 +267,16 @@ public class PlayerController : MonoBehaviour, IDamageable
                 currentPoolItem++;
                 projectilePool[currentPoolItem].gameObject.SetActive(true);
                 projectilePool[currentPoolItem].ResetProjectileFromPool(uc.tripleProjectileSpawnRight);
-
-                //projectileCopy = Instantiate(projectile, uc.tripleProjectileSpawnLeft.position, uc.tripleProjectileSpawnLeft.rotation);
-                //projectileCopy.transform.forward = uc.tripleProjectileSpawnLeft.forward;
-
-                //projectileCopy = Instantiate(projectile, uc.tripleProjectileSpawnRight.position, uc.tripleProjectileSpawnRight.rotation);
-                //projectileCopy.transform.forward = uc.tripleProjectileSpawnRight.forward;
             }
 
-            if(uc.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileBackwards))
+            if (uc.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileBackwards))
             {
                 currentPoolItem++;
                 projectilePool[currentPoolItem].gameObject.SetActive(true);
                 projectilePool[currentPoolItem].ResetProjectileFromPool(uc.projectileBackwardsSpawn);
-                //projectileCopy = Instantiate(projectile, uc.projectileBackwardsSpawn.position, uc.projectileBackwardsSpawn.rotation);
-                //projectileCopy.transform.forward = uc.projectileBackwardsSpawn.forward;
             }
 
-            if(uc.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectilesSideways))
+            if (uc.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectilesSideways))
             {
                 currentPoolItem++;
                 projectilePool[currentPoolItem].gameObject.SetActive(true);
@@ -295,16 +285,10 @@ public class PlayerController : MonoBehaviour, IDamageable
                 currentPoolItem++;
                 projectilePool[currentPoolItem].gameObject.SetActive(true);
                 projectilePool[currentPoolItem].ResetProjectileFromPool(uc.sidewaysProjectileRight);
-
-                //projectileCopy = Instantiate(projectile, uc.sidewaysProjectileLeft.position, uc.sidewaysProjectileLeft.rotation);
-                //projectileCopy.transform.forward = uc.sidewaysProjectileLeft.forward;
-
-                //projectileCopy = Instantiate(projectile, uc.sidewaysProjectileRight.position, uc.sidewaysProjectileRight.rotation);
-                //projectileCopy.transform.forward = uc.sidewaysProjectileRight.forward;
             }
 
             currentPoolItem++;
-        }     
+        }
     }
 
     private bool IsObjectInDashDistance()
@@ -313,25 +297,28 @@ public class PlayerController : MonoBehaviour, IDamageable
         return Physics.Raycast(thisTransform.position, transform.TransformDirection(Vector3.forward), out hit, dashDistance);
     }
 
-    private void Dash()
+    public void Dash(bool avoidCooldown, Vector3 dashDir)
     {
-        if (Time.time < dashTimestamp)
+        if (!avoidCooldown && Time.time < dashTimestamp)
             return;
+
+        if (!avoidCooldown)
+            dashTimestamp = Time.time + dashCooldown;
 
         dashEffect.SetActive(true);
         StartCoroutine(DisableObjectAfter(dashEffect, 0.75f));
-        dashTimestamp = Time.time + dashCooldown;
-        if(IsObjectInDashDistance())
+
+        if (IsObjectInDashDistance())
         {
             RaycastHit hit;
-            Physics.Raycast(thisTransform.position, transform.TransformDirection(Vector3.forward), out hit, dashDistance);
+            Physics.Raycast(thisTransform.position, transform.TransformDirection(dashDir), out hit, dashDistance);
 
-            thisTransform.position += thisTransform.forward * (hit.distance - thisColl.bounds.extents.magnitude);
-         //   Debug.Log(hit.distance - gameObject.GetComponent<Collider>().bounds.extents.magnitude);
+            thisTransform.position += dashDir * (hit.distance - thisColl.bounds.extents.magnitude);
+            //   Debug.Log(hit.distance - gameObject.GetComponent<Collider>().bounds.extents.magnitude);
         }
         else
         {
-            thisTransform.position += thisTransform.forward * dashDistance;
+            thisTransform.position += dashDir * dashDistance;
         }
     }
 
@@ -368,11 +355,37 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         CurrentHealth += healValue;
 
-        if(!healEffect.activeSelf)
+        if (!healEffect.activeSelf)
         {
             healEffect.SetActive(true);
             StartCoroutine(DisableObjectAfter(healEffect, 1f));
-        }       
+        }
+    }
+
+    public void Freeze(float duration, float chance)
+    {
+     //   throw new System.NotImplementedException();
+    }
+
+    private IEnumerator Slow(float duration, float slowMultiplier)
+    {
+        isCurrentlySlowed = true;
+        float originalSpeed = movementSpeed;
+        movementSpeed *= slowMultiplier;
+        yield return new WaitForSeconds(duration);
+        movementSpeed = originalSpeed;
+        isCurrentlySlowed = false;
+    }
+
+    public void GetSlowed(float duration, float slowMultiplier, float chance)
+    {
+        if (isCurrentlySlowed)
+            return;
+
+        float slowChanceRolled = Random.Range(0f, 1f);
+
+        if (slowChanceRolled <= chance)
+            StartCoroutine(Slow(duration, slowMultiplier));
     }
 
     private IEnumerator DisableObjectAfter(GameObject objectToDisable, float disableAfter)

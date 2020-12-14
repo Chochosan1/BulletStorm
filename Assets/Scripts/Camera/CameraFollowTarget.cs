@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class CameraFollowTarget : MonoBehaviour
 {
+    public static CameraFollowTarget Instance;
+
+
     [Header("References")]
     [Space]
     [SerializeField] private Transform targetToFollow;
@@ -20,15 +23,26 @@ public class CameraFollowTarget : MonoBehaviour
     public enum CameraUpdate { LateUpdate, Update, FixedUpdate };
     public CameraUpdate cameraUpdate = CameraUpdate.FixedUpdate;
     public bool isLerp = false;
+    private bool isCameraShaking = false;
+    private Transform camTransform;
+
+    private void Awake()
+    {
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+    }
 
     void Start()
     {
         thisTransform = transform;
+        camTransform = GetComponent<Camera>().transform;
     }
 
     void LateUpdate()
     {
-        if (cameraUpdate == CameraUpdate.LateUpdate)
+        if (cameraUpdate == CameraUpdate.LateUpdate && !isCameraShaking)
         {
             if(isLerp)
             {
@@ -52,7 +66,7 @@ public class CameraFollowTarget : MonoBehaviour
         offset.y = Mathf.Clamp(offset.y, minY, maxY);
 
 
-        if (cameraUpdate == CameraUpdate.Update)
+        if (cameraUpdate == CameraUpdate.Update && !isCameraShaking)
         {
             if (isLerp)
             {
@@ -67,7 +81,7 @@ public class CameraFollowTarget : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(cameraUpdate == CameraUpdate.FixedUpdate)
+        if(cameraUpdate == CameraUpdate.FixedUpdate && !isCameraShaking)
         {
             if (isLerp)
             {
@@ -78,5 +92,36 @@ public class CameraFollowTarget : MonoBehaviour
                 thisTransform.position = Vector3.SmoothDamp(thisTransform.position, targetToFollow.position + offset, ref currentVelocity, cameraFollowSpeed * Time.deltaTime);
             }
         }       
+    }
+
+    public void ShakeCamera(float duration, float magnitude)
+    {
+        if(!isCameraShaking)
+        {
+            StartCoroutine(CameraShake(duration, magnitude));
+        }
+    }
+
+    private IEnumerator CameraShake(float duration, float magnitude)
+    {
+        isCameraShaking = true;
+        Vector3 originalPos = camTransform.localPosition;
+
+        float elapsed = 0.0f;
+
+        while (elapsed < duration)
+        {
+            float x = Random.Range(camTransform.position.x - magnitude, camTransform.position.x + magnitude);
+            float y = Random.Range(camTransform.position.y - magnitude, camTransform.position.y + magnitude);
+
+            camTransform.position = new Vector3(x, y, originalPos.z);
+            elapsed += Time.deltaTime;
+
+            yield return null;
+        }
+
+        camTransform.position = originalPos;
+
+        isCameraShaking = false;
     }
 }

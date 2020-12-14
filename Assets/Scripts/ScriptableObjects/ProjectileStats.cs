@@ -7,5 +7,7 @@ public class ProjectileStats : ScriptableObject
 {
     public float travelSpeed;
     public float damage;
-    public float knockbackPower;
+  //  public float knockbackPower;
+    public float chanceToFreeze;
+    public float chanceToSlow, slowDuration, slowMultiplier;
 }

@@ -30,8 +30,12 @@ public class Projectile_Controller : MonoBehaviour
     [SerializeField] private GameObject mainParticleAoE;
     [SerializeField] private GameObject hitParticleAoE;
     [SerializeField] private GameObject muzzleParticleAoE;
+    [SerializeField] private bool is_FreezingProjectile;
+    [SerializeField] private bool is_SlowingProjectile;
     private bool is_AoE_Projectile;
     private bool is_HomingOnCloseEnemy;
+
+
     private float chooseNewTargetEveryXSeconds = 0.1f;
     private float chooseNewTargetTimestamp;
 
@@ -45,6 +49,7 @@ public class Projectile_Controller : MonoBehaviour
     //upon hitting a target set to true and disable the rotation of the projectile else it looks strangely
     //when called again from the pool set to false
     private bool isTargetHit = false;
+    private bool isLockedOntoTarget = false;
 
     private void Start()
     {
@@ -61,9 +66,9 @@ public class Projectile_Controller : MonoBehaviour
             if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileHomingOnCloseEnemies))
             {
                 is_HomingOnCloseEnemy = true;
-                //mainParticleToUse = mainParticleHoming;
-                //hitParticleToUse = hitParticleHoming;
-                //muzzleParticleToUse = muzzleParticleHoming;
+                mainParticleToUse = mainParticleHoming;
+                hitParticleToUse = hitParticleHoming;
+                muzzleParticleToUse = muzzleParticleHoming;
             }
 
 
@@ -71,8 +76,18 @@ public class Projectile_Controller : MonoBehaviour
             {
                 is_AoE_Projectile = true;
                 //mainParticleToUse = mainParticleAoE;
-                //hitParticleToUse = hitParticleAoE;
+                hitParticleToUse = hitParticleAoE;
                 //muzzleParticleToUse = muzzleParticleAoE;
+            }
+
+            if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.FreezingProjectile))
+            {
+                is_FreezingProjectile = true;
+            }
+
+            if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.SlowingProjectile))
+            {
+                is_SlowingProjectile = true;
             }
         }
 
@@ -88,6 +103,8 @@ public class Projectile_Controller : MonoBehaviour
         if (thisTransform == null)
             thisTransform = transform;
 
+        target = null;
+
         thisTransform.position = posToResetAt.position;
         thisTransform.forward = posToResetAt.forward;
 
@@ -102,9 +119,9 @@ public class Projectile_Controller : MonoBehaviour
             if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileHomingOnCloseEnemies))
             {
                 is_HomingOnCloseEnemy = true;
-                //mainParticleToUse = mainParticleHoming;
-                //hitParticleToUse = hitParticleHoming;
-                //muzzleParticleToUse = muzzleParticleHoming;
+                mainParticleToUse = mainParticleHoming;
+                hitParticleToUse = hitParticleHoming;
+                muzzleParticleToUse = muzzleParticleHoming;
             }
 
 
@@ -112,8 +129,18 @@ public class Projectile_Controller : MonoBehaviour
             {
                 is_AoE_Projectile = true;
                 //mainParticleToUse = mainParticleAoE;
-                //hitParticleToUse = hitParticleAoE;
-                //muzzleParticleToUse = muzzleParticleAoE;
+                hitParticleToUse = hitParticleAoE;
+                // muzzleParticleToUse = muzzleParticleAoE;
+            }
+
+            if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.FreezingProjectile))
+            {
+                is_FreezingProjectile = true;
+            }
+
+            if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.SlowingProjectile))
+            {
+                is_SlowingProjectile = true;
             }
         }
 
@@ -132,25 +159,36 @@ public class Projectile_Controller : MonoBehaviour
             IDamageable tempInterface = other.gameObject.GetComponent<IDamageable>();
             if (tempInterface != null && !isTargetHit)
             {
+                if (is_FreezingProjectile)
+                {
+                    tempInterface.Freeze(2.5f, stats.chanceToFreeze);
+                }
+
+                if(is_SlowingProjectile)
+                {
+                    tempInterface.GetSlowed(stats.slowDuration, stats.slowMultiplier, stats.chanceToSlow);
+                }
+
                 if (!isScaleWithPlayerStats)
                 {
                     tempInterface.TakeDamage(stats.damage, ownerOfProjectile);
-                    tempInterface.TakeKnockback(stats.knockbackPower, thisTransform.forward);
+              //      tempInterface.TakeKnockback(stats.knockbackPower, thisTransform.forward);
                 }
                 else
                 {
-                    if (!is_AoE_Projectile)
-                    {
-                        tempInterface.TakeDamage(PlayerController.Instance.AttackDamage, ownerOfProjectile);
-                        tempInterface.TakeKnockback(PlayerController.Instance.KnockbackPower, thisTransform.forward);
-                    }
-                    else
+
+                    if (is_AoE_Projectile)
                     {
                         Collider[] firstHitColliders = Physics.OverlapSphere(transform.position, homingRangeDetection, affectableLayers);
                         foreach (Collider coll in firstHitColliders)
                         {
                             coll.gameObject.GetComponent<IDamageable>().TakeDamage(PlayerController.Instance.AttackDamage, ownerOfProjectile);
                         }
+                    }
+                    else
+                    {
+                        tempInterface.TakeDamage(PlayerController.Instance.AttackDamage, ownerOfProjectile);
+                        tempInterface.TakeKnockback(PlayerController.Instance.KnockbackPower, thisTransform.forward);
                     }
                 }
             }
@@ -182,17 +220,14 @@ public class Projectile_Controller : MonoBehaviour
                 ChooseNewTarget();
                 chooseNewTargetTimestamp = Time.time + chooseNewTargetEveryXSeconds;
             }
-               
         }
     }
 
     private void OnBecameInvisible()
     {
         this.gameObject.SetActive(false);
-        // Destroy(this.gameObject);
     }
 
-    //choose a random target out of all detected targets in a layer OR if the parameter is false choose the first target always
     protected virtual void ChooseNewTarget()
     {
         if (target == null)
@@ -237,7 +272,6 @@ public class Projectile_Controller : MonoBehaviour
         yield return new WaitForSeconds(duration);
         hitParticleToUse.SetActive(false);
         gameObject.SetActive(false);
-        //    Destroy(this.gameObject);
     }
 
     private IEnumerator ActivateAndStopMuzzleParticle()

@@ -7,7 +7,7 @@ public sealed class MeleeEnemy : BaseEnemy
 {
     enum MeleeSpecialType { None, Kamikadze }
 
-    enum StatesAI { Idle, MovingToTarget, Attack };
+    enum StatesAI { Idle, MovingToTarget, Attack, Dead, Stunned };
     private StatesAI currentStateAI;
 
     private NavMeshAgent agent;
@@ -17,13 +17,19 @@ public sealed class MeleeEnemy : BaseEnemy
     [SerializeField] private MeleeSpecialType specialTypeUnit = MeleeSpecialType.None;
 
     [Header("References")]
- //   [SerializeField] private UnityEngine.UI.Slider healthBar;
- //   [SerializeField] private Transform individualUnitCanvas;
-    private Camera mainCamera;
+    [SerializeField] private UnityEngine.UI.Slider healthBar;
+    [SerializeField] private Transform individualUnitCanvas;
+    private Transform mainCameraTransform;
 
     [Header("Properties")]
     [SerializeField] private float stoppingDistance = 2f;
     [SerializeField] private float attackRate = 2f;
+    private bool isCurrentlySlowed = false;
+
+    [Header("Camera Shake")]
+    [SerializeField] private bool useCamShakeOnDeath = true;
+    [SerializeField] private float camShakeDuration = 0.1f;
+    [SerializeField] private float camShakeMagnitude = 0.2f;
     private float attackTimestamp;
     private float attackCooldown;
 
@@ -34,6 +40,7 @@ public sealed class MeleeEnemy : BaseEnemy
     private bool canExitAttackState = true;
 
     private MeshRenderer meshRend;
+    private Collider thisColl;
 
     private float AttackRate
     {
@@ -49,32 +56,43 @@ public sealed class MeleeEnemy : BaseEnemy
     {
         base.Start();
         meshRend = GetComponentInChildren<MeshRenderer>();
+        thisColl = GetComponent<Collider>();
         AttackRate = attackRate;
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
-        mainCamera = Camera.main;
+        mainCameraTransform = Camera.main.transform;
         agent.stoppingDistance = stoppingDistance;
-
-    //    healthBar.maxValue = stats.maxHealth;
-   //     healthBar.value = CurrentHealth;
+        individualUnitCanvas.gameObject.SetActive(false);
+        healthBar.maxValue = stats.maxHealth;
+        healthBar.value = CurrentHealth;
     }
 
     void Update()
     {
-        if (!meshRend.isVisible && currentTarget == null)
+        if ((!meshRend.isVisible && currentTarget == null) || currentStateAI == StatesAI.Dead)
             return;
-      
-           
 
-        //if (individualUnitCanvas != null)
-        //    individualUnitCanvas.LookAt(mainCamera.transform.position);
+        if (individualUnitCanvas != null)
+            individualUnitCanvas.LookAt(mainCameraTransform.position);
 
         if (currentStateAI == StatesAI.MovingToTarget)
         {
+            if (currentTarget == null)
+            {
+                GoToIdleState(false);
+                return;
+            }
+
             SetAgentDestination(agent, currentTarget.transform.position);
         }
-        else if(currentStateAI == StatesAI.Attack)
+        else if (currentStateAI == StatesAI.Attack)
         {
+            if (currentTarget == null)
+            {
+                GoToIdleState(false);
+                return;
+            }
+
             canExitAttackState = false;
             LookAtTarget();
             if (specialTypeUnit == MeleeSpecialType.None)
@@ -91,67 +109,79 @@ public sealed class MeleeEnemy : BaseEnemy
             }
         }
 
-        ChooseNewTarget(true);
 
+        ChooseNewTarget(true);
         if (currentTarget != null)
         {
             if ((currentTarget.transform.position - thisTransform.position).magnitude <= agent.stoppingDistance + 0.01f)
             {
-                GoToAttackState();
+                GoToAttackState(false);
             }
             else
             {
                 if (!canExitAttackState)
                     return;
-                GoToMovingToTarget();
+                GoToMovingToTarget(false);
             }
         }
         else
         {
             if (!canExitAttackState)
                 return;
-            GoToIdleState();
+
+            GoToIdleState(false);
         }
     }
 
-    private void GoToIdleState()
+    private void GoToIdleState(bool forceThisState)
     {
-        if (currentStateAI == StatesAI.Idle)
+        if (!forceThisState && (currentStateAI == StatesAI.Idle || currentStateAI == StatesAI.Stunned))
             return;
 
         anim.SetBool("isRun", false);
         anim.SetBool("isAttack", false);
         anim.SetBool("isIdle", true);
+        anim.SetBool("isFrozen", false);
         currentStateAI = StatesAI.Idle;
         currentTarget = null;
         currentTargetDamageable = null;
+        canExitAttackState = true;
     }
 
-    private void GoToAttackState()
+    private void GoToAttackState(bool forceThisState)
     {
-        if (currentStateAI == StatesAI.Attack)
+        if (!forceThisState && (currentStateAI == StatesAI.Attack || currentStateAI == StatesAI.Stunned))
             return;
 
         //kamikadze type should detonate instantly on contact
-        if(specialTypeUnit != MeleeSpecialType.Kamikadze)
+        if (specialTypeUnit != MeleeSpecialType.Kamikadze)
         {
             attackTimestamp = Time.time + attackCooldown;
         }
-      
+
         currentTargetDamageable = currentTarget.GetComponent<IDamageable>();
         currentStateAI = StatesAI.Attack;
         anim.SetBool("isRun", false);
         anim.SetBool("isAttack", true);
+        anim.SetBool("isIdle", false);
+        anim.SetBool("isFrozen", false);
     }
 
-    private void GoToMovingToTarget()
+    private void GoToMovingToTarget(bool forceThisState)
     {
-        if (currentStateAI == StatesAI.MovingToTarget)
+        if (!forceThisState && (currentStateAI == StatesAI.MovingToTarget || currentStateAI == StatesAI.Stunned))
             return;
 
         currentStateAI = StatesAI.MovingToTarget;
         anim.SetBool("isRun", true);
         anim.SetBool("isAttack", false);
+        anim.SetBool("isIdle", false);
+        anim.SetBool("isFrozen", false);
+    }
+
+    private void GoToDeadState()
+    {
+        currentStateAI = StatesAI.Dead;
     }
 
     private void Attack()
@@ -168,17 +198,40 @@ public sealed class MeleeEnemy : BaseEnemy
         this.gameObject.SetActive(false);
     }
 
+    private void GoToStunnedState()
+    {
+        if (currentStateAI == StatesAI.Stunned)
+            return;
+
+        currentStateAI = StatesAI.Stunned;
+        anim.SetBool("isFrozen", true);
+        anim.SetBool("isRun", false);
+        anim.SetBool("isAttack", false);
+        anim.SetBool("isIdle", false);
+        agent.destination = thisTransform.position;
+    }
 
     public override void TakeDamage(float damage, IDamageable owner)
     {
+        if (currentTarget == null)
+        {
+            ChooseNewTarget(false);
+        }
+
+        individualUnitCanvas.gameObject.SetActive(true);
         CurrentHealth -= damage;
-     //   healthBar.value = CurrentHealth;
+        healthBar.value = CurrentHealth;
 
         if (CurrentHealth <= 0)
         {
             Explode();
             //   this.gameObject.SetActive(false);
-            Destroy(this.gameObject);
+            GoToDeadState();
+            deathParticle.SetActive(true);
+            deathParticle.gameObject.transform.SetParent(null);
+            CameraFollowTarget.Instance.ShakeCamera(camShakeDuration, camShakeMagnitude);
+            Destroy(deathParticle.gameObject, 2f);
+            Destroy(this.gameObject, 0f);
         }
     }
 
@@ -196,5 +249,46 @@ public sealed class MeleeEnemy : BaseEnemy
                 rb.AddExplosionForce(power, explosionPos, radius, 1.0F);
             }
         }
+    }
+
+    public override void Freeze(float duration, float chance)
+    {
+        if (currentStateAI == StatesAI.Stunned)
+            return;
+
+        float freezeChanceRolled = Random.Range(0f, 1f);
+
+        if (freezeChanceRolled <= chance)
+            StartCoroutine(GetFrozen(duration));
+    }
+
+    private IEnumerator GetFrozen(float duration)
+    {
+        GoToStunnedState();
+        frozenParticle.SetActive(true);
+        yield return new WaitForSeconds(duration);
+        frozenParticle.SetActive(false);
+        GoToIdleState(true);
+    }
+
+    private IEnumerator Slow(float duration, float slowMultiplier)
+    {
+        isCurrentlySlowed = true;
+        float originalSpeed = agent.speed;
+        agent.speed *= slowMultiplier;
+        yield return new WaitForSeconds(duration);
+        agent.speed = originalSpeed;
+        isCurrentlySlowed = false;
+    }
+
+    public override void GetSlowed(float duration, float slowMultiplier, float chance)
+    {
+        if (isCurrentlySlowed)
+            return;
+
+        float slowChanceRolled = Random.Range(0f, 1f);
+
+        if (slowChanceRolled <= chance)
+            StartCoroutine(Slow(duration, slowMultiplier));
     }
 }

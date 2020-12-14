@@ -18,7 +18,7 @@ public class UpgradeController : MonoBehaviour
 
     public static UpgradeController Instance;
 
-    public enum UpgradeType { TripleProjectile, ProjectileBackwards, ProjectilesSideways, RotatingProjectile, ProjectileHomingOnCloseEnemies, ProjectileAOE }
+    public enum UpgradeType { TripleProjectile, ProjectileBackwards, ProjectilesSideways, RotatingProjectile, ProjectileHomingOnCloseEnemies, ProjectileAOE, SlowingProjectile, FreezingProjectile }
     private UpgradeType currentUpgrade;
 
     private Dictionary<UpgradeType, bool> upgradeStatusMap;
@@ -35,11 +35,13 @@ public class UpgradeController : MonoBehaviour
     {
         upgradeStatusMap = new Dictionary<UpgradeType, bool>();
 
-     //   UnlockUpgrade(UpgradeType.TripleProjectile);
-     //   UnlockUpgrade(UpgradeType.ProjectilesSideways);
+        UnlockUpgrade(UpgradeType.TripleProjectile);
+        UnlockUpgrade(UpgradeType.ProjectilesSideways);
       //  UnlockUpgrade(UpgradeType.ProjectileBackwards);
         UnlockUpgrade(UpgradeType.ProjectileHomingOnCloseEnemies);
         UnlockUpgrade(UpgradeType.ProjectileAOE);
+        UnlockUpgrade(UpgradeType.FreezingProjectile);
+        UnlockUpgrade(UpgradeType.SlowingProjectile);
     }
 
 

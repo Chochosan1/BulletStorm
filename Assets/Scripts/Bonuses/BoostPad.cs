@@ -8,33 +8,23 @@ public class BoostPad : MonoBehaviour
 
     [Header("Properties")]
     [SerializeField] private LayerMask acceptEntitiesFromLayers;
-    [Tooltip("How hard to boost objects.")]
-    [SerializeField] float boostForce = 20f;
-    [SerializeField] float upBoostForce = 5f;
     [Tooltip("BoostForward - objects will get boosted in the pad's forward direction. ObjectForward - objects will get boosted in their local's forward direction.")]
     [SerializeField] BoostType boostType;
-
-    private Rigidbody currentRB;
 
 
     private void OnTriggerEnter(Collider other)
     {
-        if (acceptEntitiesFromLayers != (acceptEntitiesFromLayers | (1 << other.gameObject.layer)))
+        if (acceptEntitiesFromLayers != (acceptEntitiesFromLayers | (1 << other.gameObject.layer)) || !other.CompareTag("Player"))
             return;
 
-        currentRB = other.gameObject.GetComponent<Rigidbody>();
-
-        if (currentRB != null)
+        switch (boostType)
         {
-            switch (boostType)
-            {
-                case BoostType.BoostForward:
-                    currentRB.AddForce(transform.forward * boostForce + transform.up * upBoostForce, ForceMode.Impulse);
-                    break;
-                case BoostType.ObjectForward:
-                    currentRB.AddForce(currentRB.transform.forward * boostForce + transform.up * upBoostForce, ForceMode.Impulse);
-                    break;
-            }
+            case BoostType.BoostForward:
+                other.GetComponent<PlayerController>().Dash(true, transform.forward);
+                break;
+            case BoostType.ObjectForward:
+                other.GetComponent<PlayerController>().Dash(true, other.transform.forward);
+                break;
         }
     }
 }

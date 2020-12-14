@@ -17,6 +17,8 @@ public class BaseEnemy : MonoBehaviour, IDamageable
     [SerializeField] protected StatsEntity stats;
     [Tooltip("Set to true if the object should suffer knockback.")]
     [SerializeField] protected bool canBeKnockedBack = true;
+    [SerializeField] protected GameObject deathParticle;
+    [SerializeField] protected GameObject frozenParticle;
     protected GameObject currentTarget;
     protected Rigidbody rb;
     protected Transform thisTransform;
@@ -118,5 +120,15 @@ public class BaseEnemy : MonoBehaviour, IDamageable
         Collider[] hitColliders = Physics.OverlapSphere(transform.position + offset, firstPureEnemySenseRange, enemyLayer);
 
         return hitColliders;
+    }
+
+    public virtual void Freeze(float duration, float chance)
+    {
+    //    throw new System.NotImplementedException();
+    }
+
+    public virtual void GetSlowed(float duration, float slowPower, float chance)
+    {
+   //     throw new System.NotImplementedException();
     }
 }

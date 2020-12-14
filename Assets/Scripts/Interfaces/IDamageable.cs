@@ -4,7 +4,10 @@ using UnityEngine;
 
 public interface IDamageable 
 {
-    void TakeDamage(float damage, IDamageable owner);
+    void TakeDamage(float damage, IDamageable ownerofDamage);
     void TakeKnockback(float knockbackPower, Vector3 knockbackDirection);
     void HealSelf(float healValue);
+
+    void Freeze(float duration, float chance);
+    void GetSlowed(float duration, float slowPower, float chance);
 }
