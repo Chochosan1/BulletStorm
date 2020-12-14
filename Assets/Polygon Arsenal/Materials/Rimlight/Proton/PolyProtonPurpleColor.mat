@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PolyProtonWhite
+  m_Name: PolyProtonPurpleColor
   m_Shader: {fileID: 4800000, guid: f2cb1b80b68b95a489fadaa5754bca06, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -38,8 +38,8 @@ Material:
     m_Colors:
     - Color_1A0BCCE7: {r: 9.591625, g: 9.591625, b: 9.591625, a: 0}
     - Color_8EE4FC62: {r: 0.20754719, g: 0.20754719, b: 0.20754719, a: 0}
-    - Color_AD8B744C: {r: 0, g: 0.6396674, b: 0.9369776, a: 0}
-    - Color_B70EC491: {r: 0.4941176, g: 1.498039, b: 1.427451, a: 0}
+    - Color_AD8B744C: {r: 1.1697991, g: 0, b: 2.027929, a: 0}
+    - Color_B70EC491: {r: 0.65378284, g: 0.09692061, b: 1.8679243, a: 0}
     - _InnerColor: {r: 0.2640571, g: 0.27677187, b: 0.32352942, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 1, g: 1, b: 1, a: 1}

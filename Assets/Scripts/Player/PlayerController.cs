@@ -84,6 +84,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             maxHealth = value;
             healthBar.maxValue = maxHealth;
+            CurrentHealth += value; //heal the player for the amount of bonus max health
             Debug.Log("HP" + maxHealth);
         }
     }

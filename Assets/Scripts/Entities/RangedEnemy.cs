@@ -205,13 +205,15 @@ public sealed class RangedEnemy : BaseEnemy
     {
         if (currentStateAI == StatesAI.Stunned)
             return;
-    
+
         currentStateAI = StatesAI.Stunned;
         anim.SetBool("isFrozen", true);
         anim.SetBool("isRun", false);
         anim.SetBool("isAttack", false);
         anim.SetBool("isIdle", false);
-        agent.destination = thisTransform.position;
+
+        if (agent != null)
+            agent.destination = thisTransform.position;
     }
 
     public override void TakeDamage(float damage, IDamageable owner)

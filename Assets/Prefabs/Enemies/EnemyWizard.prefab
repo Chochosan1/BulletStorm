@@ -1028,7 +1028,7 @@ MonoBehaviour:
   stoppingDistance: 12
   useCamShakeOnDeath: 1
   camShakeDuration: 0.05
-  camShakeMagnitude: 0.05
+  camShakeMagnitude: 0.15
   radius: 5
 --- !u!1 &4644750130869539920
 GameObject:

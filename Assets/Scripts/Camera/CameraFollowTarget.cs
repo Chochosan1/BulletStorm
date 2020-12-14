@@ -18,6 +18,9 @@ public class CameraFollowTarget : MonoBehaviour
     [SerializeField] private float minY = 7f, maxY = 14f;
     [Tooltip("How fast should the camera zoom in/out?")]
     [SerializeField] private float scrollSpeed = 10f;
+    [Tooltip("Used to avoid excessive camera shakes one after another (e.g when killing packs of enemies individual camera shakes may chain with each other)")]
+    [SerializeField] private float cameraShakeCooldown = 0.5f;
+    private float cameraShakeTimestamp;
     private Transform thisTransform;
     private Vector3 currentVelocity;
     public enum CameraUpdate { LateUpdate, Update, FixedUpdate };
@@ -81,7 +84,7 @@ public class CameraFollowTarget : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(cameraUpdate == CameraUpdate.FixedUpdate && !isCameraShaking)
+        if(cameraUpdate == CameraUpdate.FixedUpdate /*&& !isCameraShaking*/)
         {
             if (isLerp)
             {
@@ -96,8 +99,9 @@ public class CameraFollowTarget : MonoBehaviour
 
     public void ShakeCamera(float duration, float magnitude)
     {
-        if(!isCameraShaking)
+        if(!isCameraShaking && Time.time >= cameraShakeTimestamp)
         {
+            cameraShakeTimestamp = Time.time + cameraShakeCooldown;
             StartCoroutine(CameraShake(duration, magnitude));
         }
     }
@@ -111,10 +115,10 @@ public class CameraFollowTarget : MonoBehaviour
 
         while (elapsed < duration)
         {
-            float x = Random.Range(camTransform.position.x - magnitude, camTransform.position.x + magnitude);
+         //   float x = Random.Range(camTransform.position.x - magnitude, camTransform.position.x + magnitude);
             float y = Random.Range(camTransform.position.y - magnitude, camTransform.position.y + magnitude);
 
-            camTransform.position = new Vector3(x, y, originalPos.z);
+            camTransform.position = new Vector3(originalPos.x, y, originalPos.z);
             elapsed += Time.deltaTime;
 
             yield return null;

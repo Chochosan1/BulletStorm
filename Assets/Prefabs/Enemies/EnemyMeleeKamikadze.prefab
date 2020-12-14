@@ -1571,7 +1571,7 @@ MonoBehaviour:
   attackRate: 2
   useCamShakeOnDeath: 1
   camShakeDuration: 0.05
-  camShakeMagnitude: 0.05
+  camShakeMagnitude: 0.15
   radius: 5
 --- !u!1 &3075692262394056004
 GameObject:
