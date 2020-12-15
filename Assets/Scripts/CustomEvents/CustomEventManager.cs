@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Chochosan
 {
+    /// <summary>
+    /// Holds different custom events. Events here are not capsulated - they can be fired from any place.
+    /// </summary>
     public class CustomEventManager : MonoBehaviour
     {
         public delegate void OnUpgradeLearnedDelegate(UpgradeController.UpgradeType upgradeType);

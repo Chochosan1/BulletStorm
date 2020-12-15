@@ -73,7 +73,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
             CalculateShootAnimSpeed();
 
-        //    Debug.Log("SR" + shootRate);
+            //    Debug.Log("SR" + shootRate);
         }
     }
 
@@ -86,7 +86,7 @@ public class PlayerController : MonoBehaviour, IDamageable
             maxHealth = value;
             healthBar.maxValue = maxHealth;
             CurrentHealth += value; //heal the player for the amount of bonus max health
-       //     Debug.Log("HP" + maxHealth);
+                                    //     Debug.Log("HP" + maxHealth);
         }
     }
 
@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour, IDamageable
             knockbackPower = value;
             if (knockbackPower >= maxKnockbackPower)
                 knockbackPower = maxKnockbackPower;
-        //    Debug.Log("Knockback" + knockbackPower);
+            //    Debug.Log("Knockback" + knockbackPower);
         }
     }
 
@@ -110,7 +110,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         set
         {
             attackDamage = value;
-        //    Debug.Log("AD" + attackDamage);
+            //    Debug.Log("AD" + attackDamage);
         }
     }
 
@@ -122,7 +122,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             currentHealth = value >= maxHealth ? maxHealth : value;
             healthBar.value = currentHealth;
-       //     Debug.Log(currentHealth);
+            //     Debug.Log(currentHealth);
         }
     }
 
@@ -155,7 +155,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         anim = GetComponent<Animator>();
 
         //trigger the setters to calculate initial stuff
-        ShootRate = shootRate; 
+        ShootRate = shootRate;
         CurrentHealth = maxHealth;
         MaxHealth = maxHealth;
         CurrentHealth = currentHealth;
@@ -192,7 +192,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (moveAxis.x != 0 || moveAxis.y != 0)
         {
             moveDir = Vector3.forward * moveAxis.y + Vector3.right * moveAxis.x;
-       //          thisTransform.Translate(moveDir.normalized * movementSpeed * Time.deltaTime, Space.World);
+            //          thisTransform.Translate(moveDir.normalized * movementSpeed * Time.deltaTime, Space.World);
             rb.AddForce(moveDir.normalized * movementSpeed * Time.deltaTime, ForceMode.VelocityChange);
         }
     }
@@ -331,10 +331,18 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
     }
 
-    private bool IsObjectInDashDistance()
+    private float CheckDistanceToObjectInFront()
     {
         RaycastHit hit;
-        return Physics.Raycast(thisTransform.position, transform.TransformDirection(Vector3.forward), out hit, dashDistance);
+        if (Physics.Raycast(thisTransform.position, transform.TransformDirection(Vector3.forward), out hit, dashDistance))
+        {
+            return hit.distance;
+        }
+        else
+        {
+            return 0;
+        }
+
     }
 
     public void Dash(bool avoidCooldown, Vector3 dashDir)
@@ -347,14 +355,11 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         dashEffect.SetActive(true);
         StartCoroutine(DisableObjectAfter(dashEffect, 0.75f));
+        float hitObjectDistance = CheckDistanceToObjectInFront();
 
-        if (IsObjectInDashDistance())
+        if (hitObjectDistance > 0.1f)
         {
-            RaycastHit hit;
-            Physics.Raycast(thisTransform.position, transform.TransformDirection(dashDir), out hit, dashDistance);
-
-            thisTransform.position += dashDir * (hit.distance - thisColl.bounds.extents.magnitude);
-            //   Debug.Log(hit.distance - gameObject.GetComponent<Collider>().bounds.extents.magnitude);
+            thisTransform.position += dashDir * (hitObjectDistance - thisColl.bounds.extents.magnitude);
         }
         else
         {
@@ -365,11 +370,17 @@ public class PlayerController : MonoBehaviour, IDamageable
     private void OnNewUpgradeLearned(UpgradeController.UpgradeType upgradeType)
     {
         StartCoroutine(StartUpgradeParticleSequence());
-        switch(upgradeType)
+        switch (upgradeType)
         {
             case UpgradeController.UpgradeType.RotatingProjectile:
                 uc.rotatingAroundPlayerProjectile.SetActive(true);
                 uc.rotatingAroundPlayerProjectile.transform.SetParent(null);
+                break;
+            case UpgradeController.UpgradeType.DashDistanceIncreased:
+                dashDistance *= 2f;
+                break;
+            case UpgradeController.UpgradeType.DashCooldownReduced:
+                dashCooldown /= 2f;
                 break;
         }
     }
@@ -416,7 +427,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public void Freeze(float duration, float chance)
     {
-     //   throw new System.NotImplementedException();
+        //   throw new System.NotImplementedException();
     }
 
     private IEnumerator Slow(float duration, float slowMultiplier)
