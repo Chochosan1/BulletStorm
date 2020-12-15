@@ -15,8 +15,6 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private Transform individualUnitCanvas;
     [SerializeField] private GameObject healEffect;
     [SerializeField] private GameObject dashEffect;
-    [SerializeField] private GameObject upgradeParticle;
-    [SerializeField] private GameObject upgradeParticle2;
     private Collider thisColl;
 
     [Header("General stats")]
@@ -369,7 +367,10 @@ public class PlayerController : MonoBehaviour, IDamageable
         StartCoroutine(StartUpgradeParticleSequence());
         switch(upgradeType)
         {
-           // case UpgradeController.UpgradeType.
+            case UpgradeController.UpgradeType.RotatingProjectile:
+                uc.rotatingAroundPlayerProjectile.SetActive(true);
+                uc.rotatingAroundPlayerProjectile.transform.SetParent(null);
+                break;
         }
     }
 
@@ -449,13 +450,13 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         anim.SetBool("isUpgrading", true);
         isPlayerDisabled = true;
-        upgradeParticle.SetActive(true);
+        uc.upgradeParticle.SetActive(true);
         CameraFollowTarget.Instance.ShakeCamera(1.1f, 0.1f, true);
         yield return new WaitForSeconds(1.2f);
-        upgradeParticle.SetActive(false);
-        upgradeParticle2.SetActive(true);
-        CameraFollowTarget.Instance.ShakeCamera(0.05f, 0.5f, true);
-        StartCoroutine(DisableObjectAfter(upgradeParticle2, 1f));
+        uc.upgradeParticle.SetActive(false);
+        uc.upgradeParticle2.SetActive(true);
+        CameraFollowTarget.Instance.ShakeCameraWithX(0.05f, 0.3f, true);
+        StartCoroutine(DisableObjectAfter(uc.upgradeParticle2, 1f));
         isPlayerDisabled = false;
     }
 }

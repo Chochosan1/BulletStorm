@@ -116,6 +116,25 @@ public class CameraFollowTarget : MonoBehaviour
         }
     }
 
+    public void ShakeCameraWithX(float duration, float magnitude, bool avoidCooldown)
+    {
+        if (isCameraShaking)
+            return;
+
+        if (avoidCooldown)
+        {
+            StartCoroutine(CameraShake(duration, magnitude));
+        }
+        else
+        {
+            if (Time.time >= cameraShakeTimestamp)
+            {
+                cameraShakeTimestamp = Time.time + cameraShakeCooldown;
+                StartCoroutine(CameraShake(duration, magnitude));
+            }
+        }
+    }
+
     private IEnumerator CameraShake(float duration, float magnitude)
     {
         isCameraShaking = true;
@@ -129,6 +148,29 @@ public class CameraFollowTarget : MonoBehaviour
             float y = Random.Range(camTransform.position.y - magnitude, camTransform.position.y + magnitude);
 
             camTransform.position = new Vector3(originalPos.x, y, originalPos.z);
+            elapsed += Time.deltaTime;
+
+            yield return null;
+        }
+
+        camTransform.position = originalPos;
+
+        isCameraShaking = false;
+    }
+
+    private IEnumerator CameraShakeWithX(float duration, float magnitude)
+    {
+        isCameraShaking = true;
+        Vector3 originalPos = camTransform.localPosition;
+
+        float elapsed = 0.0f;
+
+        while (elapsed < duration)
+        {
+            float x = Random.Range(camTransform.position.x - magnitude, camTransform.position.x + magnitude);
+            float y = Random.Range(camTransform.position.y - magnitude, camTransform.position.y + magnitude);
+
+            camTransform.position = new Vector3(x, y, originalPos.z);
             elapsed += Time.deltaTime;
 
             yield return null;

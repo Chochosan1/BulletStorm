@@ -32,7 +32,7 @@ public class UI_Manager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.B))
         {
             upgradesPanel.SetActive(!upgradesPanel.activeSelf);
             upgradesPanel.GetComponent<ScaleUIElements>().Resize();

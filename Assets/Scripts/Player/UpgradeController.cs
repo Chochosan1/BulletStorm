@@ -6,6 +6,13 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerController))]
 public class UpgradeController : MonoBehaviour
 {
+    [Header("Upgrade sequence")]
+    public GameObject upgradeParticle;
+    public GameObject upgradeParticle2;
+
+    [Header("Bonuses")]
+    public GameObject rotatingAroundPlayerProjectile;
+
     [Header("Triple projectile")]
     public Transform tripleProjectileSpawnLeft;
     public Transform tripleProjectileSpawnRight;
