@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -35,13 +36,13 @@ public class UpgradeController : MonoBehaviour
     {
         upgradeStatusMap = new Dictionary<UpgradeType, bool>();
 
-        UnlockUpgrade(UpgradeType.TripleProjectile);
-        UnlockUpgrade(UpgradeType.ProjectilesSideways);
-      //  UnlockUpgrade(UpgradeType.ProjectileBackwards);
-        UnlockUpgrade(UpgradeType.ProjectileHomingOnCloseEnemies);
-        UnlockUpgrade(UpgradeType.ProjectileAOE);
-        UnlockUpgrade(UpgradeType.FreezingProjectile);
-        UnlockUpgrade(UpgradeType.SlowingProjectile);
+      //  UnlockUpgrade(UpgradeType.TripleProjectile);
+      //  UnlockUpgrade(UpgradeType.ProjectilesSideways);
+      ////  UnlockUpgrade(UpgradeType.ProjectileBackwards);
+      //  UnlockUpgrade(UpgradeType.ProjectileHomingOnCloseEnemies);
+      //  UnlockUpgrade(UpgradeType.ProjectileAOE);
+      //  UnlockUpgrade(UpgradeType.FreezingProjectile);
+      //  UnlockUpgrade(UpgradeType.SlowingProjectile);
     }
 
 
@@ -52,6 +53,17 @@ public class UpgradeController : MonoBehaviour
 
     public void UnlockUpgrade(UpgradeType upgradeType)
     {
+        if (IsUpgradeUnlocked(upgradeType))
+            return;
+
         upgradeStatusMap.Add(upgradeType, true);
+        Chochosan.CustomEventManager.OnUpgradeLearned?.Invoke(upgradeType);
+
+        Chochosan.ChochosanHelper.ChochosanDebug("Just unlocked " + upgradeType.ToString(), "red");
+    }
+
+    public void ButtonUpgradeChoice(string upgradeString)
+    {
+        UnlockUpgrade((UpgradeType)Enum.Parse(typeof(UpgradeType), upgradeString));
     }
 }

@@ -233,7 +233,7 @@ public sealed class RangedEnemy : BaseEnemy
             //    this.gameObject.SetActive(false);
             deathParticle.SetActive(true);
             deathParticle.gameObject.transform.SetParent(null);
-            CameraFollowTarget.Instance.ShakeCamera(camShakeDuration, camShakeMagnitude);
+            CameraFollowTarget.Instance.ShakeCamera(camShakeDuration, camShakeMagnitude, false);
             Destroy(deathParticle.gameObject, 2f);
             Destroy(this.gameObject, 0f);
         }

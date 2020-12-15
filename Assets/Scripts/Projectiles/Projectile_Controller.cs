@@ -57,6 +57,21 @@ public class Projectile_Controller : MonoBehaviour
         //  rb.AddForce(transform.forward * stats.travelSpeed, ForceMode.Impulse);
         StartCoroutine(DeactivateObjectAfter(projectileLifetime));
 
+        mainParticleToUse?.SetActive(false);
+        hitParticleToUse?.SetActive(false);
+        muzzleParticleToUse?.SetActive(false);
+        //mainParticleDefault.SetActive(false);
+        //hitParticleDefault.SetActive(false);
+        //muzzleParticleDefault.SetActive(false);
+
+        //mainParticleAoE.SetActive(false);
+        //hitParticleAoE.SetActive(false);
+        //muzzleParticleAoE.SetActive(false);
+
+        //mainParticleHoming.SetActive(false);
+        //hitParticleHoming.SetActive(false);
+        //muzzleParticleHoming.SetActive(false);
+
         mainParticleToUse = mainParticleDefault;
         hitParticleToUse = hitParticleDefault;
         muzzleParticleToUse = muzzleParticleDefault;
@@ -104,6 +119,10 @@ public class Projectile_Controller : MonoBehaviour
             thisTransform = transform;
 
         target = null;
+
+        mainParticleToUse?.SetActive(false);
+        hitParticleToUse?.SetActive(false);
+        muzzleParticleToUse?.SetActive(false);
 
         thisTransform.position = posToResetAt.position;
         thisTransform.forward = posToResetAt.forward;
@@ -172,7 +191,7 @@ public class Projectile_Controller : MonoBehaviour
                 if (!isScaleWithPlayerStats)
                 {
                     tempInterface.TakeDamage(stats.damage, ownerOfProjectile);
-              //      tempInterface.TakeKnockback(stats.knockbackPower, thisTransform.forward);
+                    tempInterface.TakeKnockback(stats.knockbackPower, thisTransform.forward);
                 }
                 else
                 {

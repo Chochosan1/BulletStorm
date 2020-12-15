@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private Transform individualUnitCanvas;
     [SerializeField] private GameObject healEffect;
     [SerializeField] private GameObject dashEffect;
+    [SerializeField] private GameObject upgradeParticle;
+    [SerializeField] private GameObject upgradeParticle2;
     private Collider thisColl;
 
     [Header("General stats")]
@@ -55,6 +57,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     private Vector3 moveDir;
     private Vector2 moveAxis;
     private bool isGrounded = false;
+    private bool isPlayerDisabled = false;
 
     public float ShootRate
     {
@@ -72,7 +75,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
             CalculateShootAnimSpeed();
 
-            Debug.Log("SR" + shootRate);
+        //    Debug.Log("SR" + shootRate);
         }
     }
 
@@ -85,7 +88,7 @@ public class PlayerController : MonoBehaviour, IDamageable
             maxHealth = value;
             healthBar.maxValue = maxHealth;
             CurrentHealth += value; //heal the player for the amount of bonus max health
-            Debug.Log("HP" + maxHealth);
+       //     Debug.Log("HP" + maxHealth);
         }
     }
 
@@ -98,7 +101,7 @@ public class PlayerController : MonoBehaviour, IDamageable
             knockbackPower = value;
             if (knockbackPower >= maxKnockbackPower)
                 knockbackPower = maxKnockbackPower;
-            Debug.Log("Knockback" + knockbackPower);
+        //    Debug.Log("Knockback" + knockbackPower);
         }
     }
 
@@ -109,7 +112,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         set
         {
             attackDamage = value;
-            Debug.Log("AD" + attackDamage);
+        //    Debug.Log("AD" + attackDamage);
         }
     }
 
@@ -121,7 +124,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             currentHealth = value >= maxHealth ? maxHealth : value;
             healthBar.value = currentHealth;
-            Debug.Log(currentHealth);
+       //     Debug.Log(currentHealth);
         }
     }
 
@@ -136,6 +139,14 @@ public class PlayerController : MonoBehaviour, IDamageable
     void Start()
     {
         this.tag = "Player";
+
+        ///Event subscription///
+
+        Chochosan.CustomEventManager.OnUpgradeLearned += OnNewUpgradeLearned;
+
+        ////////////////////////
+
+
         uc = GetComponent<UpgradeController>();
         projectilePool = new List<Projectile_Controller>();
 
@@ -145,11 +156,13 @@ public class PlayerController : MonoBehaviour, IDamageable
         mainCamera = Camera.main;
         anim = GetComponent<Animator>();
 
-        ShootRate = shootRate; //calculate initial stuff in the setter
+        //trigger the setters to calculate initial stuff
+        ShootRate = shootRate; 
         CurrentHealth = maxHealth;
         MaxHealth = maxHealth;
         CurrentHealth = currentHealth;
 
+        //pool all player projectiles
         for (int i = 0; i < 150; i++)
         {
             GameObject projectileCopy = Instantiate(projectile, projectileSpawnPosition.position, projectile.transform.rotation);
@@ -158,10 +171,22 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
     }
 
+    private void OnDisable()
+    {
+        ///Event unsubscription///
+
+        Chochosan.CustomEventManager.OnUpgradeLearned -= OnNewUpgradeLearned;
+
+        ////////////////////////
+    }
+
     void Update()
     {
         if (individualUnitCanvas != null)
             individualUnitCanvas.LookAt(mainCamera.transform.position);
+
+        if (isPlayerDisabled)
+            return;
 
         CheckInput();
         RotateWithMouse();
@@ -194,6 +219,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         anim.SetBool("isIdle", true);
         anim.SetBool("isRun", false);
         anim.SetBool("isAttack", false);
+        anim.SetBool("isUpgrading", false);
         moveAxis.x = 0;
         moveAxis.y = 0;
 
@@ -262,10 +288,16 @@ public class PlayerController : MonoBehaviour, IDamageable
             if (uc.IsUpgradeUnlocked(UpgradeController.UpgradeType.TripleProjectile))
             {
                 currentPoolItem++;
+                if (currentPoolItem >= projectilePool.Count)
+                    currentPoolItem = 0;
+
                 projectilePool[currentPoolItem].gameObject.SetActive(true);
                 projectilePool[currentPoolItem].ResetProjectileFromPool(uc.tripleProjectileSpawnLeft);
 
                 currentPoolItem++;
+                if (currentPoolItem >= projectilePool.Count)
+                    currentPoolItem = 0;
+
                 projectilePool[currentPoolItem].gameObject.SetActive(true);
                 projectilePool[currentPoolItem].ResetProjectileFromPool(uc.tripleProjectileSpawnRight);
             }
@@ -273,6 +305,9 @@ public class PlayerController : MonoBehaviour, IDamageable
             if (uc.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileBackwards))
             {
                 currentPoolItem++;
+                if (currentPoolItem >= projectilePool.Count)
+                    currentPoolItem = 0;
+
                 projectilePool[currentPoolItem].gameObject.SetActive(true);
                 projectilePool[currentPoolItem].ResetProjectileFromPool(uc.projectileBackwardsSpawn);
             }
@@ -280,10 +315,16 @@ public class PlayerController : MonoBehaviour, IDamageable
             if (uc.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectilesSideways))
             {
                 currentPoolItem++;
+                if (currentPoolItem >= projectilePool.Count)
+                    currentPoolItem = 0;
+
                 projectilePool[currentPoolItem].gameObject.SetActive(true);
                 projectilePool[currentPoolItem].ResetProjectileFromPool(uc.sidewaysProjectileLeft);
 
                 currentPoolItem++;
+                if (currentPoolItem >= projectilePool.Count)
+                    currentPoolItem = 0;
+
                 projectilePool[currentPoolItem].gameObject.SetActive(true);
                 projectilePool[currentPoolItem].ResetProjectileFromPool(uc.sidewaysProjectileRight);
             }
@@ -320,6 +361,15 @@ public class PlayerController : MonoBehaviour, IDamageable
         else
         {
             thisTransform.position += dashDir * dashDistance;
+        }
+    }
+
+    private void OnNewUpgradeLearned(UpgradeController.UpgradeType upgradeType)
+    {
+        StartCoroutine(StartUpgradeParticleSequence());
+        switch(upgradeType)
+        {
+           // case UpgradeController.UpgradeType.
         }
     }
 
@@ -393,5 +443,19 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         yield return new WaitForSeconds(disableAfter);
         objectToDisable.SetActive(false);
+    }
+
+    private IEnumerator StartUpgradeParticleSequence()
+    {
+        anim.SetBool("isUpgrading", true);
+        isPlayerDisabled = true;
+        upgradeParticle.SetActive(true);
+        CameraFollowTarget.Instance.ShakeCamera(1.1f, 0.1f, true);
+        yield return new WaitForSeconds(1.2f);
+        upgradeParticle.SetActive(false);
+        upgradeParticle2.SetActive(true);
+        CameraFollowTarget.Instance.ShakeCamera(0.05f, 0.5f, true);
+        StartCoroutine(DisableObjectAfter(upgradeParticle2, 1f));
+        isPlayerDisabled = false;
     }
 }

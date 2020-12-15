@@ -229,7 +229,7 @@ public sealed class MeleeEnemy : BaseEnemy
             GoToDeadState();
             deathParticle.SetActive(true);
             deathParticle.gameObject.transform.SetParent(null);
-            CameraFollowTarget.Instance.ShakeCamera(camShakeDuration, camShakeMagnitude);
+            CameraFollowTarget.Instance.ShakeCamera(camShakeDuration, camShakeMagnitude, false);
             Destroy(deathParticle.gameObject, 2f);
             Destroy(this.gameObject, 0f);
         }

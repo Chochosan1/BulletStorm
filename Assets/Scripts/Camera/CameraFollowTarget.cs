@@ -31,7 +31,7 @@ public class CameraFollowTarget : MonoBehaviour
 
     private void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
         }
@@ -47,7 +47,7 @@ public class CameraFollowTarget : MonoBehaviour
     {
         if (cameraUpdate == CameraUpdate.LateUpdate && !isCameraShaking)
         {
-            if(isLerp)
+            if (isLerp)
             {
                 thisTransform.position = Vector3.Lerp(thisTransform.position, targetToFollow.position + offset, Time.deltaTime * cameraFollowSpeed);
             }
@@ -56,7 +56,7 @@ public class CameraFollowTarget : MonoBehaviour
                 thisTransform.position = Vector3.SmoothDamp(thisTransform.position, targetToFollow.position + offset, ref currentVelocity, cameraFollowSpeed * Time.deltaTime);
             }
         }
-                   
+
     }
 
     void Update()
@@ -84,7 +84,7 @@ public class CameraFollowTarget : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(cameraUpdate == CameraUpdate.FixedUpdate /*&& !isCameraShaking*/)
+        if (cameraUpdate == CameraUpdate.FixedUpdate /*&& !isCameraShaking*/)
         {
             if (isLerp)
             {
@@ -94,15 +94,25 @@ public class CameraFollowTarget : MonoBehaviour
             {
                 thisTransform.position = Vector3.SmoothDamp(thisTransform.position, targetToFollow.position + offset, ref currentVelocity, cameraFollowSpeed * Time.deltaTime);
             }
-        }       
+        }
     }
 
-    public void ShakeCamera(float duration, float magnitude)
+    public void ShakeCamera(float duration, float magnitude, bool avoidCooldown)
     {
-        if(!isCameraShaking && Time.time >= cameraShakeTimestamp)
+        if (isCameraShaking)
+            return;
+
+        if (avoidCooldown)
         {
-            cameraShakeTimestamp = Time.time + cameraShakeCooldown;
             StartCoroutine(CameraShake(duration, magnitude));
+        }
+        else
+        {
+            if (Time.time >= cameraShakeTimestamp)
+            {
+                cameraShakeTimestamp = Time.time + cameraShakeCooldown;
+                StartCoroutine(CameraShake(duration, magnitude));
+            }
         }
     }
 
@@ -115,7 +125,7 @@ public class CameraFollowTarget : MonoBehaviour
 
         while (elapsed < duration)
         {
-         //   float x = Random.Range(camTransform.position.x - magnitude, camTransform.position.x + magnitude);
+            //   float x = Random.Range(camTransform.position.x - magnitude, camTransform.position.x + magnitude);
             float y = Random.Range(camTransform.position.y - magnitude, camTransform.position.y + magnitude);
 
             camTransform.position = new Vector3(originalPos.x, y, originalPos.z);
