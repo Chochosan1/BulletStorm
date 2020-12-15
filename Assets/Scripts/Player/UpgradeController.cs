@@ -28,7 +28,7 @@ public class UpgradeController : MonoBehaviour
 
     public static UpgradeController Instance;
 
-    public enum UpgradeType { TripleProjectile, ProjectileBackwards, ProjectilesSideways, RotatingProjectile, ProjectileHomingOnCloseEnemies, ProjectileAOE, SlowingProjectile, FreezingProjectile, DashDistanceIncreased, DashCooldownReduced }
+    public enum UpgradeType { TripleProjectile, ProjectileBackwards, ProjectilesSideways, RotatingProjectile, ProjectileHomingOnCloseEnemies, ProjectileAOE, SlowingProjectile, FreezingProjectile, DashDistanceIncreased, DashCooldownReduced, MaxHealthIncrease, AttackSpeedIncrease, AttackDamageIncrease }
     private UpgradeType currentUpgrade;
 
     private Dictionary<UpgradeType, bool> upgradeStatusMap;

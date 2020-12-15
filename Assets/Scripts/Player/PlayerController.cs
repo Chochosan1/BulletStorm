@@ -382,6 +382,22 @@ public class PlayerController : MonoBehaviour, IDamageable
             case UpgradeController.UpgradeType.DashCooldownReduced:
                 dashCooldown /= 2f;
                 break;
+            case UpgradeController.UpgradeType.MaxHealthIncrease:
+                MaxHealth += 100f;
+                break;
+            case UpgradeController.UpgradeType.AttackDamageIncrease:
+                AttackDamage += 6f;
+                break;
+            case UpgradeController.UpgradeType.AttackSpeedIncrease:
+                if(ShootRate >= maxShootRate)
+                {
+                    AttackDamage += 4f;
+                }
+                else
+                {
+                    ShootRate += 2f;
+                }
+                break;
         }
     }
 
