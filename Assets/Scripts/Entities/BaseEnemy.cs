@@ -135,7 +135,7 @@ public class BaseEnemy : MonoBehaviour, IDamageable
 
     protected virtual void DetermineLoot()
     {
-        GameObject lootDrop = lootTable.DetermineLoot();
+        GameObject lootDrop = lootTable?.DetermineLoot();
         
         if(lootDrop != null)
         {

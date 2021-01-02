@@ -221,6 +221,14 @@ public sealed class MeleeEnemy : BaseEnemy
 
         individualUnitCanvas.gameObject.SetActive(true);
         CurrentHealth -= damage;
+        if(UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.OneShotChance))
+        {
+            if(Random.Range(0f, 1f) <= UpgradeController.Instance.oneShotChance)
+            {
+                CurrentHealth -= stats.maxHealth;
+                Debug.Log("ONE SHOT ROLL");
+            }
+        }
         healthBar.value = CurrentHealth;
 
         if (CurrentHealth <= 0)

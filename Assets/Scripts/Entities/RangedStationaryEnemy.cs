@@ -67,6 +67,9 @@ public class RangedStationaryEnemy : BaseEnemy
         {
             canExitAttackState = false;
 
+            if (currentTarget == null)
+                currentStateAI = StatesAI.Idle;
+
             if(isLookAtTargetWhileShooting)
             {
                 LookAtTarget();

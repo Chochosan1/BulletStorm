@@ -225,6 +225,14 @@ public sealed class RangedEnemy : BaseEnemy
         }
 
         individualUnitCanvas.gameObject.SetActive(true);
+        if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.OneShotChance))
+        {
+            if (Random.Range(0f, 1f) <= UpgradeController.Instance.oneShotChance)
+            {
+                CurrentHealth -= stats.maxHealth;
+                Debug.Log("ONE SHOT");
+            }
+        }
         CurrentHealth -= damage;
         healthBar.value = CurrentHealth;
 
