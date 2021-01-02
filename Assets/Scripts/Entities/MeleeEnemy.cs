@@ -221,9 +221,9 @@ public sealed class MeleeEnemy : BaseEnemy
 
         individualUnitCanvas.gameObject.SetActive(true);
         CurrentHealth -= damage;
-        if(UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.OneShotChance))
+        if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.OneShotChance))
         {
-            if(Random.Range(0f, 1f) <= UpgradeController.Instance.oneShotChance)
+            if (Random.Range(0f, 1f) <= UpgradeController.Instance.oneShotChance)
             {
                 CurrentHealth -= stats.maxHealth;
                 Debug.Log("ONE SHOT ROLL");
@@ -239,11 +239,19 @@ public sealed class MeleeEnemy : BaseEnemy
 
     private void Die()
     {
-        if(UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.TornadoChanceOnDeath))
+        if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.TornadoChanceOnDeath))
         {
             if (Random.Range(0f, 1f) <= UpgradeController.Instance.tornadoChanceToSpawnOnDeath)
             {
                 Instantiate(UpgradeController.Instance.tornadoPrefab, thisTransform.position, UpgradeController.Instance.tornadoPrefab.transform.rotation);
+            }
+        }
+
+        if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.FreezeZoneOnDeath))
+        {
+            if (Random.Range(0f, 1f) <= UpgradeController.Instance.freezeZoneChanceToSpawnOnDeath)
+            {
+                Instantiate(UpgradeController.Instance.freezeZonePrefab, thisTransform.position, UpgradeController.Instance.freezeZonePrefab.transform.rotation);
             }
         }
 

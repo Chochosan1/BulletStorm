@@ -9,6 +9,7 @@ public class DamageZone : MonoBehaviour
     [Header("Properties")]
     [SerializeField] private LayerMask acceptEntitiesFromLayers;
     [SerializeField] private MovableComponent movableComponent;
+    [SerializeField] private SpecialEffects specialEffects;
     [SerializeField] private DamageType damageType = DamageType.OnTriggerEnter;
     [SerializeField] private float damageCooldown = 0.5f;
     [SerializeField] private float damagePerTick = 5f;
@@ -19,6 +20,21 @@ public class DamageZone : MonoBehaviour
     private void Start()
     {
         thisTransform = transform;
+
+        switch(specialEffects.specialEffect)
+        {
+            case SpecialEffects.PossibleSpecialEffects.Freeze:
+                Collider[] firstHitColliders = Physics.OverlapSphere(thisTransform.position, specialEffects.specialEffectDetectionRange, specialEffects.specialEffectDetectionMask);
+                if (firstHitColliders.Length > 0)
+                {
+                    foreach(Collider col in firstHitColliders)
+                    {
+                        col.gameObject?.GetComponent<IDamageable>().Freeze(2f, 1f);
+                    }
+                }
+                Destroy(this.gameObject, 3f);
+                break;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -55,6 +71,16 @@ public class DamageZone : MonoBehaviour
                 DetermineMoveDirection();
             }
         }
+    }
+
+    [System.Serializable]
+    public class SpecialEffects
+    {
+        public enum PossibleSpecialEffects { None, Freeze };
+        public PossibleSpecialEffects specialEffect;
+
+        public float specialEffectDetectionRange;
+        public LayerMask specialEffectDetectionMask;
     }
 
     [System.Serializable]

@@ -212,9 +212,7 @@ public sealed class RangedEnemy : BaseEnemy
         anim.SetBool("isRun", false);
         anim.SetBool("isAttack", false);
         anim.SetBool("isIdle", false);
-
-        if (agent != null)
-            agent.destination = thisTransform.position;
+        agent.destination = thisTransform.position;
     }
 
     public override void TakeDamage(float damage, IDamageable owner)
@@ -249,6 +247,14 @@ public sealed class RangedEnemy : BaseEnemy
             if (Random.Range(0f, 1f) <= UpgradeController.Instance.tornadoChanceToSpawnOnDeath)
             {
                 Instantiate(UpgradeController.Instance.tornadoPrefab, thisTransform.position, UpgradeController.Instance.tornadoPrefab.transform.rotation);
+            }
+        }
+
+        if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.FreezeZoneOnDeath))
+        {
+            if (Random.Range(0f, 1f) <= UpgradeController.Instance.freezeZoneChanceToSpawnOnDeath)
+            {
+                Instantiate(UpgradeController.Instance.freezeZonePrefab, thisTransform.position, UpgradeController.Instance.freezeZonePrefab.transform.rotation);
             }
         }
 
