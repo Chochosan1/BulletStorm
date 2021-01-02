@@ -4,7 +4,17 @@ using UnityEngine;
 
 public class UI_Manager : MonoBehaviour
 {
+    public static UI_Manager Instance;
+
     [SerializeField] private GameObject upgradesPanel;
+
+    private void Awake()
+    {
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+    }
 
     private void Start()
     {

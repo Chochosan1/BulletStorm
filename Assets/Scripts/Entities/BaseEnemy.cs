@@ -19,6 +19,7 @@ public class BaseEnemy : MonoBehaviour, IDamageable
     [SerializeField] protected bool canBeKnockedBack = true;
     [SerializeField] protected GameObject deathParticle;
     [SerializeField] protected GameObject frozenParticle;
+    [SerializeField] protected LootContainer lootTable;
     protected GameObject currentTarget;
     protected Rigidbody rb;
     protected Transform thisTransform;
@@ -130,5 +131,15 @@ public class BaseEnemy : MonoBehaviour, IDamageable
     public virtual void GetSlowed(float duration, float slowPower, float chance)
     {
    //     throw new System.NotImplementedException();
+    }
+
+    protected virtual void DetermineLoot()
+    {
+        GameObject lootDrop = lootTable.DetermineLoot();
+        
+        if(lootDrop != null)
+        {
+            Instantiate(lootDrop, transform.position, lootDrop.transform.rotation);
+        }
     }
 }

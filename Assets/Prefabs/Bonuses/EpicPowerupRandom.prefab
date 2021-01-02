@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3390313054687177228}
   - component: {fileID: 3305589396748855498}
   - component: {fileID: 3303527710255423308}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4821,7 +4821,9 @@ GameObject:
   - component: {fileID: 3303864358640087110}
   - component: {fileID: 4442326440652038970}
   - component: {fileID: 8841019456909904325}
-  m_Layer: 0
+  - component: {fileID: -8875068839502551601}
+  - component: {fileID: 5415397247373618378}
+  m_Layer: 11
   m_Name: EpicPowerupRandom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9577,7 +9579,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.63672227, y: 0.63672245, z: 0.63672245}
+  m_Size: {x: 0.8, y: 0.63672245, z: 0.8}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8841019456909904325
 MonoBehaviour:
@@ -9595,6 +9597,35 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   statsUpgradeAsset: {fileID: 11400000, guid: 6f7ca8a3136e0b346a8f774c47cb87e0, type: 2}
+--- !u!54 &-8875068839502551601
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3393978954030772708}
+  serializedVersion: 2
+  m_Mass: 20
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
+--- !u!65 &5415397247373618378
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3393978954030772708}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.63672227, y: 0.63672245, z: 0.63672245}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3395258130649858738
 GameObject:
   m_ObjectHideFlags: 0
@@ -9606,7 +9637,7 @@ GameObject:
   - component: {fileID: 3390455031685693278}
   - component: {fileID: 3304818426782945792}
   - component: {fileID: 3303449430657516798}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -14,7 +14,11 @@ public class StatsBoostPickUp : MonoBehaviour
             return;
 
         if (other.CompareTag("Player"))
+        {
             GrantBonusToThePlayer(other.GetComponent<PlayerController>());
+            GetComponent<Rigidbody>().isKinematic = true;
+        }
+            
 
         Destroy(gameObject);
     }

@@ -43,6 +43,7 @@ public sealed class RangedEnemy : BaseEnemy
 
     [Header("Explode")]
     [SerializeField] private float radius = 5f;
+    [SerializeField] private LayerMask explodeLayerMask;
     private float power;
 
     int shotsFired;
@@ -229,14 +230,20 @@ public sealed class RangedEnemy : BaseEnemy
 
         if (CurrentHealth <= 0)
         {
-            Explode();
-            //    this.gameObject.SetActive(false);
-            deathParticle.SetActive(true);
-            deathParticle.gameObject.transform.SetParent(null);
-            CameraFollowTarget.Instance.ShakeCamera(camShakeDuration, camShakeMagnitude, false);
-            Destroy(deathParticle.gameObject, 2f);
-            Destroy(this.gameObject, 0f);
+            Die();
         }
+    }
+
+    private void Die()
+    {
+        DetermineLoot();
+        Explode();
+        //    this.gameObject.SetActive(false);
+        deathParticle.SetActive(true);
+        deathParticle.gameObject.transform.SetParent(null);
+        CameraFollowTarget.Instance.ShakeCamera(camShakeDuration, camShakeMagnitude, false);
+        Destroy(deathParticle.gameObject, 2f);
+        Destroy(this.gameObject, 0f);
     }
 
     private void Shoot()
@@ -262,7 +269,7 @@ public sealed class RangedEnemy : BaseEnemy
     public void Explode()
     {
         Vector3 explosionPos = thisTransform.position;
-        Collider[] colliders = Physics.OverlapSphere(explosionPos, radius);
+        Collider[] colliders = Physics.OverlapSphere(explosionPos, radius, explodeLayerMask);
         foreach (Collider hit in colliders)
         {
             Rigidbody rb = hit.GetComponent<Rigidbody>();

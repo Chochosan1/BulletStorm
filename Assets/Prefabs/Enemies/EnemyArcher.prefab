@@ -8932,6 +8932,7 @@ MonoBehaviour:
   canBeKnockedBack: 1
   deathParticle: {fileID: 1108406884804178334}
   frozenParticle: {fileID: 6672780806766784964}
+  lootTable: {fileID: 11400000, guid: 3e83e22115335124a89b7615a8daf8d9, type: 2}
   specialTypeUnit: 0
   projectileSpawnPositions: []
   multipleCastEveryXshots: 2
@@ -8947,6 +8948,9 @@ MonoBehaviour:
   camShakeDuration: 0.05
   camShakeMagnitude: 0.15
   radius: 5
+  explodeLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &9080581364976042408
 GameObject:
   m_ObjectHideFlags: 0

@@ -1564,6 +1564,7 @@ MonoBehaviour:
   canBeKnockedBack: 1
   deathParticle: {fileID: 6326091433680537118}
   frozenParticle: {fileID: 2041274855660224162}
+  lootTable: {fileID: 11400000, guid: 3e83e22115335124a89b7615a8daf8d9, type: 2}
   specialTypeUnit: 1
   healthBar: {fileID: 3075692262928716019}
   individualUnitCanvas: {fileID: 3075692263150342781}
@@ -1573,6 +1574,9 @@ MonoBehaviour:
   camShakeDuration: 0.05
   camShakeMagnitude: 0.15
   radius: 5
+  explodeLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &3075692262394056004
 GameObject:
   m_ObjectHideFlags: 0

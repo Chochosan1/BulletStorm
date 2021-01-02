@@ -280,7 +280,7 @@ Transform:
   - {fileID: 234767236}
   - {fileID: 355579979}
   m_Father: {fileID: 916130637}
-  m_RootOrder: 37
+  m_RootOrder: 35
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!205 &41823878
 LODGroup:
@@ -1555,6 +1555,40 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 310181361}
   m_Mesh: {fileID: 4300000, guid: 5b8619cd77cebea4e8da3a08467ce1a9, type: 3}
+--- !u!1 &321395173 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1777809524223868, guid: e7bba202897594746a7f03a90988577e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1370166561}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &321395174
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 321395173}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.88060635, y: 0.87923694, z: 0.88543737}
+  m_Center: {x: -0.0026221275, y: -0.0031023629, z: -0.0016980026}
+--- !u!114 &321395177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 321395173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63114736e5830f94b974ffd3de8e4708, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  acceptEntitiesFromLayers:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!4 &322341848 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4434221626337540, guid: cdcb19fde9e8cba40b7bff849baf2c1b,
@@ -2349,6 +2383,7 @@ MonoBehaviour:
   canBeKnockedBack: 1
   deathParticle: {fileID: 0}
   frozenParticle: {fileID: 0}
+  lootTable: {fileID: 0}
 --- !u!54 &415703445
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5345,9 +5380,9 @@ Transform:
   - {fileID: 875526524}
   - {fileID: 481339595}
   - {fileID: 1620237742}
+  - {fileID: 41823877}
   - {fileID: 1788377295}
   - {fileID: 322341848}
-  - {fileID: 41823877}
   - {fileID: 931754188}
   - {fileID: 981481300}
   - {fileID: 1414270978}
@@ -9698,7 +9733,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1845
+    m_Bits: 3893
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -13300,6 +13335,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3075692262374869384, guid: 2edbe1f85a660704f921cc6daa1cdffc,
+        type: 3}
+      propertyPath: explodeLayerMask.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3075692262374869387, guid: 2edbe1f85a660704f921cc6daa1cdffc,
         type: 3}
       propertyPath: m_Name
