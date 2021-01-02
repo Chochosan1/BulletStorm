@@ -14,7 +14,9 @@ public class UpgradeController : MonoBehaviour
 
     [Header("Bonuses")]
     public GameObject rotatingAroundPlayerProjectile;
+    public GameObject tornadoPrefab;
     public float oneShotChance = 0.03f;
+    public float tornadoChanceToSpawnOnDeath = 0.1f;
 
     [Header("Triple projectile")]
     public Transform tripleProjectileSpawnLeft;
@@ -29,7 +31,7 @@ public class UpgradeController : MonoBehaviour
 
     public static UpgradeController Instance;
 
-    public enum UpgradeType { TripleProjectile, ProjectileBackwards, ProjectilesSideways, RotatingProjectile, ProjectileHomingOnCloseEnemies, ProjectileAOE, SlowingProjectile, FreezingProjectile, DashDistanceIncreased, DashCooldownReduced, MaxHealthIncrease, AttackSpeedIncrease, AttackDamageIncrease, OneShotChance }
+    public enum UpgradeType { TripleProjectile, ProjectileBackwards, ProjectilesSideways, RotatingProjectile, ProjectileHomingOnCloseEnemies, ProjectileAOE, SlowingProjectile, FreezingProjectile, DashDistanceIncreased, DashCooldownReduced, MaxHealthIncrease, AttackSpeedIncrease, AttackDamageIncrease, OneShotChance, TornadoChanceOnDeath }
     private UpgradeType currentUpgrade;
 
     private Dictionary<UpgradeType, bool> upgradeStatusMap;
@@ -45,8 +47,6 @@ public class UpgradeController : MonoBehaviour
     private void Start()
     {
         upgradeStatusMap = new Dictionary<UpgradeType, bool>();
-
-        UnlockUpgrade(UpgradeType.OneShotChance);
     }
 
     ///<summary> Checks if the said enum exists in the dictionary with upgrades.</summary>

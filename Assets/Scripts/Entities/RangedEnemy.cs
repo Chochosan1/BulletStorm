@@ -244,6 +244,14 @@ public sealed class RangedEnemy : BaseEnemy
 
     private void Die()
     {
+        if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.TornadoChanceOnDeath))
+        {
+            if (Random.Range(0f, 1f) <= UpgradeController.Instance.tornadoChanceToSpawnOnDeath)
+            {
+                Instantiate(UpgradeController.Instance.tornadoPrefab, thisTransform.position, UpgradeController.Instance.tornadoPrefab.transform.rotation);
+            }
+        }
+
         DetermineLoot();
         Explode();
         //    this.gameObject.SetActive(false);
@@ -251,7 +259,7 @@ public sealed class RangedEnemy : BaseEnemy
         deathParticle.gameObject.transform.SetParent(null);
         CameraFollowTarget.Instance.ShakeCamera(camShakeDuration, camShakeMagnitude, false);
         Destroy(deathParticle.gameObject, 2f);
-        Destroy(this.gameObject, 0f);
+        Destroy(this.gameObject);    
     }
 
     private void Shoot()

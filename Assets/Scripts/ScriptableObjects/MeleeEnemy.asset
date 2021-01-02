@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54e3f30be0f7d1040a33d94ef95488c7, type: 3}
   m_Name: MeleeEnemy
   m_EditorClassIdentifier: 
-  maxHealth: 30
+  maxHealth: 500
   damage: 10
   knockbackPower: 150
