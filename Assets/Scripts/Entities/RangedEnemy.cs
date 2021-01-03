@@ -212,7 +212,8 @@ public sealed class RangedEnemy : BaseEnemy
         anim.SetBool("isRun", false);
         anim.SetBool("isAttack", false);
         anim.SetBool("isIdle", false);
-        agent.destination = thisTransform.position;
+        if (agent.enabled)
+            agent.destination = thisTransform.position;
     }
 
     public override void TakeDamage(float damage, IDamageable owner)
@@ -265,7 +266,7 @@ public sealed class RangedEnemy : BaseEnemy
         deathParticle.gameObject.transform.SetParent(null);
         CameraFollowTarget.Instance.ShakeCamera(camShakeDuration, camShakeMagnitude, false);
         Destroy(deathParticle.gameObject, 2f);
-        Destroy(this.gameObject);    
+        Destroy(this.gameObject);
     }
 
     private void Shoot()

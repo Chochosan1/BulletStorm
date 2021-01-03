@@ -209,7 +209,8 @@ public sealed class MeleeEnemy : BaseEnemy
         anim.SetBool("isRun", false);
         anim.SetBool("isAttack", false);
         anim.SetBool("isIdle", false);
-        agent.destination = thisTransform.position;
+        if (agent.enabled)
+            agent.destination = thisTransform.position;
     }
 
     public override void TakeDamage(float damage, IDamageable owner)

@@ -49,9 +49,6 @@ public class UpgradeController : MonoBehaviour
     private void Start()
     {
         upgradeStatusMap = new Dictionary<UpgradeType, bool>();
-
-        //  UnlockUpgrade(UpgradeType.FreezeZoneOnDeath);
-        UnlockUpgrade(UpgradeType.FreezingProjectile);
     }
 
     ///<summary> Checks if the said enum exists in the dictionary with upgrades.</summary>

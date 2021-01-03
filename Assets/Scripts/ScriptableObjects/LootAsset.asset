@@ -16,7 +16,7 @@ MonoBehaviour:
   lootTable:
   - lootObject: {fileID: 3393978954030772708, guid: 3eb19fc3f19141c4a8168860846d4fa3,
       type: 3}
-    lootWeight: 20
+    lootWeight: 10
   - lootObject: {fileID: 145218327276288509, guid: 357640697f3715e4ca170f796fd4535d,
       type: 3}
-    lootWeight: 100
+    lootWeight: 85
