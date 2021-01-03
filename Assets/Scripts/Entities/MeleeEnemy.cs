@@ -220,16 +220,9 @@ public sealed class MeleeEnemy : BaseEnemy
             ChooseNewTarget(false);
         }
 
-        individualUnitCanvas.gameObject.SetActive(true);
+        individualUnitCanvas?.gameObject.SetActive(true);
         CurrentHealth -= damage;
-        if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.OneShotChance))
-        {
-            if (Random.Range(0f, 1f) <= UpgradeController.Instance.oneShotChance)
-            {
-                CurrentHealth -= stats.maxHealth;
-                Debug.Log("ONE SHOT ROLL");
-            }
-        }
+        RollOnDamagedBonuses();
         healthBar.value = CurrentHealth;
 
         if (CurrentHealth <= 0)
@@ -239,6 +232,35 @@ public sealed class MeleeEnemy : BaseEnemy
     }
 
     private void Die()
+    {
+        RollOnDeathBonuses();
+
+        DetermineLoot();
+        Explode();
+        //   this.gameObject.SetActive(false);
+        GoToDeadState();
+        deathParticle.SetActive(true);
+        deathParticle.gameObject.transform.SetParent(null);
+        CameraFollowTarget.Instance.ShakeCamera(camShakeDuration, camShakeMagnitude, false);
+        Destroy(deathParticle.gameObject, 2f);
+        Destroy(this.gameObject);
+    }
+
+    ///<summary>Rolls the chances for all bonuses when the entity is damaged.</summary>
+    private void RollOnDamagedBonuses()
+    {
+        if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.OneShotChance))
+        {
+            if (Random.Range(0f, 1f) <= UpgradeController.Instance.oneShotChance)
+            {
+                CurrentHealth -= stats.maxHealth;
+                Debug.Log("ONE SHOT ROLL");
+            }
+        }
+    }
+
+    ///<summary>Rolls the chances for all bonuses when the entity is killed.</summary>
+    private void RollOnDeathBonuses()
     {
         if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.TornadoChanceOnDeath))
         {
@@ -255,16 +277,6 @@ public sealed class MeleeEnemy : BaseEnemy
                 Instantiate(UpgradeController.Instance.freezeZonePrefab, thisTransform.position, UpgradeController.Instance.freezeZonePrefab.transform.rotation);
             }
         }
-
-        DetermineLoot();
-        Explode();
-        //   this.gameObject.SetActive(false);
-        GoToDeadState();
-        deathParticle.SetActive(true);
-        deathParticle.gameObject.transform.SetParent(null);
-        CameraFollowTarget.Instance.ShakeCamera(camShakeDuration, camShakeMagnitude, false);
-        Destroy(deathParticle.gameObject, 2f);
-        Destroy(this.gameObject);
     }
 
     public void Explode()

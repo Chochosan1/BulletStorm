@@ -18,7 +18,7 @@ public class LootContainer : ScriptableObject
         [Tooltip("The prefab that will drop.")]
         public GameObject lootObject;
         [Range(0, 100)]
-        [Tooltip("The chance to drop this specific item. Chance should be between 0-100.")]
+        [Tooltip("The chance to drop this specific item. Weight should be between 0-100. A higher number results in a higher probability for the item to drop.")]
         public float lootWeight;
     }
 

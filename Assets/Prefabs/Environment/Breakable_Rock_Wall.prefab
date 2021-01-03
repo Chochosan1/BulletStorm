@@ -131,5 +131,7 @@ MonoBehaviour:
   secondPureEnemySenseRange: 30
   stats: {fileID: 11400000, guid: 0a168779a1a17e04f80bcd4edb5d7ec8, type: 2}
   canBeKnockedBack: 0
-  deathParticle: {fileID: 0}
+  deathParticle: {fileID: 4076143176612502848, guid: 75191ace10846a54697c9908d86376d9,
+    type: 3}
   frozenParticle: {fileID: 0}
+  lootTable: {fileID: 0}

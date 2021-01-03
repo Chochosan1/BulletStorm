@@ -44,9 +44,14 @@ public class BaseEnemy : MonoBehaviour, IDamageable
     {
         CurrentHealth -= damage;
 
-        if(CurrentHealth <= 0)
+        if (CurrentHealth <= 0)
         {
-            this.gameObject.SetActive(false);
+          //  this.gameObject.SetActive(false);
+
+            if (deathParticle != null)
+                Instantiate(deathParticle, thisTransform.position, deathParticle.transform.rotation);
+
+            Destroy(this.gameObject);
         }
     }
 
@@ -125,19 +130,20 @@ public class BaseEnemy : MonoBehaviour, IDamageable
 
     public virtual void Freeze(float duration, float chance)
     {
-    //    throw new System.NotImplementedException();
+        //    throw new System.NotImplementedException();
     }
 
     public virtual void GetSlowed(float duration, float slowPower, float chance)
     {
-   //     throw new System.NotImplementedException();
+        //     throw new System.NotImplementedException();
     }
 
+    /// <summary>Determines what loot should drop.</summary>
     protected virtual void DetermineLoot()
     {
         GameObject lootDrop = lootTable?.DetermineLoot();
-        
-        if(lootDrop != null)
+
+        if (lootDrop != null)
         {
             Instantiate(lootDrop, transform.position, lootDrop.transform.rotation);
         }
