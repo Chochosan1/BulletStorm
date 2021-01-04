@@ -51,13 +51,19 @@ public class UpgradeController : MonoBehaviour
         upgradeStatusMap = new Dictionary<UpgradeType, bool>();
     }
 
-    ///<summary> Checks if the said enum exists in the dictionary with upgrades.</summary>
+    ///<summary>Checks if the said enum exists in the dictionary with upgrades.</summary>
     public bool IsUpgradeUnlocked(UpgradeType upgradeType)
     {
         return upgradeStatusMap.ContainsKey(upgradeType);
     }
 
-    ///<summary> Adds the said enum to a dictionary. One upgrade can be added only once. Fires the OnUpgradeLearned event.</summary>
+    ///<summary>Checks if the said string (after it gets parsed to an enum) exists in the dictionary with upgrades.</summary>
+    public bool IsUpgradeUnlocked(string upgradeString)
+    {
+        return IsUpgradeUnlocked((UpgradeType)Enum.Parse(typeof(UpgradeType), upgradeString));
+    }
+
+    ///<summary>Adds the said enum to a dictionary. One upgrade can be added only once. Fires the OnUpgradeLearned event.</summary>
     public void UnlockUpgrade(UpgradeType upgradeType)
     {
         if (IsUpgradeUnlocked(upgradeType))
@@ -70,7 +76,7 @@ public class UpgradeController : MonoBehaviour
     }
 
 
-    ///<summary> Used by the upgrade buttons. Parses the string to an enum and then sends it to the UnlockUpgrade() method.</summary>
+    ///<summary>Used by the upgrade buttons. Parses the string to an enum and then sends it to the UnlockUpgrade() method.</summary>
     public void ButtonUpgradeChoice(string upgradeString)
     {
         UnlockUpgrade((UpgradeType)Enum.Parse(typeof(UpgradeType), upgradeString));
