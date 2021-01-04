@@ -16,16 +16,23 @@ public class ScaleUIElements : MonoBehaviour
     public void Resize()
     {
         RectTransform[] rectArray = GetComponentsInChildren<RectTransform>();
-   //     Debug.Log("SCREEN WIDTH: " + Screen.width + "\n" + "SCREEN HEIGHT: " + Screen.height);
-        int counter = 0;
+        //     Debug.Log("SCREEN WIDTH: " + Screen.width + "\n" + "SCREEN HEIGHT: " + Screen.height);
+      //  int counter = 0;
         foreach (RectTransform rt in rectArray)
         {
-      //      Debug.Log(Screen.height * childHeightScreenRatio);
-            if (counter > 0)
-                rt.sizeDelta = new Vector2(Screen.width * childWidthScreenRatio, Screen.height * childHeightScreenRatio);
+            //resize UI objects with this tag to be a square and fit inside the parent object
+            if (rt.CompareTag("ResizeImage"))
+            {
+                rt.sizeDelta = new Vector2(rt.parent.GetComponent<RectTransform>().sizeDelta.y, rt.parent.GetComponent<RectTransform>().sizeDelta.y);
+                continue;
+            }
+
+            //      Debug.Log(Screen.height * childHeightScreenRatio);
+         //   if (counter > 0)
+        //        rt.sizeDelta = new Vector2(Screen.width * childWidthScreenRatio, Screen.height * childHeightScreenRatio);
 
 
-            counter++;
+       //     counter++;
         }
     }
 }

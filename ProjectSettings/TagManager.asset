@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - FxTemporaire
+  - ExcludeResize
+  - DontResize
+  - ResizeImage
   layers:
   - Default
   - TransparentFX
