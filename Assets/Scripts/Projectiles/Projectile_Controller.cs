@@ -30,7 +30,11 @@ public class Projectile_Controller : MonoBehaviour
     [SerializeField] private GameObject mainParticleAoE;
     [SerializeField] private GameObject hitParticleAoE;
     [SerializeField] private GameObject muzzleParticleAoE;
+
+    [Header("Non-scale with player properties")]
+    [Tooltip("Property to make the projectile have a chance to freeze on hit. Use only if the projectile does not scale with player stats.")]
     [SerializeField] private bool is_FreezingProjectile;
+    [Tooltip("Property to make the projectile have a chance to slow on hit. Use only if the projectile does not scale with player stats.")]
     [SerializeField] private bool is_SlowingProjectile;
     private bool is_AoE_Projectile;
     private bool is_HomingOnCloseEnemy;
@@ -180,7 +184,7 @@ public class Projectile_Controller : MonoBehaviour
             {
                 if (is_FreezingProjectile)
                 {
-                    tempInterface.Freeze(2.5f, stats.chanceToFreeze);
+                    tempInterface.Freeze(stats.freezeDuration, stats.chanceToFreeze);
                 }
 
                 if(is_SlowingProjectile)

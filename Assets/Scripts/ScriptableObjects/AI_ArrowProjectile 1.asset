@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   travelSpeed: 30
   damage: 5
-  chanceToFreeze: 0
+  knockbackPower: 0
+  chanceToFreeze: 0.01
+  freezeDuration: 2.5
   chanceToSlow: 0.75
   slowDuration: 1.5
   slowMultiplier: 0.65

@@ -11,6 +11,10 @@ public class UI_Manager : MonoBehaviour
 
     [Header("Buttons")]
     [SerializeField] private List<GameObject> allButtons;
+    [SerializeField] private Material normalMat;
+    [SerializeField] private Material highlightMat;
+
+ 
 
     private void Awake()
     {
@@ -50,6 +54,16 @@ public class UI_Manager : MonoBehaviour
 
         //maybe display the upgrade type
         upgradesPanel.SetActive(false);
+    }
+
+    public void OnUpgradeButtonHover(Image image)
+    {
+        image.material = highlightMat;
+    }
+
+    public void OnUpgradeButtonLeaveHover(Image image)
+    {
+        image.material = normalMat;
     }
 
     #region HandleRandomUpgradeButtonDisplay

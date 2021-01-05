@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private Transform individualUnitCanvas;
     [SerializeField] private GameObject healEffect;
     [SerializeField] private GameObject dashEffect;
+    [SerializeField] private GameObject frozenParticle;
     private Collider thisColl;
 
     [Header("General stats")]
@@ -443,7 +444,22 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public void Freeze(float duration, float chance)
     {
-        //   throw new System.NotImplementedException();
+        if (isPlayerDisabled)
+            return;
+
+        float freezeChanceRolled = Random.Range(0f, 1f);
+
+        if (freezeChanceRolled <= chance)
+            StartCoroutine(GetFrozen(duration));
+    }
+
+    private IEnumerator GetFrozen(float duration)
+    {
+        isPlayerDisabled = true;
+        frozenParticle.SetActive(true);
+        yield return new WaitForSeconds(duration);
+        frozenParticle.SetActive(false);
+        isPlayerDisabled = false;
     }
 
     private IEnumerator Slow(float duration, float slowMultiplier)
