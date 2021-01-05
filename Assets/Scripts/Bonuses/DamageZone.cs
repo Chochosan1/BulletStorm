@@ -9,7 +9,10 @@ public class DamageZone : MonoBehaviour
     [Header("Properties")]
     [SerializeField] private LayerMask acceptEntitiesFromLayers;
     [SerializeField] private MovableComponent movableComponent;
-    [SerializeField] private SpecialEffects specialEffects;
+    [Tooltip("The special effects trigger only once when the object spawns.")]
+    [SerializeField] private SpecialEffectsOnSpawn specialEffectsOnSpawn;
+    [Tooltip("This component is affected by the damage type property (OnTriggerEnter or OnTriggerStay). The special effect will get applied every time this object deals damage.")]
+    [SerializeField] private SpecialEffectsOnTouch specialEffectsOnTouch;
     [SerializeField] private DamageType damageType = DamageType.OnTriggerEnter;
     [SerializeField] private float damageCooldown = 0.5f;
     [SerializeField] private float damagePerTick = 5f;
@@ -21,20 +24,7 @@ public class DamageZone : MonoBehaviour
     {
         thisTransform = transform;
 
-        switch(specialEffects.specialEffect)
-        {
-            case SpecialEffects.PossibleSpecialEffects.Freeze:
-                Collider[] firstHitColliders = Physics.OverlapSphere(thisTransform.position, specialEffects.specialEffectDetectionRange, specialEffects.specialEffectDetectionMask);
-                if (firstHitColliders.Length > 0)
-                {
-                    foreach(Collider col in firstHitColliders)
-                    {
-                        col.gameObject?.GetComponent<IDamageable>().Freeze(2f, 1f);
-                    }
-                }
-                Destroy(this.gameObject, 3f);
-                break;
-        }
+        DetermineSpecialEffectOnSpawn();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -44,7 +34,10 @@ public class DamageZone : MonoBehaviour
             if (acceptEntitiesFromLayers != (acceptEntitiesFromLayers | (1 << other.gameObject.layer)))
                 return;
 
-            other.gameObject.GetComponent<IDamageable>()?.TakeDamage(damagePerTick, null);
+            IDamageable tempDamageable = other.GetComponent<IDamageable>();
+            tempDamageable?.TakeDamage(damagePerTick, null);
+
+            DetermineSpecialEffectOnTouch(tempDamageable);
         }
     }
 
@@ -56,52 +49,82 @@ public class DamageZone : MonoBehaviour
                 return;
 
             damageTimestamp = Time.time + damageCooldown;
-            other.gameObject.GetComponent<IDamageable>()?.TakeDamage(damagePerTick, null);
+            IDamageable tempDamageable = other.GetComponent<IDamageable>();
+            tempDamageable?.TakeDamage(damagePerTick, null);
+
+            DetermineSpecialEffectOnTouch(tempDamageable);
         }
     }
 
     private void Update()
     {
-        if(movableComponent.isMovable)
+        if (movableComponent.isMovable)
         {
             thisTransform.Translate(moveDir * movableComponent.moveSpeed * Time.deltaTime, Space.World);
 
-            if(moveDir == Vector3.zero)
+            if (moveDir == Vector3.zero)
             {
                 DetermineMoveDirection();
             }
         }
     }
 
-    [System.Serializable]
-    public class SpecialEffects
+    /// <summary>
+    /// Determine what special effect to cast when the object deals damage (OnTriggerEnter or OnTriggerStay).
+    /// </summary>
+    private void DetermineSpecialEffectOnTouch(IDamageable tempDamageable)
     {
-        public enum PossibleSpecialEffects { None, Freeze };
-        public PossibleSpecialEffects specialEffect;
-
-        public float specialEffectDetectionRange;
-        public LayerMask specialEffectDetectionMask;
-    }
-
-    [System.Serializable]
-    public class MovableComponent
-    {
-        public bool isMovable;
-        public float targetDetectionRange;
-        public LayerMask detectionMask;
-        public float moveSpeed;
-        public enum PossibleMoveDirections { LocalForward, LocalBackwards, LocalLeft, LocalRight, LocalUp };
-        public PossibleMoveDirections defaultMoveDirIfNoTarget;
-    }
-
-    private void OnBecameInvisible()
-    {
-        if(movableComponent.isMovable)
+        if (specialEffectsOnTouch.specialEffect != SpecialEffectsOnTouch.PossibleSpecialEffects.None)
         {
-            Destroy(this.gameObject, 1f);
+            switch (specialEffectsOnTouch.specialEffect)
+            {
+                case SpecialEffectsOnTouch.PossibleSpecialEffects.Freeze:
+                    tempDamageable.Freeze(2.5f, specialEffectsOnTouch.chanceToTriggerEffect);
+                    break;
+                case SpecialEffectsOnTouch.PossibleSpecialEffects.Slow:
+                    tempDamageable.GetSlowed(1f, 0.5f, specialEffectsOnTouch.chanceToTriggerEffect);
+                    break;
+            }
         }
     }
 
+    /// <summary>
+    /// Determine what special effect to cast when the object first spawns.
+    /// </summary>
+    private void DetermineSpecialEffectOnSpawn()
+    {
+        switch (specialEffectsOnSpawn.specialEffect)
+        {
+            case SpecialEffectsOnSpawn.PossibleSpecialEffects.Freeze:
+                Collider[] firstHitColliders = Physics.OverlapSphere(thisTransform.position, specialEffectsOnSpawn.specialEffectDetectionRange, acceptEntitiesFromLayers);
+                if (firstHitColliders.Length > 0)
+                {
+                    foreach (Collider col in firstHitColliders)
+                    {
+                        col.gameObject?.GetComponent<IDamageable>().Freeze(2f, 1f);
+                    }
+                }
+                if (specialEffectsOnSpawn.destroyAfterEffect)
+                    Destroy(this.gameObject, 3f);
+                break;
+            case SpecialEffectsOnSpawn.PossibleSpecialEffects.Slow:
+                firstHitColliders = Physics.OverlapSphere(thisTransform.position, specialEffectsOnSpawn.specialEffectDetectionRange, acceptEntitiesFromLayers);
+                if (firstHitColliders.Length > 0)
+                {
+                    foreach (Collider col in firstHitColliders)
+                    {
+                        col.gameObject?.GetComponent<IDamageable>().GetSlowed(2f, 0.6f, 1f);
+                    }
+                }
+                if (specialEffectsOnSpawn.destroyAfterEffect)
+                    Destroy(this.gameObject, 3f);
+                break;
+        }
+    }
+
+    /// <summary>
+    /// The object will move in the general direction of the closest enemy OR if no enemy available it will go into a preset default direction.
+    /// </summary>
     private void DetermineMoveDirection()
     {
         if (movableComponent.isMovable)
@@ -132,6 +155,52 @@ public class DamageZone : MonoBehaviour
                         break;
                 }
             }
+        }
+    }
+
+    [System.Serializable]
+    public class SpecialEffectsOnSpawn
+    {
+        public enum PossibleSpecialEffects { None, Freeze, Slow };
+        [Tooltip("The special effects trigger only once when the object spawns.")]
+        public PossibleSpecialEffects specialEffect;
+
+        [Tooltip("Area of effect range of the special effect upon spawning the object.")]
+        public float specialEffectDetectionRange;
+        public bool destroyAfterEffect = true;
+    }
+
+    [System.Serializable]
+    public class MovableComponent
+    {
+        [Tooltip("Should this object move?")]
+        public bool isMovable;
+        [Tooltip("Initial target it should move towards. Takes only the general direction and will not follow the target if it moves.")]
+        public float targetDetectionRange;
+        [Tooltip("Layer to detect enemies in.")]
+        public LayerMask detectionMask;
+        public float moveSpeed;
+        public enum PossibleMoveDirections { LocalForward, LocalBackwards, LocalLeft, LocalRight, LocalUp };
+        public PossibleMoveDirections defaultMoveDirIfNoTarget;
+    }
+
+    [System.Serializable]
+    public class SpecialEffectsOnTouch
+    {
+        public enum PossibleSpecialEffects { None, Freeze, Slow };
+        [Tooltip("The special effects trigger whenever this object deals damage.")]
+        public PossibleSpecialEffects specialEffect;
+
+        [Tooltip("The chance to trigger the special effect when dealing damage.")]
+        [Range(0f, 1f)]
+        public float chanceToTriggerEffect;
+    }
+
+    private void OnBecameInvisible()
+    {
+        if (movableComponent.isMovable)
+        {
+            Destroy(this.gameObject, 1f);
         }
     }
 }
