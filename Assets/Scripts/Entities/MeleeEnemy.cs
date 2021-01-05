@@ -215,12 +215,17 @@ public sealed class MeleeEnemy : BaseEnemy
 
     public override void TakeDamage(float damage, IDamageable owner)
     {
+        if (this.gameObject == null)
+            return;
+
         if (currentTarget == null)
         {
             ChooseNewTarget(false);
         }
 
-        individualUnitCanvas?.gameObject.SetActive(true);
+        if (individualUnitCanvas != null)
+            individualUnitCanvas.gameObject.SetActive(true);
+
         CurrentHealth -= damage;
         RollOnDamagedBonuses();
         healthBar.value = CurrentHealth;

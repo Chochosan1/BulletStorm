@@ -101,7 +101,7 @@ public class DamageZone : MonoBehaviour
                 {
                     foreach (Collider col in firstHitColliders)
                     {
-                        col.gameObject?.GetComponent<IDamageable>().Freeze(2f, 1f);
+                        col.gameObject?.GetComponent<IDamageable>()?.Freeze(2f, 1f);
                     }
                 }
                 if (specialEffectsOnSpawn.destroyAfterEffect)
@@ -113,7 +113,7 @@ public class DamageZone : MonoBehaviour
                 {
                     foreach (Collider col in firstHitColliders)
                     {
-                        col.gameObject?.GetComponent<IDamageable>().GetSlowed(2f, 0.6f, 1f);
+                        col.gameObject?.GetComponent<IDamageable>()?.GetSlowed(2f, 0.6f, 1f);
                     }
                 }
                 if (specialEffectsOnSpawn.destroyAfterEffect)
