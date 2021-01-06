@@ -9460,8 +9460,8 @@ MonoBehaviour:
   mainParticleAoE: {fileID: 0}
   hitParticleAoE: {fileID: 0}
   muzzleParticleAoE: {fileID: 0}
-  is_FreezingProjectile: 1
-  is_SlowingProjectile: 1
+  is_FreezingProjectile: 0
+  is_SlowingProjectile: 0
 --- !u!65 &6465191670653763412
 BoxCollider:
   m_ObjectHideFlags: 0

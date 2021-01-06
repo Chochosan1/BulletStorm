@@ -15,8 +15,8 @@ MonoBehaviour:
   travelSpeed: 30
   damage: 5
   knockbackPower: 0
-  chanceToFreeze: 0.01
+  chanceToFreeze: 1
   freezeDuration: 2.5
-  chanceToSlow: 0.75
+  chanceToSlow: 1
   slowDuration: 1.5
   slowMultiplier: 0.65

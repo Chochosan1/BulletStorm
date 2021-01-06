@@ -188,13 +188,15 @@ public sealed class MeleeEnemy : BaseEnemy
     private void Attack()
     {
         attackTimestamp = Time.time + attackCooldown;
-        currentTargetDamageable?.TakeDamage(stats.damage, this);
+        if (currentTargetDamageable != null && currentTarget != null)
+            currentTargetDamageable?.TakeDamage(stats.damage, this);
         canExitAttackState = true;
     }
 
     private void AttackAndExplode()
     {
-        currentTargetDamageable.TakeDamage(stats.damage, this);
+        if (currentTargetDamageable != null && currentTarget != null)
+            currentTargetDamageable?.TakeDamage(stats.damage, this);
         Explode();
         this.gameObject.SetActive(false);
     }
@@ -215,9 +217,6 @@ public sealed class MeleeEnemy : BaseEnemy
 
     public override void TakeDamage(float damage, IDamageable owner)
     {
-        if (this.gameObject == null)
-            return;
-
         if (currentTarget == null)
         {
             ChooseNewTarget(false);

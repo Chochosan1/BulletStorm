@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private GameObject healEffect;
     [SerializeField] private GameObject dashEffect;
     [SerializeField] private GameObject frozenParticle;
+    [SerializeField] private GameObject slowedMovementParticle;
+    [SerializeField] private GameObject normalMovementParticle;
     private Collider thisColl;
 
     [Header("General stats")]
@@ -465,10 +467,14 @@ public class PlayerController : MonoBehaviour, IDamageable
     private IEnumerator Slow(float duration, float slowMultiplier)
     {
         isCurrentlySlowed = true;
+        slowedMovementParticle.SetActive(true);
+        normalMovementParticle.SetActive(false);
         float originalSpeed = movementSpeed;
         movementSpeed *= slowMultiplier;
         yield return new WaitForSeconds(duration);
         movementSpeed = originalSpeed;
+        slowedMovementParticle.SetActive(false);
+        normalMovementParticle.SetActive(true);
         isCurrentlySlowed = false;
     }
 
