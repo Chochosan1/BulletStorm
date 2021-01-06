@@ -237,6 +237,9 @@ public sealed class MeleeEnemy : BaseEnemy
 
     private void Die()
     {
+        if (currentStateAI == StatesAI.Dead)
+            return;
+
         RollOnDeathBonuses();
 
         DetermineLoot();

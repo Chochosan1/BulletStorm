@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private GameObject frozenParticle;
     [SerializeField] private GameObject slowedMovementParticle;
     [SerializeField] private GameObject normalMovementParticle;
+    [SerializeField] private GameSounds gameSoundsAsset;
     private Collider thisColl;
 
     [Header("General stats")]

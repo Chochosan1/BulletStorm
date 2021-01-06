@@ -11,6 +11,7 @@ public class Projectile_Controller : MonoBehaviour
     [Header("General")]
     [SerializeField] private LayerMask affectableLayers;
     [SerializeField] private ProjectileStats stats;
+    [SerializeField] private ProjectileSounds soundsAsset;
     [SerializeField] private GameObject mainParticleDefault;
     [SerializeField] private GameObject hitParticleDefault;
     [SerializeField] private GameObject arrowVisual;
@@ -49,6 +50,7 @@ public class Projectile_Controller : MonoBehaviour
     private IDamageable ownerOfProjectile;
     private Transform thisTransform, targetTransform;
     private Vector3 dir;
+    private AudioSource audioSource;
 
     //upon hitting a target set to true and disable the rotation of the projectile else it looks strangely
     //when called again from the pool set to false
@@ -57,6 +59,7 @@ public class Projectile_Controller : MonoBehaviour
 
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         thisTransform = transform;
         //  rb.AddForce(transform.forward * stats.travelSpeed, ForceMode.Impulse);
         StartCoroutine(DeactivateObjectAfter(projectileLifetime));
@@ -115,6 +118,8 @@ public class Projectile_Controller : MonoBehaviour
             StartCoroutine(ActivateAndStopMuzzleParticle());
         }
         mainParticleToUse.SetActive(true);
+
+        audioSource.PlayOneShot(soundsAsset.shootProjectileSound);
     }
 
     public void ResetProjectileFromPool(Transform posToResetAt)
@@ -136,6 +141,11 @@ public class Projectile_Controller : MonoBehaviour
         mainParticleToUse = mainParticleDefault;
         hitParticleToUse = hitParticleDefault;
         muzzleParticleToUse = muzzleParticleDefault;
+
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
+
+        audioSource.PlayOneShot(soundsAsset.shootProjectileSound);
 
         if (isScaleWithPlayerStats)
         {
@@ -285,6 +295,8 @@ public class Projectile_Controller : MonoBehaviour
             return;
         hitParticleToUse.SetActive(true);
         mainParticleToUse.SetActive(false);
+    
+        audioSource.PlayOneShot(soundsAsset.hitProjectileSound);
         //   rb.velocity = Vector3.zero;
         StartCoroutine(DeactivateObjectAfter(hitParticleDuration));
     }
