@@ -43,6 +43,7 @@ public class Projectile_Controller : MonoBehaviour
 
     private float chooseNewTargetEveryXSeconds = 0.1f;
     private float chooseNewTargetTimestamp;
+    private float flySpeed;
 
     private GameObject mainParticleToUse, hitParticleToUse, muzzleParticleToUse;
 
@@ -83,6 +84,8 @@ public class Projectile_Controller : MonoBehaviour
         hitParticleToUse = hitParticleDefault;
         muzzleParticleToUse = muzzleParticleDefault;
 
+        flySpeed = stats.travelSpeed;
+
         if (isScaleWithPlayerStats)
         {
             if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileHomingOnCloseEnemies))
@@ -110,6 +113,11 @@ public class Projectile_Controller : MonoBehaviour
             if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.SlowingProjectile))
             {
                 is_SlowingProjectile = true;
+            }
+
+            if(UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileSpeed))
+            {
+                flySpeed *= 1.5f;
             }
         }
 
@@ -141,6 +149,8 @@ public class Projectile_Controller : MonoBehaviour
         mainParticleToUse = mainParticleDefault;
         hitParticleToUse = hitParticleDefault;
         muzzleParticleToUse = muzzleParticleDefault;
+
+        flySpeed = stats.travelSpeed;
 
         if (audioSource == null)
             audioSource = GetComponent<AudioSource>();
@@ -174,6 +184,11 @@ public class Projectile_Controller : MonoBehaviour
             if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.SlowingProjectile))
             {
                 is_SlowingProjectile = true;
+            }
+
+            if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileSpeed))
+            {
+                flySpeed *= 1.5f;
             }
         }
 
@@ -242,11 +257,11 @@ public class Projectile_Controller : MonoBehaviour
                 thisTransform.rotation = Quaternion.Slerp(thisTransform.rotation, Quaternion.LookRotation(dir), 10f * Time.deltaTime);
             // thisTransform.rotation = Quaternion.LookRotation(dir);
 
-            thisTransform.Translate(dir.normalized * stats.travelSpeed * Time.deltaTime, Space.World);
+            thisTransform.Translate(dir.normalized * flySpeed * Time.deltaTime, Space.World);
         }
         else
         {
-            thisTransform.Translate(thisTransform.forward * stats.travelSpeed * Time.deltaTime, Space.World);
+            thisTransform.Translate(thisTransform.forward * flySpeed * Time.deltaTime, Space.World);
 
             if (is_HomingOnCloseEnemy && Time.time >= chooseNewTargetTimestamp)
             {

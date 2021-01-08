@@ -410,7 +410,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         //testing shows that the attack anim speed should be half of the attack speed of the player
         attackAnimSpeed = shootRate * 0.5f;
 
-        //max attack animation speed should be capped at 2.5 as it seems weird to more than that
+        //max attack animation speed should be capped at 2.5 as it seems weird to be more than that
         if (attackAnimSpeed >= 3f)
             attackAnimSpeed = 3f;
         else if (attackAnimSpeed <= 0.5f)
