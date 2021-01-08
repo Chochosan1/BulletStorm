@@ -7,7 +7,9 @@ public class UI_Manager : MonoBehaviour
 {
     public static UI_Manager Instance;
 
+    [Header("Panels")]
     [SerializeField] private GameObject upgradesPanel;
+    [SerializeField] private GameObject unlockedUpgradesPanel;
 
     [Header("Buttons")]
     [SerializeField] private List<GameObject> allButtons;
@@ -121,6 +123,11 @@ public class UI_Manager : MonoBehaviour
         {
             upgradesPanel.SetActive(!upgradesPanel.activeSelf);
             upgradesPanel.GetComponent<ScaleUIElements>().Resize();
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            unlockedUpgradesPanel.SetActive(!unlockedUpgradesPanel.activeSelf);
         }
     }
 }
