@@ -77,6 +77,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
             CalculateShootAnimSpeed();
 
+            Chochosan.CustomEventManager.OnPlayerStatsChanged?.Invoke("shootRate");
             //    Debug.Log("SR" + shootRate);
         }
     }
@@ -87,10 +88,13 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         set
         {
+            float amountHealthWillIncreaseBy = value - maxHealth; //get the amount health will increase by
             maxHealth = value;
             healthBar.maxValue = maxHealth;
-            CurrentHealth += value; //heal the player for the amount of bonus max health
+            CurrentHealth += amountHealthWillIncreaseBy; //heal the player for the amount of bonus max health
                                     //     Debug.Log("HP" + maxHealth);
+
+            Chochosan.CustomEventManager.OnPlayerStatsChanged?.Invoke("maxHealth");
         }
     }
 
@@ -115,17 +119,20 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             attackDamage = value;
             //    Debug.Log("AD" + attackDamage);
+            Chochosan.CustomEventManager.OnPlayerStatsChanged?.Invoke("attackDamage");
         }
     }
 
 
-    private float CurrentHealth
+    public float CurrentHealth
     {
         get => currentHealth;
         set
         {
             currentHealth = value >= maxHealth ? maxHealth : value;
             healthBar.value = currentHealth;
+
+            Chochosan.CustomEventManager.OnPlayerStatsChanged?.Invoke("currentHealth");
             //     Debug.Log(currentHealth);
         }
     }
@@ -162,7 +169,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         ShootRate = shootRate;
         CurrentHealth = maxHealth;
         MaxHealth = maxHealth;
-        CurrentHealth = currentHealth;
+      //  CurrentHealth = currentHealth;
 
         //pool all player projectiles
         for (int i = 0; i < 150; i++)
@@ -387,19 +394,19 @@ public class PlayerController : MonoBehaviour, IDamageable
                 dashCooldown /= 2f;
                 break;
             case UpgradeController.UpgradeType.MaxHealthIncrease:
-                MaxHealth += 100f;
+                MaxHealth *= 2f;
                 break;
             case UpgradeController.UpgradeType.AttackDamageIncrease:
-                AttackDamage += 6f;
+                AttackDamage *= 1.5f;
                 break;
             case UpgradeController.UpgradeType.AttackSpeedIncrease:
                 if(ShootRate >= maxShootRate)
                 {
-                    AttackDamage += 4f;
+                    AttackDamage *= 1.15f;
                 }
                 else
                 {
-                    ShootRate += 2f;
+                    ShootRate *= 2f;
                 }
                 break;
         }

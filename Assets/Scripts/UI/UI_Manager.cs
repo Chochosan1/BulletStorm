@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UI_Manager : MonoBehaviour
 {
@@ -13,10 +14,19 @@ public class UI_Manager : MonoBehaviour
 
     [Header("Buttons")]
     [SerializeField] private List<GameObject> allButtons;
+
+    [Header("Hover materials")]
     [SerializeField] private Material normalMat;
     [SerializeField] private Material highlightMat;
 
- 
+    [Header("Stats UI")]
+    [SerializeField] private GameObject statsPanel;
+    [SerializeField] private TextMeshProUGUI maxHealthText;
+    [SerializeField] private TextMeshProUGUI currentHealthText;
+    [SerializeField] private TextMeshProUGUI shootRateText;
+    [SerializeField] private TextMeshProUGUI attackDamageText;
+
+
 
     private void Awake()
     {
@@ -24,18 +34,17 @@ public class UI_Manager : MonoBehaviour
         {
             Instance = this;
         }
-    }
 
-    private void Start()
-    {
         Chochosan.CustomEventManager.OnUpgradePanelRequired += OpenUpgradePanel;
         Chochosan.CustomEventManager.OnUpgradeLearned += CloseUpgradePanel;
+        Chochosan.CustomEventManager.OnPlayerStatsChanged += OnPlayerStatsChanged;
     }
 
     private void OnDisable()
     {
         Chochosan.CustomEventManager.OnUpgradePanelRequired -= OpenUpgradePanel;
         Chochosan.CustomEventManager.OnUpgradeLearned -= CloseUpgradePanel;
+        Chochosan.CustomEventManager.OnPlayerStatsChanged -= OnPlayerStatsChanged;
     }
 
     public void OpenUpgradePanel()
@@ -68,6 +77,26 @@ public class UI_Manager : MonoBehaviour
         image.material = normalMat;
     }
 
+    private void OnPlayerStatsChanged(string stats)
+    {
+        switch (stats)
+        {
+            case "maxHealth":
+                maxHealthText.text = PlayerController.Instance.MaxHealth.ToString("F0");
+                break;
+            case "currentHealth":
+                currentHealthText.text = PlayerController.Instance.CurrentHealth.ToString("F0");
+                break;
+            case "attackDamage":
+                attackDamageText.text = PlayerController.Instance.AttackDamage.ToString("F1");
+                break;
+            case "shootRate":
+                shootRateText.text = PlayerController.Instance.ShootRate.ToString("F1");
+                break;
+        }
+
+    }
+
     #region HandleRandomUpgradeButtonDisplay
     private void CalculateUpgradeButtonsToShow()
     {
@@ -90,7 +119,7 @@ public class UI_Manager : MonoBehaviour
                 Debug.Log("MAX NUMBER OF UPGRADES REACHED!");
                 return;
             }
-               
+
 
             int chosenBtn = Random.Range(0, allButtons.Count);
 
@@ -124,10 +153,13 @@ public class UI_Manager : MonoBehaviour
             upgradesPanel.SetActive(!upgradesPanel.activeSelf);
             upgradesPanel.GetComponent<ScaleUIElements>().Resize();
         }
-
-        if (Input.GetKeyDown(KeyCode.P))
+        else if (Input.GetKeyDown(KeyCode.P))
         {
             unlockedUpgradesPanel.SetActive(!unlockedUpgradesPanel.activeSelf);
+        }
+        else if(Input.GetKeyDown(KeyCode.I))
+        {
+            statsPanel.SetActive(!statsPanel.activeSelf);
         }
     }
 }

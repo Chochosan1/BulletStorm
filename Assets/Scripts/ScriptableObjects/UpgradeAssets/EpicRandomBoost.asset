@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 037ff910e6ef6d34d9122a758b0740b4, type: 3}
   m_Name: EpicRandomBoost
   m_EditorClassIdentifier: 
-  attackDamageFlatBonus: 3
-  attackDamagePercentBonus: 0.3
+  attackDamageFlatBonus: 0.5
+  attackDamagePercentBonus: 0.1
   healthFlatBonus: 50
-  healthPercentBonus: 0.3
-  attackSpeedFlatBonus: 0.7
-  attackSpeedPercentBonus: 0.25
+  healthPercentBonus: 0.1
+  attackSpeedFlatBonus: 0.4
+  attackSpeedPercentBonus: 0.18
   knockbackPowerFlat: 0

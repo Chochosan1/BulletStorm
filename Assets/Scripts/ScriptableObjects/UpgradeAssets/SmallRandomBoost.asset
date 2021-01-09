@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 037ff910e6ef6d34d9122a758b0740b4, type: 3}
   m_Name: SmallRandomBoost
   m_EditorClassIdentifier: 
-  attackDamageFlatBonus: 2
-  attackDamagePercentBonus: 0.2
+  attackDamageFlatBonus: 0.25
+  attackDamagePercentBonus: 0.05
   healthFlatBonus: 30
-  healthPercentBonus: 0.2
-  attackSpeedFlatBonus: 0.5
-  attackSpeedPercentBonus: 0.2
+  healthPercentBonus: 0.05
+  attackSpeedFlatBonus: 0.25
+  attackSpeedPercentBonus: 0.1
   knockbackPowerFlat: 1.5

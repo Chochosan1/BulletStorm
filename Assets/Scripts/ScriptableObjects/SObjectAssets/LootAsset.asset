@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0e6fbd952575514ca5d7a2341752bfb, type: 3}
   m_Name: LootAsset
   m_EditorClassIdentifier: 
-  chanceToDropLoot: 1
+  chanceToDropLoot: 0.25
   lootTable:
   - lootObject: {fileID: 3393978954030772708, guid: 3eb19fc3f19141c4a8168860846d4fa3,
       type: 3}

@@ -48,10 +48,7 @@ public class UpgradeController : MonoBehaviour
 
     private void Start()
     {
-        upgradeStatusMap = new Dictionary<UpgradeType, bool>();
-
-        UnlockUpgrade(UpgradeType.ExplodeOnDeath);
-        
+        upgradeStatusMap = new Dictionary<UpgradeType, bool>();       
     }
 
     ///<summary>Checks if the said enum exists in the dictionary with upgrades.</summary>
@@ -77,7 +74,6 @@ public class UpgradeController : MonoBehaviour
 
         Chochosan.ChochosanHelper.ChochosanDebug("Just unlocked " + upgradeType.ToString(), "red");
     }
-
 
     ///<summary>Used by the upgrade buttons. Parses the string to an enum and then sends it to the UnlockUpgrade() method.</summary>
     public void ButtonUpgradeChoice(string upgradeString)
