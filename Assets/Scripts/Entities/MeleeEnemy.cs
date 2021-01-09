@@ -25,6 +25,7 @@ public sealed class MeleeEnemy : BaseEnemy
     [SerializeField] private float stoppingDistance = 2f;
     [SerializeField] private float attackRate = 2f;
     private bool isCurrentlySlowed = false;
+    private bool isFriendlyUnit;
 
     [Header("Camera Shake")]
     [SerializeField] private bool useCamShakeOnDeath = true;
@@ -66,6 +67,11 @@ public sealed class MeleeEnemy : BaseEnemy
         individualUnitCanvas.gameObject.SetActive(false);
         healthBar.maxValue = stats.maxHealth;
         healthBar.value = CurrentHealth;
+
+        if (this.gameObject.layer == LayerMask.NameToLayer("Allied"))
+            isFriendlyUnit = true;
+        else
+            isFriendlyUnit = false;
     }
 
     void Update()
@@ -240,6 +246,10 @@ public sealed class MeleeEnemy : BaseEnemy
     {
         if (currentStateAI == StatesAI.Dead)
             return;
+
+        if (!isFriendlyUnit)
+            Chochosan.CustomEventManager.OnEnemyKilled?.Invoke();
+        
 
         RollOnDeathBonuses();
         DetermineLoot();

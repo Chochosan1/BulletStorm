@@ -61,6 +61,18 @@ public class PlayerController : MonoBehaviour, IDamageable
     private bool isGrounded = false;
     private bool isPlayerDisabled = false;
 
+    private int enemiesKilled = 0;
+    public int EnemiesKilled
+    {
+        get => enemiesKilled;
+        set
+        {
+            enemiesKilled = value;
+
+            Chochosan.CustomEventManager.OnPlayerStatsChanged("enemiesKilled");
+        }
+    }
+
     public float ShootRate
     {
         get => shootRate;
@@ -152,6 +164,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         ///Event subscription///
 
         Chochosan.CustomEventManager.OnUpgradeLearned += OnNewUpgradeLearned;
+        Chochosan.CustomEventManager.OnEnemyKilled += OnEnemyKilled;
 
         ////////////////////////
 
@@ -185,6 +198,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         ///Event unsubscription///
 
         Chochosan.CustomEventManager.OnUpgradeLearned -= OnNewUpgradeLearned;
+        Chochosan.CustomEventManager.OnEnemyKilled += OnEnemyKilled;
 
         ////////////////////////
     }
@@ -424,6 +438,11 @@ public class PlayerController : MonoBehaviour, IDamageable
             attackAnimSpeed = 0.5f;
 
         anim.SetFloat("attackSpeed", attackAnimSpeed);
+    }
+
+    private void OnEnemyKilled()
+    {
+        EnemiesKilled++;
     }
 
     private void OnDrawGizmos()

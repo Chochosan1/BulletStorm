@@ -19,5 +19,9 @@ namespace Chochosan
         public delegate void OnPlayerStatsChangedDelegate(string stats);
         /// <summary>Event raised when the upgrade panel should open. </summary>
         public static OnPlayerStatsChangedDelegate OnPlayerStatsChanged;
+
+        public delegate void OnEnemyKilledDelegate();
+        /// <summary>Event raised when the upgrade panel should open. </summary>
+        public static OnEnemyKilledDelegate OnEnemyKilled;
     }
 }

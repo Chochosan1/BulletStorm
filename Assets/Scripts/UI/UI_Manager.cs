@@ -25,6 +25,7 @@ public class UI_Manager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI currentHealthText;
     [SerializeField] private TextMeshProUGUI shootRateText;
     [SerializeField] private TextMeshProUGUI attackDamageText;
+    [SerializeField] private TextMeshProUGUI enemiesKilledText;
 
 
 
@@ -92,6 +93,9 @@ public class UI_Manager : MonoBehaviour
                 break;
             case "shootRate":
                 shootRateText.text = PlayerController.Instance.ShootRate.ToString("F1");
+                break;
+            case "enemiesKilled":
+                enemiesKilledText.text = PlayerController.Instance.EnemiesKilled.ToString();
                 break;
         }
 

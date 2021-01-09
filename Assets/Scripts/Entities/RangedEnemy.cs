@@ -32,6 +32,7 @@ public sealed class RangedEnemy : BaseEnemy
     [SerializeField] private float shootRate = 2f;
     [SerializeField] private float stoppingDistance = 12f;
     private bool isCurrentlySlowed = false;
+    private bool isFriendlyUnit;
 
     [Header("Camera Shake")]
     [SerializeField] private bool useCamShakeOnDeath = true;
@@ -46,7 +47,7 @@ public sealed class RangedEnemy : BaseEnemy
     [SerializeField] private LayerMask explodeLayerMask;
     private float power;
 
-    int shotsFired;
+    private int shotsFired;
 
     //once in the attack state finish the attack then be allowed to leave the state (to avoid endless kiting)
     private bool canExitAttackState = true;
@@ -74,6 +75,11 @@ public sealed class RangedEnemy : BaseEnemy
         individualUnitCanvas.gameObject.SetActive(false);
         healthBar.maxValue = stats.maxHealth;
         healthBar.value = CurrentHealth;
+
+        if (this.gameObject.layer == LayerMask.NameToLayer("Allied"))
+            isFriendlyUnit = true;
+        else
+            isFriendlyUnit = false;
     }
 
     void Update()
@@ -224,7 +230,7 @@ public sealed class RangedEnemy : BaseEnemy
         }
 
         individualUnitCanvas.gameObject.SetActive(true);
-       
+
         CurrentHealth -= damage;
         RollOnDamagedBonuses();
         healthBar.value = CurrentHealth;
@@ -237,6 +243,12 @@ public sealed class RangedEnemy : BaseEnemy
 
     private void Die()
     {
+        if (currentStateAI == StatesAI.Dead)
+            return;
+
+        if (!isFriendlyUnit)
+            Chochosan.CustomEventManager.OnEnemyKilled?.Invoke();
+
         RollOnDeathBonuses();
         DetermineLoot();
 
@@ -315,9 +327,9 @@ public sealed class RangedEnemy : BaseEnemy
         Collider[] colliders = Physics.OverlapSphere(explosionPos, radius, explodeLayerMask);
         foreach (Collider hit in colliders)
         {
-            if(hit.gameObject != this.gameObject)
+            if (hit.gameObject != this.gameObject)
             {
-                  Rigidbody rb = hit.GetComponent<Rigidbody>();
+                Rigidbody rb = hit.GetComponent<Rigidbody>();
                 IDamageable tempDamageable = hit.GetComponent<IDamageable>();
 
                 if (rb != null)
