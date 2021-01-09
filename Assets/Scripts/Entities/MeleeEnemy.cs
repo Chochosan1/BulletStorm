@@ -198,7 +198,8 @@ public sealed class MeleeEnemy : BaseEnemy
         if (currentTargetDamageable != null && currentTarget != null)
             currentTargetDamageable?.TakeDamage(stats.damage, this);
         Explode();
-        this.gameObject.SetActive(false);
+        // this.gameObject.SetActive(false);
+        Destroy(this.gameObject);
     }
 
     private void GoToStunnedState()
@@ -241,15 +242,18 @@ public sealed class MeleeEnemy : BaseEnemy
             return;
 
         RollOnDeathBonuses();
-
         DetermineLoot();
-        Explode();
+
+        usedDeathParticle = deathParticle;
+
+        if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ExplodeOnDeath))
+            Explode();
         //   this.gameObject.SetActive(false);
         GoToDeadState();
-        deathParticle.SetActive(true);
-        deathParticle.gameObject.transform.SetParent(null);
+        usedDeathParticle.SetActive(true);
+        usedDeathParticle.gameObject.transform.SetParent(null);
         CameraFollowTarget.Instance.ShakeCamera(camShakeDuration, camShakeMagnitude, false);
-        Destroy(deathParticle.gameObject, 2f);
+        Destroy(usedDeathParticle.gameObject, 2f);
         Destroy(this.gameObject);
     }
 
@@ -288,16 +292,31 @@ public sealed class MeleeEnemy : BaseEnemy
 
     public void Explode()
     {
+        float chanceRolled = Random.Range(0f, 1f);
+        if (chanceRolled >= 0.55f)
+            return;
+
+        usedDeathParticle = explodedDeathParticle;
+        Debug.Log("DEATHPARTICLE CHANCED : +  " + usedDeathParticle.name);
         Vector3 explosionPos = thisTransform.position;
         Collider[] colliders = Physics.OverlapSphere(explosionPos, radius, explodeLayerMask);
         foreach (Collider hit in colliders)
         {
-            Rigidbody rb = hit.GetComponent<Rigidbody>();
-
-            if (rb != null)
+            if (hit.gameObject != this.gameObject)
             {
-                power = Random.Range(stats.knockbackPower, stats.knockbackPower * 3f);
-                rb.AddExplosionForce(power, explosionPos, radius, 1.0F);
+                Rigidbody rb = hit.GetComponent<Rigidbody>();
+                IDamageable tempDamageable = hit.GetComponent<IDamageable>();
+
+                if (rb != null)
+                {
+                    power = Random.Range(stats.knockbackPower, stats.knockbackPower * 3f);
+                    rb.AddExplosionForce(power, explosionPos, radius, 1.0F);
+                }
+
+                if (tempDamageable != null)
+                {
+                    tempDamageable.TakeDamage(stats.damage, null);
+                }
             }
         }
     }

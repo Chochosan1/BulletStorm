@@ -449,7 +449,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 940218742330528508}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: ExplodedWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}

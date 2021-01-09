@@ -238,14 +238,17 @@ public sealed class RangedEnemy : BaseEnemy
     private void Die()
     {
         RollOnDeathBonuses();
-
         DetermineLoot();
-        Explode();
+
+        usedDeathParticle = deathParticle;
+
+        if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ExplodeOnDeath))
+            Explode();
         //    this.gameObject.SetActive(false);
-        deathParticle.SetActive(true);
-        deathParticle.gameObject.transform.SetParent(null);
+        usedDeathParticle.SetActive(true);
+        usedDeathParticle.gameObject.transform.SetParent(null);
         CameraFollowTarget.Instance.ShakeCamera(camShakeDuration, camShakeMagnitude, false);
-        Destroy(deathParticle.gameObject, 2f);
+        Destroy(usedDeathParticle.gameObject, 2f);
         Destroy(this.gameObject);
     }
 
@@ -302,17 +305,33 @@ public sealed class RangedEnemy : BaseEnemy
 
     public void Explode()
     {
+        float chanceRolled = Random.Range(0f, 1f);
+        if (chanceRolled >= 0.55f)
+            return;
+
+        usedDeathParticle = explodedDeathParticle;
+
         Vector3 explosionPos = thisTransform.position;
         Collider[] colliders = Physics.OverlapSphere(explosionPos, radius, explodeLayerMask);
         foreach (Collider hit in colliders)
         {
-            Rigidbody rb = hit.GetComponent<Rigidbody>();
-
-            if (rb != null)
+            if(hit.gameObject != this.gameObject)
             {
-                power = Random.Range(stats.knockbackPower, stats.knockbackPower * 3f);
-                rb.AddExplosionForce(power, explosionPos, radius, 1.0F);
+                  Rigidbody rb = hit.GetComponent<Rigidbody>();
+                IDamageable tempDamageable = hit.GetComponent<IDamageable>();
+
+                if (rb != null)
+                {
+                    power = Random.Range(stats.knockbackPower, stats.knockbackPower * 1.75f);
+                    rb.AddExplosionForce(power, explosionPos, radius, 1.0F);
+                }
+
+                if (tempDamageable != null)
+                {
+                    tempDamageable.TakeDamage(stats.damage, null);
+                }
             }
+
         }
     }
 

@@ -230,7 +230,7 @@ public class Projectile_Controller : MonoBehaviour
                         Collider[] firstHitColliders = Physics.OverlapSphere(transform.position, homingRangeDetection, affectableLayers);
                         foreach (Collider coll in firstHitColliders)
                         {
-                            coll.gameObject.GetComponent<IDamageable>().TakeDamage(PlayerController.Instance.AttackDamage, ownerOfProjectile);
+                            coll.gameObject.GetComponent<IDamageable>()?.TakeDamage(PlayerController.Instance.AttackDamage, ownerOfProjectile);
                         }
                     }
                     else

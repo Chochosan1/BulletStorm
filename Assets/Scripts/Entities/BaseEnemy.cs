@@ -19,10 +19,13 @@ public class BaseEnemy : MonoBehaviour, IDamageable
     [SerializeField] protected bool canBeKnockedBack = true;
     [SerializeField] protected GameObject deathParticle;
     [SerializeField] protected GameObject frozenParticle;
+    [SerializeField] protected GameObject explodedDeathParticle;
+    protected GameObject usedDeathParticle;
     [SerializeField] protected LootContainer lootTable;
     protected GameObject currentTarget;
     protected Rigidbody rb;
     protected Transform thisTransform;
+    private bool lootDropped = false;
     private float currentHealth;
     protected float CurrentHealth
     {
@@ -141,11 +144,17 @@ public class BaseEnemy : MonoBehaviour, IDamageable
     /// <summary>Determines what loot should drop.</summary>
     protected virtual void DetermineLoot()
     {
+        if (lootDropped)
+            return;
+
+        lootDropped = true;
         GameObject lootDrop = lootTable?.DetermineLoot();
 
         if (lootDrop != null)
         {
             Instantiate(lootDrop, transform.position, lootDrop.transform.rotation);
+
+            Debug.Log("SPAWN LOOT");
         }
     }
 }

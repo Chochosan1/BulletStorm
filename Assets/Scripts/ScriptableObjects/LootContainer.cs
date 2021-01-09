@@ -28,7 +28,7 @@ public class LootContainer : ScriptableObject
         {
             float weightSum = 0f;
             int roll = Random.Range(0, 101);
-            Debug.Log("WEIGHT ROLL IS: " + roll);
+           // Debug.Log("WEIGHT ROLL IS: " + roll);
             foreach(LootItem lootItem in lootTable)
             {
                 weightSum += lootItem.lootWeight;
