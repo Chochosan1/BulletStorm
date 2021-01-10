@@ -23,5 +23,9 @@ namespace Chochosan
         public delegate void OnEnemyKilledDelegate();
         /// <summary>Event raised when the upgrade panel should open. </summary>
         public static OnEnemyKilledDelegate OnEnemyKilled;
+
+        public delegate void OnBossKilledDelegate();
+        /// <summary>Event raised when the upgrade panel should open. </summary>
+        public static OnBossKilledDelegate OnBossKilled;
     }
 }

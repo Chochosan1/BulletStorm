@@ -142,6 +142,9 @@ public class PlayerController : MonoBehaviour, IDamageable
         set
         {
             currentHealth = value >= maxHealth ? maxHealth : value;
+            if (currentHealth < 0)
+                currentHealth = 0;
+
             healthBar.value = currentHealth;
 
             Chochosan.CustomEventManager.OnPlayerStatsChanged?.Invoke("currentHealth");

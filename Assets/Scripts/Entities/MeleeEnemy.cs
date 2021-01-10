@@ -249,7 +249,9 @@ public sealed class MeleeEnemy : BaseEnemy
 
         if (!isFriendlyUnit)
             Chochosan.CustomEventManager.OnEnemyKilled?.Invoke();
-        
+
+        if (isBoss)
+            Chochosan.CustomEventManager.OnBossKilled?.Invoke();
 
         RollOnDeathBonuses();
         DetermineLoot();

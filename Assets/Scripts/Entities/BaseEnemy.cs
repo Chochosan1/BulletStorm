@@ -20,14 +20,16 @@ public class BaseEnemy : MonoBehaviour, IDamageable
     [SerializeField] protected GameObject deathParticle;
     [SerializeField] protected GameObject frozenParticle;
     [SerializeField] protected GameObject explodedDeathParticle;
+    [SerializeField] protected GameObject firstSpawnedParticle;
     protected GameObject usedDeathParticle;
     [SerializeField] protected LootContainer lootTable;
     protected GameObject currentTarget;
     protected Rigidbody rb;
     protected Transform thisTransform;
     private bool lootDropped = false;
+    protected bool isBoss = false;
     private float currentHealth;
-    protected float CurrentHealth
+    public float CurrentHealth
     {
         get => currentHealth;
         set
@@ -41,6 +43,12 @@ public class BaseEnemy : MonoBehaviour, IDamageable
         rb = GetComponent<Rigidbody>();
         thisTransform = transform;
         CurrentHealth = stats.maxHealth;
+
+        if (firstSpawnedParticle != null)
+        {
+            firstSpawnedParticle.SetActive(true);
+            StartCoroutine(DisableObjectAfter(firstSpawnedParticle, 2f));
+        }
     }
 
     public virtual void TakeDamage(float damage, IDamageable owner)
@@ -156,5 +164,16 @@ public class BaseEnemy : MonoBehaviour, IDamageable
 
             Debug.Log("SPAWN LOOT");
         }
+    }
+
+    public void SetEnemyAsBoss()
+    {
+        isBoss = true;
+    }
+
+    protected IEnumerator DisableObjectAfter(GameObject objectToDisable, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        objectToDisable.SetActive(false);
     }
 }
