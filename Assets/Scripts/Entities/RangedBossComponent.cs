@@ -14,10 +14,8 @@ public class RangedBossComponent : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject castSpellParticle;
 
-
     [Header("Properties")]
     [SerializeField] private float abilityCooldown = 5f;
-    [SerializeField] private int maxNumberOfAbilitiesToCast = 10;
     private float abilityTimestamp;
 
     [Header("Abilities settings")]
@@ -46,12 +44,16 @@ public class RangedBossComponent : MonoBehaviour
         rangedEnemyComponent = GetComponent<RangedEnemy>();
 
         rangedEnemyComponent.SetEnemyAsBoss();
-        this.gameObject.transform.localScale *= 1.5f;      
+        this.gameObject.transform.localScale *= 1.5f;
     }
 
     private void Update()
     {
-        if(Time.time >= abilityTimestamp)
+        //dont do anything if not visible and no target
+        if (!rangedEnemyComponent.meshRend.isVisible && rangedEnemyComponent.currentTarget == null)
+            return;
+
+        if (Time.time >= abilityTimestamp)
         {
             //cast spell
             abilityTimestamp = Time.time + abilityCooldown;
@@ -59,7 +61,7 @@ public class RangedBossComponent : MonoBehaviour
             int spellToCast = 1;
 
             //first choose the spells sequentially one after another, after casting each spell once then start rotating them randomly
-            if(isSpellsGoSequentially)
+            if (isSpellsGoSequentially)
             {
                 currentSpellToCastSequentially++;
                 spellToCast = currentSpellToCastSequentially;
@@ -70,13 +72,13 @@ public class RangedBossComponent : MonoBehaviour
                     isSpellsGoSequentially = false;
                     spellToCast = Random.Range(1, 4);
                 }
-                  
+
             }
             else
             {
                 spellToCast = Random.Range(1, 4);
             }
-               
+
             DetermineSpellToCast(spellToCast);
         }
     }
@@ -86,7 +88,7 @@ public class RangedBossComponent : MonoBehaviour
         castSpellParticle.SetActive(true);
         StartCoroutine(DisableObjectAfter(castSpellParticle, 1.5f));
 
-        switch(spellToCast)
+        switch (spellToCast)
         {
             case 1:
                 CastSpell(firstBossAbility);
@@ -102,7 +104,7 @@ public class RangedBossComponent : MonoBehaviour
 
     private void CastSpell(BossAbilities abilityToCast)
     {
-        switch(abilityToCast)
+        switch (abilityToCast)
         {
             case BossAbilities.SpawnUnits:
                 CastSpawnUnits();
@@ -118,10 +120,19 @@ public class RangedBossComponent : MonoBehaviour
 
     private void CastSpawnUnits()
     {
-        for(int i = 0; i < spawnUnitsAbility.unitSpawnPoints.Count; i++)
+        //if the limit to summon units has been reached then start casting another spell instead
+        if (spawnUnitsAbility.unitsSpawnedTotally >= spawnUnitsAbility.maxTimesToSpawnUnits)
+        {
+            CastSpell(BossAbilities.MarkedGroundProjectile);
+            return;
+        }
+
+        for (int i = 0; i < spawnUnitsAbility.unitSpawnPoints.Count; i++)
         {
             Instantiate(spawnUnitsAbility.unitToSpawn, spawnUnitsAbility.unitSpawnPoints[i].transform.position, spawnUnitsAbility.unitToSpawn.transform.rotation);
         }
+
+        spawnUnitsAbility.unitsSpawnedTotally++;
     }
 
     private void CastMarkedGroundProjectile()
@@ -134,6 +145,7 @@ public class RangedBossComponent : MonoBehaviour
     private void OnBossKilled()
     {
         Debug.Log("BOSS SLAIN! PORTAL UNLOCKED");
+        LevelEnd.Instance.ActivateLevelEndPortal();
     }
 
     private IEnumerator DisableObjectAfter(GameObject objectToDisable, float duration)
@@ -176,6 +188,8 @@ public class RangedBossComponent : MonoBehaviour
     {
         public List<GameObject> unitSpawnPoints;
         public GameObject unitToSpawn;
+        public int maxTimesToSpawnUnits = 10;
+        public int unitsSpawnedTotally = 0;
     }
 
     [System.Serializable]

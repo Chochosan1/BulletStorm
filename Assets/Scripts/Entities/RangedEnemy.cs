@@ -40,7 +40,9 @@ public sealed class RangedEnemy : BaseEnemy
     [SerializeField] private float camShakeMagnitude = 0.2f;
     private float shootTimestamp;
     private float shootCooldown;
-    private MeshRenderer meshRend;
+
+    [HideInInspector]
+    public MeshRenderer meshRend;
 
     [Header("Explode")]
     [SerializeField] private float radius = 5f;
@@ -229,7 +231,8 @@ public sealed class RangedEnemy : BaseEnemy
             ChooseNewTarget(false);
         }
 
-        individualUnitCanvas.gameObject.SetActive(true);
+        if (individualUnitCanvas != null)
+            individualUnitCanvas.gameObject.SetActive(true);
 
         CurrentHealth -= damage;
         RollOnDamagedBonuses();
@@ -264,7 +267,14 @@ public sealed class RangedEnemy : BaseEnemy
         usedDeathParticle.gameObject.transform.SetParent(null);
         CameraFollowTarget.Instance.ShakeCamera(camShakeDuration, camShakeMagnitude, false);
         Destroy(usedDeathParticle.gameObject, 2f);
-        Destroy(this.gameObject);
+        try
+        {
+            Destroy(this.gameObject);
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log("Caught: " + e);
+        }
     }
 
     private void RollOnDamagedBonuses()

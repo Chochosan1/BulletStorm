@@ -23,7 +23,8 @@ public class BaseEnemy : MonoBehaviour, IDamageable
     [SerializeField] protected GameObject firstSpawnedParticle;
     protected GameObject usedDeathParticle;
     [SerializeField] protected LootContainer lootTable;
-    protected GameObject currentTarget;
+    [HideInInspector]
+    public GameObject currentTarget;
     protected Rigidbody rb;
     protected Transform thisTransform;
     private bool lootDropped = false;
