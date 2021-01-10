@@ -48,7 +48,7 @@ public class UpgradeController : MonoBehaviour
 
     private void Start()
     {
-        upgradeStatusMap = new Dictionary<UpgradeType, bool>();       
+        upgradeStatusMap = new Dictionary<UpgradeType, bool>();
     }
 
     ///<summary>Checks if the said enum exists in the dictionary with upgrades.</summary>

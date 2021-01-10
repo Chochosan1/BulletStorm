@@ -115,7 +115,7 @@ public class Projectile_Controller : MonoBehaviour
                 is_SlowingProjectile = true;
             }
 
-            if(UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileSpeed))
+            if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ProjectileSpeed))
             {
                 flySpeed *= 1.5f;
             }
@@ -212,7 +212,7 @@ public class Projectile_Controller : MonoBehaviour
                     tempInterface.Freeze(stats.freezeDuration, stats.chanceToFreeze);
                 }
 
-                if(is_SlowingProjectile)
+                if (is_SlowingProjectile)
                 {
                     tempInterface.GetSlowed(stats.slowDuration, stats.slowMultiplier, stats.chanceToSlow);
                 }
@@ -273,7 +273,10 @@ public class Projectile_Controller : MonoBehaviour
 
     private void OnBecameInvisible()
     {
-        this.gameObject.SetActive(false);
+        if (isScaleWithPlayerStats)
+            this.gameObject.SetActive(false);
+        else
+            Destroy(this.gameObject);
     }
 
     protected virtual void ChooseNewTarget()
@@ -290,17 +293,17 @@ public class Projectile_Controller : MonoBehaviour
         }
     }
 
-    public void SetTarget(GameObject target, IDamageable owner)
+    public void SetTarget(Transform target, IDamageable owner)
     {
         ownerOfProjectile = owner;
         isTargetHit = false;
-        if (muzzleParticleDefault != null)
-        {
-            StartCoroutine(ActivateAndStopMuzzleParticle());
-        }
-        mainParticleToUse.SetActive(true);
-        this.target = target;
-        targetTransform = target.transform;
+        //if (muzzleParticleDefault != null)
+        //{
+        //    StartCoroutine(ActivateAndStopMuzzleParticle());
+        //}
+        //mainParticleToUse.SetActive(true);
+        this.target = target.gameObject;
+        targetTransform = target;
     }
 
     private void TriggerOnHitFeedback()
@@ -310,7 +313,7 @@ public class Projectile_Controller : MonoBehaviour
             return;
         hitParticleToUse.SetActive(true);
         mainParticleToUse.SetActive(false);
-    
+
         audioSource.PlayOneShot(soundsAsset.hitProjectileSound);
         //   rb.velocity = Vector3.zero;
         StartCoroutine(DeactivateObjectAfter(hitParticleDuration));
@@ -321,7 +324,11 @@ public class Projectile_Controller : MonoBehaviour
         arrowVisual.SetActive(false);
         yield return new WaitForSeconds(duration);
         hitParticleToUse.SetActive(false);
-        gameObject.SetActive(false);
+
+        if (isScaleWithPlayerStats)
+            gameObject.SetActive(false);
+        else
+            Destroy(this.gameObject);
     }
 
     private IEnumerator ActivateAndStopMuzzleParticle()

@@ -390,4 +390,9 @@ public sealed class RangedEnemy : BaseEnemy
         if (slowChanceRolled <= chance)
             StartCoroutine(Slow(duration, slowMultiplier));
     }
+
+    public Transform GetShootSpawnPointTransform()
+    {
+        return projectileSpawnPosition;
+    }
 }

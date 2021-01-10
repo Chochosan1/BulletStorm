@@ -171,6 +171,14 @@ public class BaseEnemy : MonoBehaviour, IDamageable
         isBoss = true;
     }
 
+    public Transform GetCurrentTargetTransform()
+    {
+        if (currentTarget == null)
+            return thisTransform;
+
+        return currentTarget.transform;
+    }
+
     protected IEnumerator DisableObjectAfter(GameObject objectToDisable, float duration)
     {
         yield return new WaitForSeconds(duration);

@@ -266,7 +266,15 @@ public sealed class MeleeEnemy : BaseEnemy
         usedDeathParticle.gameObject.transform.SetParent(null);
         CameraFollowTarget.Instance.ShakeCamera(camShakeDuration, camShakeMagnitude, false);
         Destroy(usedDeathParticle.gameObject, 2f);
-        Destroy(this.gameObject);
+        try
+        {
+            Destroy(this.gameObject);
+        }
+        catch(System.Exception e)
+        {
+            Debug.Log("Caught: " + e);
+        }
+
     }
 
     ///<summary>Rolls the chances for all bonuses when the entity is damaged.</summary>
