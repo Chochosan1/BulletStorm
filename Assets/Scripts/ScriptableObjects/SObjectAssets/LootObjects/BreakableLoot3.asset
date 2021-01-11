@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0e6fbd952575514ca5d7a2341752bfb, type: 3}
+  m_Name: BreakableLoot3
+  m_EditorClassIdentifier: 
+  chanceToDropLoot: 0.75
+  lootTable:
+  - lootObject: {fileID: 8397285663671904779, guid: 6fd1c5a4fd8933549b0d88d498c1ba9b,
+      type: 3}
+    lootWeight: 50
+  - lootObject: {fileID: 4904689519603745266, guid: b72db2cd5aac7d44a9d88b0da38214f1,
+      type: 3}
+    lootWeight: 50

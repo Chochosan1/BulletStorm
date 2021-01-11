@@ -1013,7 +1013,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 5
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -1045,6 +1045,7 @@ MonoBehaviour:
   secondPureEnemySenseRange: 30
   stats: {fileID: 11400000, guid: 0a168779a1a17e04f80bcd4edb5d7ec8, type: 2}
   canBeKnockedBack: 1
+  isDestroyDeathParticleAfterTime: 1
   deathParticle: {fileID: 4926698455087709924}
   frozenParticle: {fileID: 4281550080244410432}
   explodedDeathParticle: {fileID: 1785138670596168755}
@@ -1061,7 +1062,7 @@ MonoBehaviour:
     type: 3}
   projectileMulticast: {fileID: 0}
   shootRate: 1.5
-  stoppingDistance: 12
+  stoppingDistance: 14
   useCamShakeOnDeath: 1
   camShakeDuration: 0.05
   camShakeMagnitude: 0.15

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0e6fbd952575514ca5d7a2341752bfb, type: 3}
+  m_Name: UnitLoot
+  m_EditorClassIdentifier: 
+  chanceToDropLoot: 0.25
+  lootTable:
+  - lootObject: {fileID: 3393978954030772708, guid: 3eb19fc3f19141c4a8168860846d4fa3,
+      type: 3}
+    lootWeight: 10
+  - lootObject: {fileID: 145218327276288509, guid: 357640697f3715e4ca170f796fd4535d,
+      type: 3}
+    lootWeight: 85

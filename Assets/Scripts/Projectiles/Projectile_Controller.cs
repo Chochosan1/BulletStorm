@@ -308,6 +308,9 @@ public class Projectile_Controller : MonoBehaviour
 
     private void TriggerOnHitFeedback()
     {
+        if (isTargetHit)
+            return;
+
         isTargetHit = true;
         if (hitParticleToUse == null || muzzleParticleToUse == null)
             return;

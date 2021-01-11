@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b0e6fbd952575514ca5d7a2341752bfb, type: 3}
-  m_Name: LootAsset
+  m_Name: BreakableLoot2
   m_EditorClassIdentifier: 
-  chanceToDropLoot: 0.25
+  chanceToDropLoot: 0.5
   lootTable:
-  - lootObject: {fileID: 3393978954030772708, guid: 3eb19fc3f19141c4a8168860846d4fa3,
+  - lootObject: {fileID: 9080581364959839772, guid: a6e806a2c6e69884481b014bd9acb8d3,
       type: 3}
-    lootWeight: 10
-  - lootObject: {fileID: 145218327276288509, guid: 357640697f3715e4ca170f796fd4535d,
+    lootWeight: 50
+  - lootObject: {fileID: 6242983638140031690, guid: 3a98dad23a0c3f74fabd5c75967713be,
       type: 3}
-    lootWeight: 85
+    lootWeight: 51

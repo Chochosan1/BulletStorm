@@ -8057,7 +8057,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   distanceToGround: 0.1
-  shootRate: 5
+  shootRate: 1
   maxShootRate: 5
   minShootRate: 1
 --- !u!136 &549649253017811121
@@ -8112,6 +8112,7 @@ MonoBehaviour:
   oneShotChance: 0.01
   tornadoChanceToSpawnOnDeath: 0.2
   freezeZoneChanceToSpawnOnDeath: 0.2
+  explodeOnDeathChance: 0.35
   tripleProjectileSpawnLeft: {fileID: 1531408224}
   tripleProjectileSpawnRight: {fileID: 1518837731}
   projectileBackwardsSpawn: {fileID: 1355065982}
@@ -8124,7 +8125,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 549649253017811120}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 69bcbb52bcb5bf542880215268d4c692, type: 3}
   m_Name: 

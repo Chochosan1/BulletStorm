@@ -253,13 +253,11 @@ public sealed class MeleeEnemy : BaseEnemy
         if (isBoss)
             Chochosan.CustomEventManager.OnBossKilled?.Invoke();
 
-        RollOnDeathBonuses();
-        DetermineLoot();
-
         usedDeathParticle = deathParticle;
 
-        if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ExplodeOnDeath))
-            Explode();
+        RollOnDeathBonuses();
+        DetermineLoot();
+  
         //   this.gameObject.SetActive(false);
         GoToDeadState();
         usedDeathParticle.SetActive(true);
@@ -310,16 +308,19 @@ public sealed class MeleeEnemy : BaseEnemy
                 Instantiate(UpgradeController.Instance.freezeZonePrefab, thisTransform.position, UpgradeController.Instance.freezeZonePrefab.transform.rotation);
             }
         }
+
+        if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ExplodeOnDeath))
+            Explode();
     }
 
     public void Explode()
     {
         float chanceRolled = Random.Range(0f, 1f);
-        if (chanceRolled >= 0.55f)
+        if (chanceRolled >= UpgradeController.Instance.explodeOnDeathChance)
             return;
 
         usedDeathParticle = explodedDeathParticle;
-        Debug.Log("DEATHPARTICLE CHANCED : +  " + usedDeathParticle.name);
+
         Vector3 explosionPos = thisTransform.position;
         Collider[] colliders = Physics.OverlapSphere(explosionPos, radius, explodeLayerMask);
         foreach (Collider hit in colliders)

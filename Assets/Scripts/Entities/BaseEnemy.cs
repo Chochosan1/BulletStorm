@@ -17,6 +17,8 @@ public class BaseEnemy : MonoBehaviour, IDamageable
     [SerializeField] protected StatsEntity stats;
     [Tooltip("Set to true if the object should suffer knockback.")]
     [SerializeField] protected bool canBeKnockedBack = true;
+    [Tooltip("Should the death particle get destroyed after some time or just remain there after being spawned?")]
+    [SerializeField] protected bool isDestroyDeathParticleAfterTime = true;
     [SerializeField] protected GameObject deathParticle;
     [SerializeField] protected GameObject frozenParticle;
     [SerializeField] protected GameObject explodedDeathParticle;
@@ -58,11 +60,18 @@ public class BaseEnemy : MonoBehaviour, IDamageable
 
         if (CurrentHealth <= 0)
         {
-          //  this.gameObject.SetActive(false);
+            //  this.gameObject.SetActive(false);
 
             if (deathParticle != null)
-                Instantiate(deathParticle, thisTransform.position, deathParticle.transform.rotation);
+            {
+                GameObject deathParticleCopy = Instantiate(deathParticle, thisTransform.position, deathParticle.transform.rotation);
 
+                if (isDestroyDeathParticleAfterTime)
+                    Destroy(deathParticleCopy, 2f);
+            }
+
+
+            DetermineLoot();
             Destroy(this.gameObject);
         }
     }

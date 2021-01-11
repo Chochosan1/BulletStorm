@@ -33,6 +33,7 @@ public sealed class RangedEnemy : BaseEnemy
     [SerializeField] private float stoppingDistance = 12f;
     private bool isCurrentlySlowed = false;
     private bool isFriendlyUnit;
+    private float originalStoppingDistance;
 
     [Header("Camera Shake")]
     [SerializeField] private bool useCamShakeOnDeath = true;
@@ -77,7 +78,7 @@ public sealed class RangedEnemy : BaseEnemy
         individualUnitCanvas.gameObject.SetActive(false);
         healthBar.maxValue = stats.maxHealth;
         healthBar.value = CurrentHealth;
-
+        originalStoppingDistance = agent.stoppingDistance;
         if (this.gameObject.layer == LayerMask.NameToLayer("Allied"))
             isFriendlyUnit = true;
         else
@@ -140,6 +141,11 @@ public sealed class RangedEnemy : BaseEnemy
                 }
             }
         }
+        else if(currentStateAI == StatesAI.Idle)
+        {
+            SetAgentDestination(agent, PlayerController.Instance.transform.position);
+            agent.stoppingDistance = 4f;
+        }
 
         ChooseNewTarget(true);
         if (currentTarget != null)
@@ -169,6 +175,7 @@ public sealed class RangedEnemy : BaseEnemy
         if (!forceThisState && (currentStateAI == StatesAI.Idle || currentStateAI == StatesAI.Stunned))
             return;
 
+        agent.stoppingDistance = 4f;
         anim.SetBool("isRun", false);
         anim.SetBool("isAttack", false);
         anim.SetBool("isIdle", true);
@@ -184,8 +191,10 @@ public sealed class RangedEnemy : BaseEnemy
         if (!forceThisState && (currentStateAI == StatesAI.Attack || currentStateAI == StatesAI.Stunned))
             return;
 
+        agent.stoppingDistance = originalStoppingDistance;
         shootTimestamp = Time.time + shootCooldown;
         currentTargetDamageable = currentTarget.GetComponent<IDamageable>();
+        agent.destination = thisTransform.position;
         currentStateAI = StatesAI.Attack;
         anim.SetBool("isRun", false);
         anim.SetBool("isAttack", true);
@@ -198,6 +207,7 @@ public sealed class RangedEnemy : BaseEnemy
         if (!forceThisState && (currentStateAI == StatesAI.MovingToTarget || currentStateAI == StatesAI.Stunned))
             return;
 
+        agent.stoppingDistance = originalStoppingDistance;
         currentStateAI = StatesAI.MovingToTarget;
         anim.SetBool("isRun", true);
         anim.SetBool("isAttack", false);
@@ -215,6 +225,7 @@ public sealed class RangedEnemy : BaseEnemy
         if (currentStateAI == StatesAI.Stunned)
             return;
 
+        agent.stoppingDistance = originalStoppingDistance;
         currentStateAI = StatesAI.Stunned;
         anim.SetBool("isFrozen", true);
         anim.SetBool("isRun", false);
@@ -255,14 +266,12 @@ public sealed class RangedEnemy : BaseEnemy
         if (isBoss)
             Chochosan.CustomEventManager.OnBossKilled?.Invoke();
 
+        usedDeathParticle = deathParticle;
+
         RollOnDeathBonuses();
         DetermineLoot();
 
-        usedDeathParticle = deathParticle;
-
-        if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ExplodeOnDeath))
-            Explode();
-        //    this.gameObject.SetActive(false);
+  
         usedDeathParticle.SetActive(true);
         usedDeathParticle.gameObject.transform.SetParent(null);
         CameraFollowTarget.Instance.ShakeCamera(camShakeDuration, camShakeMagnitude, false);
@@ -308,6 +317,9 @@ public sealed class RangedEnemy : BaseEnemy
                 Instantiate(UpgradeController.Instance.freezeZonePrefab, thisTransform.position, UpgradeController.Instance.freezeZonePrefab.transform.rotation);
             }
         }
+
+        if (UpgradeController.Instance.IsUpgradeUnlocked(UpgradeController.UpgradeType.ExplodeOnDeath))
+            Explode();
     }
 
     private void Shoot()
@@ -333,7 +345,7 @@ public sealed class RangedEnemy : BaseEnemy
     public void Explode()
     {
         float chanceRolled = Random.Range(0f, 1f);
-        if (chanceRolled >= 0.55f)
+        if (chanceRolled >= UpgradeController.Instance.explodeOnDeathChance)
             return;
 
         usedDeathParticle = explodedDeathParticle;

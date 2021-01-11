@@ -19,6 +19,7 @@ public class UpgradeController : MonoBehaviour
     public float oneShotChance = 0.03f;
     public float tornadoChanceToSpawnOnDeath = 0.1f;
     public float freezeZoneChanceToSpawnOnDeath = 0.1f;
+    public float explodeOnDeathChance = 0.35f;
 
     [Header("Triple projectile")]
     public Transform tripleProjectileSpawnLeft;

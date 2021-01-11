@@ -88401,7 +88401,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8094247963178586437
 Transform:
   m_ObjectHideFlags: 0
@@ -88880,6 +88880,7 @@ MonoBehaviour:
   secondPureEnemySenseRange: 30
   stats: {fileID: 11400000, guid: ab3bdfb6eb6291a42b7e37bc16e097be, type: 2}
   canBeKnockedBack: 1
+  isDestroyDeathParticleAfterTime: 1
   deathParticle: {fileID: 86101865154637054}
   frozenParticle: {fileID: 5965657394438679716}
   explodedDeathParticle: {fileID: 5109605990257386179}
@@ -90890,7 +90891,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8094247964120905896
 Transform:
   m_ObjectHideFlags: 0
