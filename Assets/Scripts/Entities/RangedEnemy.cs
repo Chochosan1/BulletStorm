@@ -283,8 +283,10 @@ public sealed class RangedEnemy : BaseEnemy
         {
             if (Random.Range(0f, 1f) <= UpgradeController.Instance.oneShotChance)
             {
-                CurrentHealth -= stats.maxHealth;
-                Debug.Log("ONE SHOT");
+                if (!isBoss)
+                    CurrentHealth -= stats.maxHealth;
+                else
+                    CurrentHealth -= stats.maxHealth * 0.05f;             
             }
         }
     }

@@ -140,6 +140,20 @@ public class RangedBossComponent : MonoBehaviour
         GameObject projectileCopy = Instantiate(markedGroundProjectile.projectileToShoot, rangedEnemyComponent.GetShootSpawnPointTransform().position, markedGroundProjectile.projectileToShoot.transform.rotation);
         projectileCopy.transform.forward = rangedEnemyComponent.GetShootSpawnPointTransform().forward;
         projectileCopy.GetComponent<GroundProjectile>().SetTarget(rangedEnemyComponent.GetCurrentTargetTransform().position);
+
+        float xRandom = Random.Range(2f, 6f);
+        float zRandom = Random.Range(1f, 4f);
+
+        GameObject projectileCopy2 = Instantiate(markedGroundProjectile.projectileToShoot, rangedEnemyComponent.GetShootSpawnPointTransform().position, markedGroundProjectile.projectileToShoot.transform.rotation);
+        projectileCopy2.transform.forward = rangedEnemyComponent.GetShootSpawnPointTransform().forward;
+        projectileCopy2.GetComponent<GroundProjectile>().SetTarget(rangedEnemyComponent.GetCurrentTargetTransform().position + new Vector3(xRandom, 0f, zRandom));
+
+        xRandom = Random.Range(2f, 6f);
+        zRandom = Random.Range(1f, 4f);
+
+        GameObject projectileCopy3 = Instantiate(markedGroundProjectile.projectileToShoot, rangedEnemyComponent.GetShootSpawnPointTransform().position, markedGroundProjectile.projectileToShoot.transform.rotation);
+        projectileCopy3.transform.forward = rangedEnemyComponent.GetShootSpawnPointTransform().forward;
+        projectileCopy3.GetComponent<GroundProjectile>().SetTarget(rangedEnemyComponent.GetCurrentTargetTransform().position + new Vector3(xRandom, 0f, zRandom));
     }
 
     private void OnBossKilled()

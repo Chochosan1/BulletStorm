@@ -14,6 +14,9 @@ public class GroundProjectile : MonoBehaviour
     [SerializeField] private GameObject muzzleParticleDefault;
     [SerializeField] private GameObject markedGroundEffect;
 
+    [Header("Properties")]
+    [SerializeField] private bool isFreezingProjectile = false;
+
     [Header("Debug")]
     [SerializeField] private bool rangeGizmo;
 
@@ -67,6 +70,9 @@ public class GroundProjectile : MonoBehaviour
         foreach (Collider hit in colliders)
         {
             hit.GetComponent<IDamageable>()?.TakeDamage(stats.damage, null);
+
+            if (isFreezingProjectile)
+                hit.GetComponent<IDamageable>()?.Freeze(2.5f, 1f);
         }
 
         TriggerOnHitFeedback();

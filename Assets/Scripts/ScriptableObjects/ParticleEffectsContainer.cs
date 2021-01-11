@@ -7,5 +7,6 @@ public class ParticleEffectsContainer : ScriptableObject
 {
     public GameObject deathParticle;
     public GameObject frozenParticle;
-    public GameObject explodedParticle;
+    public GameObject explodedDeathParticle;
+    public GameObject firstSpawnedParticle;
 }
