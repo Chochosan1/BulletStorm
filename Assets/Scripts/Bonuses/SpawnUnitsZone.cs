@@ -15,6 +15,7 @@ public class SpawnUnitsZone : MonoBehaviour
     [SerializeField] private GameObject[] unitsToSpawn;
     [SerializeField] private float spawnUnitsAfter = 2f;
 
+    private bool isAlreadySpawned = false;
 
     void Start()
     {
@@ -27,6 +28,11 @@ public class SpawnUnitsZone : MonoBehaviour
 
     private void ActivateObjectHolder()
     {
+        if (isAlreadySpawned)
+            return;
+
+        isAlreadySpawned = true;
+
         if (objectHolder != null)
             objectHolder.SetActive(true);
 

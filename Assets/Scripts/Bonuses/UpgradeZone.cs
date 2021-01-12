@@ -15,9 +15,7 @@ public class UpgradeZone : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             Chochosan.CustomEventManager.OnUpgradePanelRequired?.Invoke();
-        }
-
-
-        Destroy(gameObject);
+            Destroy(gameObject);
+        } 
     }
 }

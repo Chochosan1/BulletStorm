@@ -79,6 +79,7 @@ public sealed class RangedEnemy : BaseEnemy
         healthBar.maxValue = stats.maxHealth;
         healthBar.value = CurrentHealth;
         originalStoppingDistance = agent.stoppingDistance;
+        GoToIdleState(true);
         if (this.gameObject.layer == LayerMask.NameToLayer("Allied"))
             isFriendlyUnit = true;
         else
@@ -141,15 +142,15 @@ public sealed class RangedEnemy : BaseEnemy
                 }
             }
         }
-        else if(currentStateAI == StatesAI.Idle)
+        else if (currentStateAI == StatesAI.Idle)
         {
-            if(isFriendlyUnit && (PlayerController.Instance.transform.position - thisTransform.position).magnitude > agent.stoppingDistance + 0.01f)
+            if (isFriendlyUnit)
             {
-                Debug.Log("PLAYER TOO FAR, SHOULD FOLLOW");
-                FollowPlayer();        
+                if ((PlayerController.Instance.transform.position - thisTransform.position).magnitude > agent.stoppingDistance + 0.01f)
+                    FollowPlayer();
             }
         }
-        else if(currentStateAI == StatesAI.FollowPlayer)
+        else if (currentStateAI == StatesAI.FollowPlayer)
         {
             SetAgentDestination(agent, PlayerController.Instance.transform.position);
 
@@ -293,7 +294,7 @@ public sealed class RangedEnemy : BaseEnemy
         RollOnDeathBonuses();
         DetermineLoot();
 
-  
+
         usedDeathParticle.SetActive(true);
         usedDeathParticle.gameObject.transform.SetParent(null);
         CameraFollowTarget.Instance.ShakeCamera(camShakeDuration, camShakeMagnitude, false);
@@ -317,7 +318,7 @@ public sealed class RangedEnemy : BaseEnemy
                 if (!isBoss)
                     CurrentHealth -= stats.maxHealth;
                 else
-                    CurrentHealth -= stats.maxHealth * 0.05f;             
+                    CurrentHealth -= stats.maxHealth * 0.05f;
             }
         }
     }

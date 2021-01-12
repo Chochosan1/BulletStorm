@@ -117,10 +117,10 @@ public sealed class MeleeEnemy : BaseEnemy
         }
         else if (currentStateAI == StatesAI.Idle)
         {
-            if (isFriendlyUnit && (PlayerController.Instance.transform.position - thisTransform.position).magnitude > agent.stoppingDistance + 0.01f)
+            if (isFriendlyUnit)
             {
-                Debug.Log("PLAYER TOO FAR, SHOULD FOLLOW");
-                FollowPlayer();
+                if ((PlayerController.Instance.transform.position - thisTransform.position).magnitude > agent.stoppingDistance + 0.01f)
+                    FollowPlayer();
             }
         }
         else if (currentStateAI == StatesAI.FollowPlayer)
@@ -283,7 +283,7 @@ public sealed class MeleeEnemy : BaseEnemy
 
         RollOnDeathBonuses();
         DetermineLoot();
-  
+
         //   this.gameObject.SetActive(false);
         GoToDeadState();
         usedDeathParticle.SetActive(true);
@@ -294,7 +294,7 @@ public sealed class MeleeEnemy : BaseEnemy
         {
             Destroy(this.gameObject);
         }
-        catch(System.Exception e)
+        catch (System.Exception e)
         {
             Debug.Log("Caught: " + e);
         }

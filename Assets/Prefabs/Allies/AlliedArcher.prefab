@@ -39010,6 +39010,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitName: 
+  FOLLOW_PLAYER_STOPPING_DISTANCE: 5.5
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
