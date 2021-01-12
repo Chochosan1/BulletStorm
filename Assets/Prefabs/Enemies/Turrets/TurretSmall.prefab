@@ -474,7 +474,7 @@ GameObject:
   - component: {fileID: 4434089355188476037}
   - component: {fileID: 4434089355188476034}
   - component: {fileID: 4434089355188476036}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: TurretSmall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -488,7 +488,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4434089355188476039}
-  m_LocalRotation: {x: -0, y: 0.6926753, z: -0, w: 0.7212496}
+  m_LocalRotation: {x: 0, y: 0.6926784, z: 0, w: 0.72124666}
   m_LocalPosition: {x: 51.75, y: 0.5, z: 74.81}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:

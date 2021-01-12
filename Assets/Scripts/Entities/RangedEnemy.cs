@@ -7,7 +7,7 @@ public sealed class RangedEnemy : BaseEnemy
 {
     enum RangedSpecialType { None, MultipleCastAlways, MultipleCastSometimes }
 
-    enum StatesAI { Idle, MovingToTarget, Attack, Dead, Stunned };
+    enum StatesAI { Idle, MovingToTarget, Attack, Dead, Stunned, FollowPlayer };
     private StatesAI currentStateAI;
 
     private NavMeshAgent agent;
@@ -143,9 +143,23 @@ public sealed class RangedEnemy : BaseEnemy
         }
         else if(currentStateAI == StatesAI.Idle)
         {
-            SetAgentDestination(agent, PlayerController.Instance.transform.position);
-            agent.stoppingDistance = 4f;
+            if(isFriendlyUnit && (PlayerController.Instance.transform.position - thisTransform.position).magnitude > agent.stoppingDistance + 0.01f)
+            {
+                Debug.Log("PLAYER TOO FAR, SHOULD FOLLOW");
+                FollowPlayer();        
+            }
         }
+        else if(currentStateAI == StatesAI.FollowPlayer)
+        {
+            SetAgentDestination(agent, PlayerController.Instance.transform.position);
+
+            if ((PlayerController.Instance.transform.position - thisTransform.position).magnitude <= agent.stoppingDistance + 0.01f)
+            {
+                Debug.Log("PLAYER REACHED, SHOULD GO IDLE");
+                GoToIdleState(true);
+            }
+        }
+
 
         ChooseNewTarget(true);
         if (currentTarget != null)
@@ -170,12 +184,19 @@ public sealed class RangedEnemy : BaseEnemy
         }
     }
 
+    private void FollowPlayer()
+    {
+        currentStateAI = StatesAI.FollowPlayer;
+        agent.stoppingDistance = FOLLOW_PLAYER_STOPPING_DISTANCE;
+        anim.SetBool("isRun", true);
+    }
+
     private void GoToIdleState(bool forceThisState)
     {
-        if (!forceThisState && (currentStateAI == StatesAI.Idle || currentStateAI == StatesAI.Stunned))
+        if (!forceThisState && (currentStateAI == StatesAI.Idle || currentStateAI == StatesAI.Stunned || currentStateAI == StatesAI.FollowPlayer))
             return;
 
-        agent.stoppingDistance = 4f;
+        agent.stoppingDistance = FOLLOW_PLAYER_STOPPING_DISTANCE;
         anim.SetBool("isRun", false);
         anim.SetBool("isAttack", false);
         anim.SetBool("isIdle", true);
@@ -184,6 +205,7 @@ public sealed class RangedEnemy : BaseEnemy
         currentTarget = null;
         currentTargetDamageable = null;
         canExitAttackState = true;
+        SetAgentDestination(agent, thisTransform.position);
     }
 
     private void GoToAttackState(bool forceThisState)

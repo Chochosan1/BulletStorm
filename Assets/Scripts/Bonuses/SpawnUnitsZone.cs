@@ -15,17 +15,23 @@ public class SpawnUnitsZone : MonoBehaviour
     [SerializeField] private GameObject[] unitsToSpawn;
     [SerializeField] private float spawnUnitsAfter = 2f;
 
-   
+
     void Start()
     {
-        objectHolder.SetActive(false);
-        preSpawnEffect.SetActive(true);
+        if (objectHolder != null)
+            objectHolder.SetActive(false);
+
+        if (preSpawnEffect != null)
+            preSpawnEffect.SetActive(true);
     }
 
     private void ActivateObjectHolder()
     {
-        objectHolder.SetActive(true);
-        preSpawnEffect.SetActive(false);
+        if (objectHolder != null)
+            objectHolder.SetActive(true);
+
+        if (preSpawnEffect != null)
+            preSpawnEffect.SetActive(false);
 
         StartCoroutine(SpawnUnitsAfter(spawnUnitsAfter));
     }

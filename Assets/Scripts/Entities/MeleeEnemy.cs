@@ -7,7 +7,7 @@ public sealed class MeleeEnemy : BaseEnemy
 {
     enum MeleeSpecialType { None, Kamikadze }
 
-    enum StatesAI { Idle, MovingToTarget, Attack, Dead, Stunned };
+    enum StatesAI { Idle, MovingToTarget, Attack, Dead, Stunned, FollowPlayer };
     private StatesAI currentStateAI;
 
     private NavMeshAgent agent;
@@ -115,6 +115,24 @@ public sealed class MeleeEnemy : BaseEnemy
                 }
             }
         }
+        else if (currentStateAI == StatesAI.Idle)
+        {
+            if (isFriendlyUnit && (PlayerController.Instance.transform.position - thisTransform.position).magnitude > agent.stoppingDistance + 0.01f)
+            {
+                Debug.Log("PLAYER TOO FAR, SHOULD FOLLOW");
+                FollowPlayer();
+            }
+        }
+        else if (currentStateAI == StatesAI.FollowPlayer)
+        {
+            SetAgentDestination(agent, PlayerController.Instance.transform.position);
+
+            if ((PlayerController.Instance.transform.position - thisTransform.position).magnitude <= agent.stoppingDistance + 0.01f)
+            {
+                Debug.Log("PLAYER REACHED, SHOULD GO IDLE");
+                GoToIdleState(true);
+            }
+        }
 
 
         ChooseNewTarget(true);
@@ -140,11 +158,19 @@ public sealed class MeleeEnemy : BaseEnemy
         }
     }
 
+    private void FollowPlayer()
+    {
+        currentStateAI = StatesAI.FollowPlayer;
+        agent.stoppingDistance = FOLLOW_PLAYER_STOPPING_DISTANCE;
+        anim.SetBool("isRun", true);
+    }
+
     private void GoToIdleState(bool forceThisState)
     {
-        if (!forceThisState && (currentStateAI == StatesAI.Idle || currentStateAI == StatesAI.Stunned))
+        if (!forceThisState && (currentStateAI == StatesAI.Idle || currentStateAI == StatesAI.Stunned || currentStateAI == StatesAI.FollowPlayer))
             return;
 
+        agent.stoppingDistance = FOLLOW_PLAYER_STOPPING_DISTANCE;
         anim.SetBool("isRun", false);
         anim.SetBool("isAttack", false);
         anim.SetBool("isIdle", true);

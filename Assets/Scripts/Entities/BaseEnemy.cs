@@ -6,8 +6,11 @@ using UnityEngine.AI;
 [RequireComponent(typeof(Rigidbody))]
 public class BaseEnemy : MonoBehaviour, IDamageable
 {
+    
+
     [Header("Base AI")]
     [SerializeField] protected string unitName;
+    [SerializeField] protected float FOLLOW_PLAYER_STOPPING_DISTANCE = 6.5f;
     [Tooltip("The layer which can be detected by the AI unit. All other layers will be ignored.")]
     [SerializeField] protected LayerMask enemyLayer;
     [Tooltip("How far away can the AI unit detect its target without taking into consideration walls and such. Will be used before looking for target within the greater range. ")]
