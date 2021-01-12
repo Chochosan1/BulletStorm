@@ -43,6 +43,7 @@ public sealed class MeleeEnemy : BaseEnemy
 
     private MeshRenderer meshRend;
     private Collider thisColl;
+    private float originalStoppingDistance;
 
     private float AttackRate
     {
@@ -67,7 +68,7 @@ public sealed class MeleeEnemy : BaseEnemy
         individualUnitCanvas.gameObject.SetActive(false);
         healthBar.maxValue = stats.maxHealth;
         healthBar.value = CurrentHealth;
-
+        originalStoppingDistance = agent.stoppingDistance;
         if (this.gameObject.layer == LayerMask.NameToLayer("Allied"))
             isFriendlyUnit = true;
         else
@@ -125,11 +126,13 @@ public sealed class MeleeEnemy : BaseEnemy
         }
         else if (currentStateAI == StatesAI.FollowPlayer)
         {
+            if (!isFriendlyUnit)
+                return;
+
             SetAgentDestination(agent, PlayerController.Instance.transform.position);
 
             if ((PlayerController.Instance.transform.position - thisTransform.position).magnitude <= agent.stoppingDistance + 0.01f)
             {
-                Debug.Log("PLAYER REACHED, SHOULD GO IDLE");
                 GoToIdleState(true);
             }
         }
@@ -170,7 +173,9 @@ public sealed class MeleeEnemy : BaseEnemy
         if (!forceThisState && (currentStateAI == StatesAI.Idle || currentStateAI == StatesAI.Stunned || currentStateAI == StatesAI.FollowPlayer))
             return;
 
-        agent.stoppingDistance = FOLLOW_PLAYER_STOPPING_DISTANCE;
+        if (isFriendlyUnit)
+            agent.stoppingDistance = FOLLOW_PLAYER_STOPPING_DISTANCE;
+
         anim.SetBool("isRun", false);
         anim.SetBool("isAttack", false);
         anim.SetBool("isIdle", true);
@@ -193,6 +198,7 @@ public sealed class MeleeEnemy : BaseEnemy
         }
 
         currentTargetDamageable = currentTarget.GetComponent<IDamageable>();
+        agent.stoppingDistance = originalStoppingDistance;
         currentStateAI = StatesAI.Attack;
         anim.SetBool("isRun", false);
         anim.SetBool("isAttack", true);
@@ -206,6 +212,7 @@ public sealed class MeleeEnemy : BaseEnemy
             return;
 
         currentStateAI = StatesAI.MovingToTarget;
+        agent.stoppingDistance = originalStoppingDistance;
         anim.SetBool("isRun", true);
         anim.SetBool("isAttack", false);
         anim.SetBool("isIdle", false);
@@ -240,6 +247,7 @@ public sealed class MeleeEnemy : BaseEnemy
             return;
 
         currentStateAI = StatesAI.Stunned;
+        agent.stoppingDistance = originalStoppingDistance;
         anim.SetBool("isFrozen", true);
         anim.SetBool("isRun", false);
         anim.SetBool("isAttack", false);

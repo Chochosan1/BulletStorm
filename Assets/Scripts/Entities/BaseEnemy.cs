@@ -174,8 +174,6 @@ public class BaseEnemy : MonoBehaviour, IDamageable
         if (lootDrop != null)
         {
             Instantiate(lootDrop, transform.position, lootDrop.transform.rotation);
-
-            Debug.Log("SPAWN LOOT");
         }
     }
 

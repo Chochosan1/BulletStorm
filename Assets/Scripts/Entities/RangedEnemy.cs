@@ -156,7 +156,6 @@ public sealed class RangedEnemy : BaseEnemy
 
             if ((PlayerController.Instance.transform.position - thisTransform.position).magnitude <= agent.stoppingDistance + 0.01f)
             {
-                Debug.Log("PLAYER REACHED, SHOULD GO IDLE");
                 GoToIdleState(true);
             }
         }

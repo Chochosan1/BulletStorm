@@ -8,11 +8,33 @@ public class LevelRandomness : MonoBehaviour
     [SerializeField] private GameObject rainParticles;
     [SerializeField] private float rainChance;
 
+    [Header("Random environment")]
+    [SerializeField] private GameObject[] environmentElements;
+
     void Start()
     {
-        if(Random.Range(0f, 1f) <= rainChance)
+        CalculateRainChance();
+        CalculateRandomEnvironment();
+    }
+
+    private void CalculateRainChance()
+    {
+        if (Random.Range(0f, 1f) <= rainChance)
         {
             rainParticles.SetActive(true);
         }
     }
+
+    private void CalculateRandomEnvironment()
+    {
+        foreach(GameObject GO in environmentElements)
+        {
+            float chance = Random.Range(0f, 1f);
+
+            if (chance < 0.5f)
+                GO.SetActive(false);
+        }
+    }
+
+
 }
