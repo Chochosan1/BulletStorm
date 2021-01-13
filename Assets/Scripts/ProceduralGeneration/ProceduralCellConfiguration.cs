@@ -20,12 +20,17 @@ namespace ProceduralGeneration
 
         [Header("References")]
         [SerializeField] private GameObject[] objectsToRandomlyToggle;
+        [SerializeField] private float disableObjectsChance = 0.6f;
+        [SerializeField] private GameObject[] bigUpgradeOrbs;
+        [SerializeField] private float enableBigOrbsChance = 0.1f;
+
         private int[] possibleY_Rotations = { 0, 90, 180, 270 };
 
         private void Start()
         {
             RandomlyToggleObjects();
             DetermineObjectRotation();
+            ToggleBigUpgradeOrbs();
 
             Destroy(this);
         }
@@ -39,7 +44,7 @@ namespace ProceduralGeneration
             {
                 float chanceRolled = Random.Range(0f, 1f);
 
-                if (chanceRolled >= 0.6f)
+                if (chanceRolled >= disableObjectsChance)
                 {
                     GO.SetActive(false);
                 }
@@ -54,6 +59,19 @@ namespace ProceduralGeneration
 
             int rotationChosen = Random.Range(0, possibleY_Rotations.Length);
             gameObject.transform.Rotate(transform.up, possibleY_Rotations[rotationChosen]);
+        }
+
+        private void ToggleBigUpgradeOrbs()
+        {
+            foreach(GameObject orb in bigUpgradeOrbs)
+            {
+                float chanceRolled = Random.Range(0f, 1f);
+
+                if (chanceRolled >= enableBigOrbsChance)
+                {
+                    orb.SetActive(false);
+                }
+            }
         }
 
         #region Getters

@@ -228,7 +228,17 @@ public sealed class MeleeEnemy : BaseEnemy
     {
         attackTimestamp = Time.time + attackCooldown;
         if (currentTargetDamageable != null && currentTarget != null)
-            currentTargetDamageable?.TakeDamage(stats.damage, this);
+        {
+            try
+            {
+                currentTargetDamageable?.TakeDamage(stats.damage, this);
+            }
+            catch (System.Exception e)
+            {
+                Debug.Log("CAUGHT " + e.ToString());
+            }
+        }
+            
         canExitAttackState = true;
     }
 

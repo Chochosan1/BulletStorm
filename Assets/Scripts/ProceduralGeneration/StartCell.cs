@@ -7,11 +7,28 @@ using UnityEngine;
 public class StartCell : MonoBehaviour
 {
     [SerializeField] private Transform playerSpawnPoint;
+    [SerializeField] private GameObject[] bigUpgradeOrbs;
+    [SerializeField] private float enableBonusBigOrbs = 0.1f;
 
     void Start()
     {
         FindObjectOfType<PlayerController>().gameObject.transform.position = playerSpawnPoint.transform.position;
 
+        ToggleBigUpgradeOrbs();
+
         Destroy(this);
+    }
+
+    private void ToggleBigUpgradeOrbs()
+    {
+        foreach (GameObject orb in bigUpgradeOrbs)
+        {
+            float chanceRolled = Random.Range(0f, 1f);
+
+            if (chanceRolled >= enableBonusBigOrbs)
+            {
+                orb.SetActive(false);
+            }
+        }
     }
 }
