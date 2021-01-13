@@ -8,13 +8,53 @@ namespace ProceduralGeneration
     /// </summary>
     public class ProceduralCellConfiguration : MonoBehaviour
     {  
+        [Header("Settings")]
         [Tooltip("The type of this prefab. The same type can be assigned to more than one prefab. NOTE: Placement limit is tied to prefab type, not only the current prefab object.")]
         [SerializeField] private PrefabType prefabType;
 
         [SerializeField] private PlacementLimit placementLimitType;
         [Tooltip("Maximum amount of times the current PREFAB TYPE will get spawned at the world.")]
         [SerializeField] private int placementLimitNumber = 0;
+        [Tooltip("Should the object have a random Y rotation on spawn?")]
+        [SerializeField] private bool isRotateRandomly = true;
 
+        [Header("References")]
+        [SerializeField] private GameObject[] objectsToRandomlyToggle;
+        private int[] possibleY_Rotations = { 0, 90, 180, 270 };
+
+        private void Start()
+        {
+            RandomlyToggleObjects();
+            DetermineObjectRotation();
+        }
+
+        private void RandomlyToggleObjects()
+        {
+            if (objectsToRandomlyToggle.Length <= 0)
+                return; 
+
+            foreach(GameObject GO in objectsToRandomlyToggle)
+            {
+                float chanceRolled = Random.Range(0f, 1f);
+
+                if (chanceRolled >= 0.6f)
+                {
+                    GO.SetActive(false);
+                }
+            }
+            
+        }
+
+        private void DetermineObjectRotation()
+        {
+            if (!isRotateRandomly)
+                return;
+
+            int rotationChosen = Random.Range(0, possibleY_Rotations.Length);
+            gameObject.transform.Rotate(transform.up, possibleY_Rotations[rotationChosen]);
+        }
+
+        #region Getters
         ///<summary>Maximum amount of prefabs of this type allowed to place.</summary>
         public int GetPlacementLimitNumber()
         {
@@ -32,5 +72,6 @@ namespace ProceduralGeneration
         {
             return placementLimitType;
         }
+        #endregion
     }
 }
