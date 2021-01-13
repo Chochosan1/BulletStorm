@@ -9,8 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: FAE_FogsheetsParticle
   m_Shader: {fileID: 4800000, guid: 8516d7a69675844a7a0b7095af7c46af, type: 3}
-  m_ShaderKeywords: _EMISSION _FADING_ON _RECEIVE_SHADOWS_OFF _SOFTPARTICLES_ON
-  m_LightmapFlags: 0
+  m_ShaderKeywords: _FADING_ON _RECEIVE_SHADOWS_OFF _SOFTPARTICLES_ON
+  m_LightmapFlags: 6
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 3050
@@ -71,7 +71,7 @@ Material:
     - _Blend: 2
     - _BlendOp: 0
     - _BumpScale: 1
-    - _CameraFadingEnabled: 1
+    - _CameraFadingEnabled: 0
     - _CameraFarFadeDistance: 34.31
     - _CameraNearFadeDistance: 7.95
     - _ColorMode: 0
@@ -110,7 +110,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
-    - _CameraFadeParams: {r: 7.95, g: 0.037936267, b: 0, a: 0}
+    - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SoftParticleFadeParams: {r: 0.65, g: 0.17889088, b: 0, a: 0}
