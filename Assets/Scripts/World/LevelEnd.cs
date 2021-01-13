@@ -14,6 +14,10 @@ public class LevelEnd : MonoBehaviour
         {
             Instance = this;
         }
+        else
+        {
+            Destroy(Instance);
+        }
     }
 
     private void Start()

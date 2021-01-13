@@ -158,6 +158,9 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             Instance = this;
         }
+
+        mainCamera = Camera.main;
+        mainCamera.GetComponent<CameraFollowTarget>().SetCameraTarget(transform);
     }
 
     void Start()
@@ -178,7 +181,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         rb = GetComponent<Rigidbody>();
         thisColl = GetComponent<Collider>();
         thisTransform = transform;
-        mainCamera = Camera.main;
+        
         anim = GetComponent<Animator>();
 
         //trigger the setters to calculate initial stuff

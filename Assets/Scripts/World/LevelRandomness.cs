@@ -35,6 +35,4 @@ public class LevelRandomness : MonoBehaviour
                 GO.SetActive(false);
         }
     }
-
-
 }

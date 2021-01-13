@@ -26,6 +26,8 @@ namespace ProceduralGeneration
         {
             RandomlyToggleObjects();
             DetermineObjectRotation();
+
+            Destroy(this);
         }
 
         private void RandomlyToggleObjects()

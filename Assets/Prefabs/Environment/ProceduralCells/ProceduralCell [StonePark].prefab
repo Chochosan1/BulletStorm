@@ -2537,7 +2537,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabType: 1
   placementLimitType: 1
-  placementLimitNumber: 2
+  placementLimitNumber: 1
+  isRotateRandomly: 1
+  objectsToRandomlyToggle: []
 --- !u!1 &5415197375807333832
 GameObject:
   m_ObjectHideFlags: 0

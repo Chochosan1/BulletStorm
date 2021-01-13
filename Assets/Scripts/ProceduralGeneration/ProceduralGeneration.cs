@@ -18,10 +18,37 @@ namespace ProceduralGeneration
         [Tooltip("All prefabs used to spawn at the world. Each cell will be assigned one of these randomly.")]
         [SerializeField] private GameObject[] prefabsToSpawn;
 
+        [SerializeField] private GameObject startCell;
+        [SerializeField] private GameObject levelEndCell;
+
+        [SerializeField] private GameObject[] startPrefabsToSpawn;
+        [SerializeField] private GameObject[] levelEndPrefabsToSpawn;
+
         void Start()
         {
             prefabTypeTimesPlaced = new Dictionary<PrefabType, int>();
 
+            GenerateNormalCells();
+            GenerateStartCell();
+            GenerateEndCell();
+        }
+
+        private void GenerateEndCell()
+        {
+            int prefabChosen = Random.Range(0, levelEndPrefabsToSpawn.Length);
+
+            Instantiate(levelEndPrefabsToSpawn[prefabChosen], levelEndCell.transform.position, levelEndPrefabsToSpawn[prefabChosen].transform.rotation);
+        }
+
+        private void GenerateStartCell()
+        {
+            int prefabChosen = Random.Range(0, startPrefabsToSpawn.Length);
+
+            Instantiate(startPrefabsToSpawn[prefabChosen], startCell.transform.position, startPrefabsToSpawn[prefabChosen].transform.rotation);
+        }
+
+        private void GenerateNormalCells()
+        {
             foreach (GameObject cell in cells)
             {
                 int prefabChosen = Random.Range(0, prefabsToSpawn.Length);
@@ -56,12 +83,12 @@ namespace ProceduralGeneration
             {
                 if (placementLimitType == PlacementLimit.Limited && prefabTypeTimesPlaced[prefabType] >= prefabPlacementLimit)
                 {
-                    Debug.Log("PREFAB TYPE " + prefabType + " CAN NOT BE PLACED. LIMIT REACHED!");
+                //    Debug.Log("PREFAB TYPE " + prefabType + " CAN NOT BE PLACED. LIMIT REACHED!");
                     return false;
                 }
 
                 prefabTypeTimesPlaced[prefabType]++;
-                Debug.Log($"PREFAB TYPE {prefabType} BEING PLACED. ({prefabTypeTimesPlaced[prefabType]})");
+              //  Debug.Log($"PREFAB TYPE {prefabType} BEING PLACED. ({prefabTypeTimesPlaced[prefabType]})");
             }
             else
             {
@@ -69,7 +96,7 @@ namespace ProceduralGeneration
                     return false;
 
                 prefabTypeTimesPlaced.Add(prefabType, 1);
-                Debug.Log("PREFAB TYPE " + prefabType + " ADDED TO THE DICTIONARY.");
+            //    Debug.Log("PREFAB TYPE " + prefabType + " ADDED TO THE DICTIONARY.");
             }
 
             return true;

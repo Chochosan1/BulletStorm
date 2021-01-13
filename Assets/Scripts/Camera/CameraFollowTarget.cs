@@ -28,6 +28,7 @@ public class CameraFollowTarget : MonoBehaviour
     public bool isLerp = false;
     private bool isCameraShaking = false;
     private Transform camTransform;
+    private bool isCameraTargetSet = false;
 
     private void Awake()
     {
@@ -45,6 +46,9 @@ public class CameraFollowTarget : MonoBehaviour
 
     void LateUpdate()
     {
+        if (!isCameraTargetSet)
+            return;
+
         if (cameraUpdate == CameraUpdate.LateUpdate && !isCameraShaking)
         {
             if (isLerp)
@@ -61,6 +65,9 @@ public class CameraFollowTarget : MonoBehaviour
 
     void Update()
     {
+        if (!isCameraTargetSet)
+            return;
+
         if (Input.GetAxis("Mouse ScrollWheel") != 0)
         {
             float scroll = Input.GetAxis("Mouse ScrollWheel");
@@ -84,6 +91,9 @@ public class CameraFollowTarget : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!isCameraTargetSet)
+            return;
+
         if (cameraUpdate == CameraUpdate.FixedUpdate /*&& !isCameraShaking*/)
         {
             if (isLerp)
@@ -95,6 +105,12 @@ public class CameraFollowTarget : MonoBehaviour
                 thisTransform.position = Vector3.SmoothDamp(thisTransform.position, targetToFollow.position + offset, ref currentVelocity, cameraFollowSpeed * Time.deltaTime);
             }
         }
+    }
+
+    public void SetCameraTarget(Transform target)
+    {
+        targetToFollow = target;
+        isCameraTargetSet = true;
     }
 
     public void ShakeCamera(float duration, float magnitude, bool avoidCooldown)
