@@ -17,15 +17,15 @@ namespace Chochosan
         public static OnUpgradePanelRequiredDelegate OnUpgradePanelRequired;
 
         public delegate void OnPlayerStatsChangedDelegate(string stats);
-        /// <summary>Event raised when the upgrade panel should open. </summary>
+        /// <summary>Event raised whenever player's stats change. </summary>
         public static OnPlayerStatsChangedDelegate OnPlayerStatsChanged;
 
         public delegate void OnEnemyKilledDelegate();
-        /// <summary>Event raised when the upgrade panel should open. </summary>
+        /// <summary>Event raised when an enemy has been slain. </summary>
         public static OnEnemyKilledDelegate OnEnemyKilled;
 
         public delegate void OnBossKilledDelegate();
-        /// <summary>Event raised when the upgrade panel should open. </summary>
+        /// <summary>Event raised when the level boss has been defeated. </summary>
         public static OnBossKilledDelegate OnBossKilled;
     }
 }
