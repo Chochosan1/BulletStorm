@@ -157,6 +157,12 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+            return;
         }
 
         mainCamera = Camera.main;
@@ -176,7 +182,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
 
         uc = GetComponent<UpgradeController>();
-        projectilePool = new List<Projectile_Controller>();
+        
 
         rb = GetComponent<Rigidbody>();
         thisColl = GetComponent<Collider>();
@@ -188,14 +194,17 @@ public class PlayerController : MonoBehaviour, IDamageable
         ShootRate = shootRate;
         CurrentHealth = maxHealth;
         MaxHealth = maxHealth;
-      //  CurrentHealth = currentHealth;
+        //  CurrentHealth = currentHealth;
 
+
+        projectilePool = new List<Projectile_Controller>();
         //pool all player projectiles
         for (int i = 0; i < 150; i++)
         {
             GameObject projectileCopy = Instantiate(projectile, projectileSpawnPosition.position, projectile.transform.rotation);
             projectileCopy.SetActive(false);
             projectilePool.Add(projectileCopy.GetComponent<Projectile_Controller>());
+            DontDestroyOnLoad(projectileCopy);
         }
     }
 

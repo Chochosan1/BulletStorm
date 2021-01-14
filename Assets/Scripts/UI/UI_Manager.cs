@@ -27,14 +27,19 @@ public class UI_Manager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI attackDamageText;
     [SerializeField] private TextMeshProUGUI enemiesKilledText;
 
-
-
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
+        else
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        Debug.Log("AWAKE MANAGER");
 
         Chochosan.CustomEventManager.OnUpgradePanelRequired += OpenUpgradePanel;
         Chochosan.CustomEventManager.OnUpgradeLearned += CloseUpgradePanel;
@@ -50,7 +55,17 @@ public class UI_Manager : MonoBehaviour
 
     public void OpenUpgradePanel()
     {
-        upgradesPanel.SetActive(true);
+        try
+        {
+            upgradesPanel.SetActive(true);
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log("CAUGHT: " + e + " -> Fixing the error.");
+            upgradesPanel = GameObject.FindGameObjectWithTag("UpgradeHolder");
+            upgradesPanel.SetActive(true);
+        }
+     
 
         CalculateUpgradeButtonsToShow();
 
@@ -59,9 +74,13 @@ public class UI_Manager : MonoBehaviour
 
     public void CloseUpgradePanel(UpgradeController.UpgradeType upgradeType)
     {
-        foreach (Button btn in upgradesPanel.GetComponentsInChildren<Button>())
+        //foreach (Button btn in upgradesPanel.GetComponentsInChildren<Button>())
+        //{
+        //    btn.gameObject.SetActive(false);
+        //}
+        foreach(GameObject GO in allButtons)
         {
-            btn.gameObject.SetActive(false);
+            GO.SetActive(false);
         }
 
         //maybe display the upgrade type
@@ -137,8 +156,18 @@ public class UI_Manager : MonoBehaviour
             if (chosenBtn >= allButtons.Count)
                 chosenBtn = 0;
 
-
-            allButtons[chosenBtn].SetActive(true);
+            try
+            {
+                allButtons[chosenBtn].SetActive(true);
+                Debug.Log(allButtons.Count);
+            }
+            catch (System.Exception e)
+            {
+              
+                Debug.LogWarning("CAUGHT ERROR AT BUTTON " + chosenBtn + ". Trying to show " + upgradesToShow + " upgrades.");
+            }
+          
+           
             chosenButtons[i] = chosenBtn;
         }
     }
@@ -146,6 +175,7 @@ public class UI_Manager : MonoBehaviour
     ///<summary>Removes the button from the list with all upgrade buttons so that it is not chosen again to show to the player. Called on-click.</summary>
     public void RemoveUpgradeButtonFromList(GameObject btn)
     {
+        btn.SetActive(false);
         allButtons.Remove(btn);
     }
     #endregion

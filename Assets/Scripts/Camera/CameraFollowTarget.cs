@@ -35,6 +35,12 @@ public class CameraFollowTarget : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+            return;
         }
     }
 
@@ -42,6 +48,11 @@ public class CameraFollowTarget : MonoBehaviour
     {
         thisTransform = transform;
         camTransform = GetComponent<Camera>().transform;
+    }
+
+    private void OnLevelWasLoaded(int level)
+    {
+        SetCameraTarget(FindObjectOfType<PlayerController>().GetComponent<Transform>());
     }
 
     void LateUpdate()
