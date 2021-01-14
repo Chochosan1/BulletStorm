@@ -165,14 +165,17 @@ public class PlayerController : MonoBehaviour, IDamageable
             return;
         }
 
-        mainCamera = Camera.main;
-        mainCamera.GetComponent<CameraFollowTarget>().SetCameraTarget(transform);
+       
     }
 
     void Start()
     {
         this.tag = "Player";
 
+        mainCamera = Camera.main;
+        mainCamera.GetComponent<CameraFollowTarget>().SetCameraTarget(transform);
+
+     
         ///Event subscription///
 
         Chochosan.CustomEventManager.OnUpgradeLearned += OnNewUpgradeLearned;

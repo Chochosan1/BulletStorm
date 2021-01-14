@@ -9,6 +9,7 @@ public class LevelEndPortal : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
+            int randomLevel = Random.Range(0, 2);
             SceneManager.LoadScene(0);
         }
     }

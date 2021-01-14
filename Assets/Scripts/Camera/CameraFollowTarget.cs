@@ -51,13 +51,13 @@ public class CameraFollowTarget : MonoBehaviour
     }
 
     private void OnLevelWasLoaded(int level)
-    {
+    { 
         SetCameraTarget(FindObjectOfType<PlayerController>().GetComponent<Transform>());
     }
 
     void LateUpdate()
     {
-        if (!isCameraTargetSet)
+        if (!isCameraTargetSet || targetToFollow == null)
             return;
 
         if (cameraUpdate == CameraUpdate.LateUpdate && !isCameraShaking)
@@ -76,7 +76,7 @@ public class CameraFollowTarget : MonoBehaviour
 
     void Update()
     {
-        if (!isCameraTargetSet)
+        if (!isCameraTargetSet || targetToFollow == null)
             return;
 
         if (Input.GetAxis("Mouse ScrollWheel") != 0)
@@ -102,7 +102,7 @@ public class CameraFollowTarget : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!isCameraTargetSet)
+        if (!isCameraTargetSet || targetToFollow == null)
             return;
 
         if (cameraUpdate == CameraUpdate.FixedUpdate /*&& !isCameraShaking*/)
