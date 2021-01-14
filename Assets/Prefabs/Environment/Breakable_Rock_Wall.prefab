@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5934671688341761380}
   - component: {fileID: 5934671688341761379}
   - component: {fileID: 5934671688341761378}
+  - component: {fileID: -2183426990381069848}
   m_Layer: 10
   m_Name: Breakable_Rock_Wall
   m_TagString: Untagged
@@ -124,6 +125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitName: 
+  FOLLOW_PLAYER_STOPPING_DISTANCE: 6.5
   enemyLayer:
     serializedVersion: 2
     m_Bits: 769
@@ -131,7 +133,27 @@ MonoBehaviour:
   secondPureEnemySenseRange: 30
   stats: {fileID: 11400000, guid: 0a168779a1a17e04f80bcd4edb5d7ec8, type: 2}
   canBeKnockedBack: 0
+  isDestroyDeathParticleAfterTime: 1
   deathParticle: {fileID: 4076143176612502848, guid: 75191ace10846a54697c9908d86376d9,
     type: 3}
   frozenParticle: {fileID: 0}
+  explodedDeathParticle: {fileID: 0}
+  firstSpawnedParticle: {fileID: 0}
   lootTable: {fileID: 0}
+  currentTarget: {fileID: 0}
+--- !u!208 &-2183426990381069848
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5934671688341761377}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.66200006, y: 1.304, z: 2.3200002}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.032, y: 0.79300004, z: -0.030000001}
+  m_TimeToStationary: 0.5

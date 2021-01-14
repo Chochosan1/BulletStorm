@@ -72725,11 +72725,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerArcher
       objectReference: {fileID: 0}
-    - target: {fileID: 549649253017811120, guid: b5862941564965c4fab988c0737960b8,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4862217898735125309, guid: b5862941564965c4fab988c0737960b8,
         type: 3}
       propertyPath: m_AnchorMax.x
