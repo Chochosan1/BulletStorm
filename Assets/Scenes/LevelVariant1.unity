@@ -15357,6 +15357,7 @@ MonoBehaviour:
   prefabsToSpawn:
   - {fileID: 3061164374006637904, guid: f12ae823da3f0a24cb30061846637226, type: 3}
   - {fileID: 5077303779969832115, guid: 114b6c544b131db43aba39ef576354ae, type: 3}
+  - {fileID: 8244708796732829590, guid: b795f139d5a75a94780bbec0f16fa1b0, type: 3}
   startCell: {fileID: 1512148700}
   levelEndCell: {fileID: 642366356}
   startPrefabsToSpawn:

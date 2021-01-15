@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2531029724235242362}
   - component: {fileID: 2531029724235242363}
   - component: {fileID: 2531029724235242360}
+  - component: {fileID: 3278107182535665920}
   m_Layer: 10
   m_Name: Statue
   m_TagString: Untagged
@@ -94,6 +95,22 @@ MonoBehaviour:
   firstSpawnedParticle: {fileID: 0}
   lootTable: {fileID: 11400000, guid: 3d85b190ef011f54ca39c76455257b80, type: 2}
   currentTarget: {fileID: 0}
+--- !u!208 &3278107182535665920
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2531029724235242361}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1.5, y: 0.5, z: 1.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &5075869534232579241
 GameObject:
   m_ObjectHideFlags: 0
