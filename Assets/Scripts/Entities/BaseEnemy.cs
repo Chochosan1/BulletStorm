@@ -173,7 +173,7 @@ public class BaseEnemy : MonoBehaviour, IDamageable
 
         if (lootDrop != null)
         {
-            Instantiate(lootDrop, transform.position, lootDrop.transform.rotation);
+            Instantiate(lootDrop, transform.position + new Vector3(0f, 1f, 0f), lootDrop.transform.rotation);
         }
     }
 

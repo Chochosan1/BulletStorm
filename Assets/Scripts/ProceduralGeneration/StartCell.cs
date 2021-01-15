@@ -12,11 +12,23 @@ public class StartCell : MonoBehaviour
 
     void Start()
     {
-        FindObjectOfType<PlayerController>().gameObject.transform.position = playerSpawnPoint.transform.position;
+        Debug.Log("(START)SHOULD TELEPORT PLAYER");
+        GameObject player = PlayerController.Instance.gameObject;
+        player.transform.position = playerSpawnPoint.position;
 
-        ToggleBigUpgradeOrbs();
+        CameraFollowTarget.Instance.SetCameraTarget(player.transform);
+        ToggleBigUpgradeOrbs();   
+    }
 
-        Destroy(this);
+    private void OnLevelWasLoaded(int level)
+    {
+        Debug.Log("(LEVELLOADED)SHOULD TELEPORT PLAYER");
+        GameObject player = PlayerController.Instance.gameObject;
+        player.transform.position = playerSpawnPoint.position;
+
+        CameraFollowTarget.Instance.SetCameraTarget(player.transform);
+
+      //  Destroy(this);
     }
 
     private void ToggleBigUpgradeOrbs()

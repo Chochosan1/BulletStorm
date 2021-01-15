@@ -20,9 +20,11 @@ namespace ProceduralGeneration
 
         [Header("References")]
         [SerializeField] private GameObject[] objectsToRandomlyToggle;
-        [SerializeField] private float disableObjectsChance = 0.6f;
-        [SerializeField] private GameObject[] bigUpgradeOrbs;
-        [SerializeField] private float enableBigOrbsChance = 0.1f;
+        [SerializeField] private float enableObjectsChance = 0.6f;
+        [SerializeField] private GameObject[] uncommonItemsToToggle;
+        [SerializeField] private GameObject[] rareItemsToToggle;
+        [SerializeField] private float uncommonChanceToSpawn = 0.25f;
+        [SerializeField] private float rareChanceToSpawn = 0.1f;
 
         private int[] possibleY_Rotations = { 0, 90, 180, 270 };
 
@@ -30,7 +32,8 @@ namespace ProceduralGeneration
         {
             RandomlyToggleObjects();
             DetermineObjectRotation();
-            ToggleBigUpgradeOrbs();
+            ToggleUncommonItems();
+            ToggleRareItems();
 
             Destroy(this);
         }
@@ -44,12 +47,11 @@ namespace ProceduralGeneration
             {
                 float chanceRolled = Random.Range(0f, 1f);
 
-                if (chanceRolled >= disableObjectsChance)
+                if (chanceRolled > enableObjectsChance)
                 {
                     GO.SetActive(false);
                 }
-            }
-            
+            }         
         }
 
         private void DetermineObjectRotation()
@@ -61,15 +63,28 @@ namespace ProceduralGeneration
             gameObject.transform.Rotate(transform.up, possibleY_Rotations[rotationChosen]);
         }
 
-        private void ToggleBigUpgradeOrbs()
+        private void ToggleUncommonItems()
         {
-            foreach(GameObject orb in bigUpgradeOrbs)
+            foreach(GameObject GO in uncommonItemsToToggle)
             {
                 float chanceRolled = Random.Range(0f, 1f);
 
-                if (chanceRolled >= enableBigOrbsChance)
+                if (chanceRolled > uncommonChanceToSpawn)
                 {
-                    orb.SetActive(false);
+                    GO.SetActive(false);
+                }
+            }
+        }
+
+        private void ToggleRareItems()
+        {
+            foreach (GameObject GO in rareItemsToToggle)
+            {
+                float chanceRolled = Random.Range(0f, 1f);
+
+                if (chanceRolled > rareChanceToSpawn)
+                {
+                    GO.SetActive(false);
                 }
             }
         }

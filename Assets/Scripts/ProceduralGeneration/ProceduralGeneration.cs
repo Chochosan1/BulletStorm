@@ -24,6 +24,8 @@ namespace ProceduralGeneration
         [SerializeField] private GameObject[] startPrefabsToSpawn;
         [SerializeField] private GameObject[] levelEndPrefabsToSpawn;
 
+        [SerializeField] private GameObject[] bossesToSpawn;
+
         void Start()
         {
             prefabTypeTimesPlaced = new Dictionary<PrefabType, int>();

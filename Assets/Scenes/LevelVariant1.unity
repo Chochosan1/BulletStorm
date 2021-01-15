@@ -15363,6 +15363,7 @@ MonoBehaviour:
   - {fileID: 890733443727429558, guid: bd242ea36f9a3a64a863ade3a34b96bb, type: 3}
   levelEndPrefabsToSpawn:
   - {fileID: 354822853307728195, guid: e6a39921a9f834846b11b8dba1a74f3c, type: 3}
+  bossesToSpawn: []
 --- !u!1 &512665372 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3393978954030772708, guid: 3eb19fc3f19141c4a8168860846d4fa3,

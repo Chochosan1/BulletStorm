@@ -163,9 +163,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             Destroy(this.gameObject);
             return;
-        }
-
-       
+        }    
     }
 
     void Start()
@@ -173,9 +171,10 @@ public class PlayerController : MonoBehaviour, IDamageable
         this.tag = "Player";
 
         mainCamera = Camera.main;
-        mainCamera.GetComponent<CameraFollowTarget>().SetCameraTarget(transform);
+      //  mainCamera.GetComponent<CameraFollowTarget>().SetCameraTarget(transform);
 
-     
+        Debug.Log("HELLO PLAYER");
+
         ///Event subscription///
 
         Chochosan.CustomEventManager.OnUpgradeLearned += OnNewUpgradeLearned;
@@ -219,6 +218,12 @@ public class PlayerController : MonoBehaviour, IDamageable
         Chochosan.CustomEventManager.OnEnemyKilled += OnEnemyKilled;
 
         ////////////////////////
+    }
+
+    private void OnLevelWasLoaded(int level)
+    {
+        mainCamera = Camera.main;
+    //    mainCamera.GetComponent<CameraFollowTarget>().SetCameraTarget(transform);
     }
 
     void Update()

@@ -50,11 +50,6 @@ public class CameraFollowTarget : MonoBehaviour
         camTransform = GetComponent<Camera>().transform;
     }
 
-    private void OnLevelWasLoaded(int level)
-    { 
-        SetCameraTarget(FindObjectOfType<PlayerController>().GetComponent<Transform>());
-    }
-
     void LateUpdate()
     {
         if (!isCameraTargetSet || targetToFollow == null)
