@@ -83,7 +83,7 @@ public class GroundProjectile : MonoBehaviour
     {
         this.targetPos = targetPos;
         markedGroundEffect.SetActive(true);
-        markedGroundEffect.transform.position = targetPos;
+        markedGroundEffect.transform.position = targetPos + new Vector3(0f, 0.1f, 0f);
         markedGroundEffect.transform.SetParent(null);
     }
 

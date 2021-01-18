@@ -28,6 +28,8 @@ public class DamageZone : MonoBehaviour
 
         DetermineSpecialEffectOnSpawn();
 
+        thisTransform.SetParent(null);
+
         if (isForceDestroyAfterTime)
             Destroy(gameObject, forceDestroyAfterSeconds);
     }

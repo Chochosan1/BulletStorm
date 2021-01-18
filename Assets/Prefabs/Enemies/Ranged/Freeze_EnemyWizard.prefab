@@ -1038,6 +1038,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitName: 
+  FOLLOW_PLAYER_STOPPING_DISTANCE: 6.5
   enemyLayer:
     serializedVersion: 2
     m_Bits: 512
@@ -1052,15 +1053,17 @@ MonoBehaviour:
   firstSpawnedParticle: {fileID: 0}
   lootTable: {fileID: 11400000, guid: 3e83e22115335124a89b7615a8daf8d9, type: 2}
   currentTarget: {fileID: 0}
-  specialTypeUnit: 0
-  projectileSpawnPositions: []
+  specialTypeUnit: 2
+  projectileSpawnPositions:
+  - {fileID: 4644750131005387425}
   multipleCastEveryXshots: 2
   healthBar: {fileID: 4644750132544941129}
   individualUnitCanvas: {fileID: 4644750131228949111}
   projectileSpawnPosition: {fileID: 4644750131005387425}
-  projectile: {fileID: 3142173893139789911, guid: cca8c5ec77b1c1348926d61fb50ba5b3,
+  projectile: {fileID: 3142173893139789911, guid: 5451d76010f3a07468520c3f1901e397,
     type: 3}
-  projectileMulticast: {fileID: 0}
+  projectileMulticast: {fileID: 3142173893139789911, guid: cca8c5ec77b1c1348926d61fb50ba5b3,
+    type: 3}
   shootRate: 1.5
   stoppingDistance: 14
   useCamShakeOnDeath: 1

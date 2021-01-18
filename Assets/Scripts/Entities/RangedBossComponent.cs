@@ -203,6 +203,7 @@ public class RangedBossComponent : MonoBehaviour
         public List<GameObject> unitSpawnPoints;
         public GameObject unitToSpawn;
         public int maxTimesToSpawnUnits = 10;
+        [HideInInspector]
         public int unitsSpawnedTotally = 0;
     }
 
