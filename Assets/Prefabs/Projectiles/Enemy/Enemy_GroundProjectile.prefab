@@ -57661,6 +57661,9 @@ MonoBehaviour:
   hitParticleDuration: 0.65
   muzzleParticleDefault: {fileID: 5870333944811598101}
   markedGroundEffect: {fileID: 7547486478478986148}
+  spawnOnHitObject: {fileID: 8496866310822485142, guid: 86eb1c3dd7815fe49b60b1a50bcabf1b,
+    type: 3}
+  isFreezingProjectile: 0
   rangeGizmo: 0
 --- !u!1 &5870333944811598101
 GameObject:

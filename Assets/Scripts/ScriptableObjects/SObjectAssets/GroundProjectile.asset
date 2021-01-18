@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7078b955968c0d647b4a973447c8ef53, type: 3}
   m_Name: GroundProjectile
   m_EditorClassIdentifier: 
-  travelSpeed: 7
+  travelSpeed: 9
   damage: 50
   knockbackPower: 0
   chanceToFreeze: 1

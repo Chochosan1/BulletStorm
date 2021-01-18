@@ -308,6 +308,11 @@ public class PlayerController : MonoBehaviour, IDamageable
             anim.SetBool("isAttack", true);
             Shoot();
         }
+
+        if(Input.GetKey(KeyCode.T))
+        {
+            HealSelf(100f);
+        }
     }
 
     private void Jump()

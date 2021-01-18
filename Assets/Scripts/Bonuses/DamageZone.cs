@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[RequireComponent(typeof(Collider))]
 public class DamageZone : MonoBehaviour
 {
     enum DamageType { OnTriggerEnter, OnTriggerStay };
@@ -16,6 +16,8 @@ public class DamageZone : MonoBehaviour
     [SerializeField] private DamageType damageType = DamageType.OnTriggerEnter;
     [SerializeField] private float damageCooldown = 0.5f;
     [SerializeField] private float damagePerTick = 5f;
+    [SerializeField] private bool isForceDestroyAfterTime = false;
+    [SerializeField] private float forceDestroyAfterSeconds = 5f;
     private float damageTimestamp;
     private Transform thisTransform;
     private Vector3 moveDir;
@@ -25,6 +27,9 @@ public class DamageZone : MonoBehaviour
         thisTransform = transform;
 
         DetermineSpecialEffectOnSpawn();
+
+        if (isForceDestroyAfterTime)
+            Destroy(gameObject, forceDestroyAfterSeconds);
     }
 
     private void OnTriggerEnter(Collider other)

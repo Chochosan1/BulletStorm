@@ -13,6 +13,7 @@ public class GroundProjectile : MonoBehaviour
     [SerializeField] private float hitParticleDuration = 0.65f;
     [SerializeField] private GameObject muzzleParticleDefault;
     [SerializeField] private GameObject markedGroundEffect;
+    [SerializeField] private GameObject spawnOnHitObject;
 
     [Header("Properties")]
     [SerializeField] private bool isFreezingProjectile = false;
@@ -103,6 +104,7 @@ public class GroundProjectile : MonoBehaviour
     private IEnumerator DeactivateObjectAfter(float duration)
     {
         yield return new WaitForSeconds(duration);
+        Instantiate(spawnOnHitObject, targetPos, spawnOnHitObject.transform.rotation);
         Destroy(this.gameObject);
     }
 
