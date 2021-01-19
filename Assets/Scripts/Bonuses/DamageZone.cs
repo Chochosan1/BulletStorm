@@ -91,6 +91,9 @@ public class DamageZone : MonoBehaviour
                 case SpecialEffectsOnTouch.PossibleSpecialEffects.Slow:
                     tempDamageable.GetSlowed(1f, 0.5f, specialEffectsOnTouch.chanceToTriggerEffect);
                     break;
+                case SpecialEffectsOnTouch.PossibleSpecialEffects.Burn:
+                    tempDamageable.GetBurned(5, damageCooldown, damagePerTick);
+                    break;
             }
         }
     }
@@ -194,7 +197,7 @@ public class DamageZone : MonoBehaviour
     [System.Serializable]
     public class SpecialEffectsOnTouch
     {
-        public enum PossibleSpecialEffects { None, Freeze, Slow };
+        public enum PossibleSpecialEffects { None, Freeze, Slow, Burn };
         [Tooltip("The special effects trigger whenever this object deals damage.")]
         public PossibleSpecialEffects specialEffect;
 

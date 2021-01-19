@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private GameObject healEffect;
     [SerializeField] private GameObject dashEffect;
     [SerializeField] private GameObject frozenParticle;
+    [SerializeField] private GameObject burningParticle;
     [SerializeField] private GameObject slowedMovementParticle;
     [SerializeField] private GameObject normalMovementParticle;
     [SerializeField] private GameSounds gameSoundsAsset;
@@ -47,6 +48,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     private float shootTimestamp;
     private float shootCooldown;
     private float currentHealth;
+    private bool isBurning = false;
+    private int totalTicksBurned;
 
     private UpgradeController uc;
     private List<Projectile_Controller> projectilePool;
@@ -497,6 +500,30 @@ public class PlayerController : MonoBehaviour, IDamageable
             healEffect.SetActive(true);
             StartCoroutine(DisableObjectAfter(healEffect, 1f));
         }
+    }
+
+    public virtual void GetBurned(int totalTicks, float tickCooldown, float damagePerTick)
+    {
+        totalTicksBurned = 0;
+        StartCoroutine(BurnOverTime(totalTicks, tickCooldown, damagePerTick));
+    }
+
+    protected IEnumerator BurnOverTime(float totalTicks, float tickCooldown, float damagePerTick)
+    {
+        burningParticle.SetActive(true);
+        //enable burn effect
+        while (totalTicksBurned < totalTicks)
+        {
+            TakeDamage(damagePerTick, null);
+            totalTicksBurned++;
+            yield return new WaitForSeconds(tickCooldown);
+
+            if (totalTicksBurned >= totalTicks)
+                break;
+        }
+        isBurning = false;
+        burningParticle.SetActive(false);
+        //disable burn effect
     }
 
     public void Freeze(float duration, float chance)

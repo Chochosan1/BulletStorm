@@ -6,8 +6,6 @@ using UnityEngine.AI;
 [RequireComponent(typeof(Rigidbody))]
 public class BaseEnemy : MonoBehaviour, IDamageable
 {
-    
-
     [Header("Base AI")]
     [SerializeField] protected string unitName;
     [SerializeField] protected float FOLLOW_PLAYER_STOPPING_DISTANCE = 6.5f;
@@ -34,6 +32,9 @@ public class BaseEnemy : MonoBehaviour, IDamageable
     protected Transform thisTransform;
     private bool lootDropped = false;
     protected bool isBoss = false;
+
+    protected bool isBurning = false;
+    protected int totalTicksBurned;
     private float currentHealth;
     public float CurrentHealth
     {
@@ -162,6 +163,16 @@ public class BaseEnemy : MonoBehaviour, IDamageable
         //     throw new System.NotImplementedException();
     }
 
+    public virtual void GetBurned(int totalTicks, float tickCooldown, float damagePerTick)
+    {
+        if (isBurning)
+            return;
+
+        isBurning = true;
+        totalTicksBurned = 0;
+        StartCoroutine(BurnOverTime(totalTicks, tickCooldown, damagePerTick));
+    }
+
     /// <summary>Determines what loot should drop.</summary>
     protected virtual void DetermineLoot()
     {
@@ -194,5 +205,21 @@ public class BaseEnemy : MonoBehaviour, IDamageable
     {
         yield return new WaitForSeconds(duration);
         objectToDisable.SetActive(false);
+    }
+
+    protected IEnumerator BurnOverTime(float totalTicks, float tickCooldown, float damagePerTick)
+    {
+        //enable burn effect
+        while(totalTicksBurned < totalTicks)
+        {
+            TakeDamage(damagePerTick, null);
+            totalTicksBurned++;
+            yield return new WaitForSeconds(tickCooldown);
+
+            if (totalTicksBurned >= totalTicks)
+                break;
+        }
+        isBurning = false;
+        //disable burn effect
     }
 }

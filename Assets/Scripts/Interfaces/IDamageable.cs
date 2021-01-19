@@ -10,4 +10,5 @@ public interface IDamageable
 
     void Freeze(float duration, float chance);
     void GetSlowed(float duration, float slowPower, float chance);
+    void GetBurned(int totalTicks, float tickCooldown, float damagePerTick);
 }
