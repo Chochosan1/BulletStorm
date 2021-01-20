@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace ProceduralGeneration
 {
-    public enum PrefabType { Houses1, StonePark1, Church1, Guillotine }
+    public enum PrefabType { Houses1, StonePark1, Church1, Guillotine, Houses2 }
     public enum PlacementLimit { Unlimited, Limited, DontPlace };
     /// <summary>
     /// Controls what prefab goes to each world cell.
